@@ -159,10 +159,9 @@ pipeline {
 		    steps{
 			    script{
 				    sh """
-					docker stop \$(docker ps -aq)
-					docker rm \$(docker ps -aq)
-
-					docker volume prune -f
+					docker stop \$(docker ps -aq) || true
+					docker rm \$(docker ps -aq) || true
+					docker volume prune -f || true
 					"""
 				}
 			}
