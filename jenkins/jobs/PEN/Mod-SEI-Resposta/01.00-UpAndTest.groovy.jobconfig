@@ -1,0 +1,2 @@
+GIT=https://github.com/supergovbr/mod-sei-resposta
+JOB=jenkins/01.00-UpAndTest.groovy

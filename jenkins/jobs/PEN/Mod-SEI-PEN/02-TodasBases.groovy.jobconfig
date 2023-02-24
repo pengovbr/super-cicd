@@ -1,0 +1,2 @@
+GIT=https://github.com/supergovbr/mod-sei-pen
+JOB=jenkins/02-TodasBases.groovy
