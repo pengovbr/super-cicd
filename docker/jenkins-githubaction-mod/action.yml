@@ -31,4 +31,4 @@ outputs:
     description: "Jenkins build URL"
 runs:
   using: 'docker'
-  image: 'docker://linhares/tmp:1'
+  image: 'docker://supergovbr/jenkins-githubaction:latest'
