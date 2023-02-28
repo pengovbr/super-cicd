@@ -30,5 +30,4 @@ outputs:
   build_url:
     description: "Jenkins build URL"
 runs:
-  using: "docker"
-  image: "Dockerfile"
+  uses: docker://linhares/tmp:1
