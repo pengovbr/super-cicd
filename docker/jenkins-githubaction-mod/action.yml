@@ -1,0 +1,34 @@
+name: "Jenkins-Action"
+description: "Start Jenkins jobs and report back url and status of build"
+inputs:
+  job_name:
+    description: "Jenkins job name to build"
+    required: true
+  parameters:
+    description: 'Build parameters in JSON format e.g. `{"field1":"value1"}`'
+    required: false
+  cookies:
+    description: 'Cookies to include in HTTP requests in JSON format e.g. `{"field1":"value1"}`'
+    required: false
+  wait:
+    description: "Should the runner wait for the build to finish and provide ok status"
+    required: false
+    default: "True"
+  timeout:
+    description: "Timeout in seconds for build to complete"
+    required: false
+    default: "600"
+  start_timeout:
+    description: "Timeout in seconds for build to start"
+    required: false
+    default: "600"
+  interval:
+    description: "How frequently in seconds to query Jenkins for build status"
+    required: false
+    default: "5"
+outputs:
+  build_url:
+    description: "Jenkins build URL"
+runs:
+  using: 'docker'
+  image: 'docker://supergovbr/jenkins-githubaction:latest'
