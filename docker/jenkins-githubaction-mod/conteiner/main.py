@@ -73,8 +73,10 @@ def main():
 
     build_url = build.url
     logging.info(f"Build URL: {build_url}")
-    print(f"::set-output name=build_url::{build_url}")
-    #os.environ["GITHUB_OUTPUT"] = f"build_url={build_url}"
+    #print(f"::set-output name=build_url::{build_url}")
+    if "GITHUB_OUTPUT" in os.environ :
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f :
+            print("{0}={1}".format("build_url", build_url), file=f)
     print(f"::notice title=build_url::{build_url}")
 
     if not wait:
