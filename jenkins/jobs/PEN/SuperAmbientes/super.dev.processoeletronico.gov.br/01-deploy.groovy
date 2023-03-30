@@ -30,7 +30,22 @@ pipeline {
 	          name: 'gitSuperKey',
 	          defaultValue:"CredGitSuper",
 	          description: "Chave git em formato base64 em jenkins secret")
-
+          choice(
+              name: 'servicoProtocoloDigitalInstalar',
+              choices: ['false', 'true'],
+              description: 'Habilitar nesse ambiente o Protocolo Digital')
+	      string(
+	          name: 'servicoProtocoloDigitalSigla',
+	          defaultValue:"GOV.BR",
+	          description: "Sigla para o Sistema PD")
+	      string(
+	          name: 'servicoProtocoloDigitalNome',
+	          defaultValue:"Protocolo.GOV.BR",
+	          description: "Nome para o Sistema PD")
+	      string(
+	          name: 'servicoProtocoloDigitalOperacoes',
+	          defaultValue:"3,2,15,0,1",
+	          description: "Id das operacoes para o PD")
         choice(
             name: 'moduloEstatisticaInstalar', 
             choices: ['true', 'false'], 
@@ -131,6 +146,14 @@ pipeline {
 	          name: 'moduloRespostaVersao',
 	          defaultValue:"master",
 	          description: "Versão do Módulo Resposta")
+	      string(
+	          name: 'moduloRespostaSistemaId',
+	          defaultValue:'a:1:{i:0;s:1:"8";}',
+	          description: "Id do Sistema a ser Vinculado, coloque vazio caso n deseje vincular nada")
+	      string(
+	          name: 'moduloRespostaDocumentoId',
+	          defaultValue:'153',
+	          description: "Id do Documento a ser Vinculado")
 
         choice(
             name: 'moduloLoginUnicoInstalar', 
@@ -237,6 +260,11 @@ pipeline {
 					          GITSUPERVERSAO = params.versaoSuper
                     GITSUPERKEY = params.gitSuperKey
                     
+                    SERVICOPD_INSTALAR = params.servicoProtocoloDigitalInstalar
+                    SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
+                    SERVICOPD_NOME = params.servicoProtocoloDigitalNome
+                    SERVICOPD_OPERACOES = params.servicoProtocoloDigitalOperacoes
+
                     MODULOESTATISTICA_INSTALAR = params.moduloEstatisticaInstalar
                     MODULOESTATISTICA_VERSAO = params.moduloEstatisticaVersao
                     MODULOESTATISTICA_URL = params.moduloEstatisticasUrl
@@ -265,6 +293,8 @@ pipeline {
                     
                     MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
                     MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
+                    MODULORESPOSTA_SISTEMA_ID = params.moduloRespostaSistemaId
+                    MODULORESPOSTA_DOCUMENTO_ID = params.moduloRespostaDocumentoId
                     
                     MODULOLOGINUNICO_INSTALAR = params.moduloLoginUnicoInstalar
                     MODULOLOGINUNICO_VERSAO = params.moduloLoginUnicoVersao
@@ -372,6 +402,11 @@ pipeline {
                     echo "export KUBERNETES_REQUEST_MEMORY_APP=1Gi" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_CPU_APP=1000m" >> envlocal.env
                     
+                    echo "export SERVICO_PD_INSTALAR=${SERVICOPD_INSTALAR}" >> envlocal.env
+                    echo "export SERVICO_PD_SIGLA=${SERVICOPD_SIGLA}" >> envlocal.env
+                    echo "export SERVICO_PD_NOME=${SERVICOPD_NOME}" >> envlocal.env
+                    echo "export SERVICO_PD_OPERACOES=${SERVICOPD_OPERACOES}" >> envlocal.env
+
                     echo "export MODULO_ESTATISTICAS_INSTALAR=${MODULOESTATISTICA_INSTALAR}" >> envlocal.env
                     echo "export MODULO_ESTATISTICAS_VERSAO=${MODULOESTATISTICA_VERSAO}" >> envlocal.env
                     echo "export MODULO_ESTATISTICAS_SIGLA=${MODULOESTATISTICA_SIGLA}" >> envlocal.env
@@ -425,7 +460,7 @@ pipeline {
                     echo "export MODULO_PEN_UNIDADE_GERADORA=${MODULOPEN_UNIDADEGERADORA}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SUPER=${MODULOPEN_UNIDADEASSOCIACAOSUPER}" >> envlocal.env
-                    
+
                     echo "export MODULO_GESTAODOCUMENTAL_INSTALAR=${MODULOGD_INSTALAR}" >> envlocal.env
                     echo "export MODULO_GESTAODOCUMENTAL_VERSAO=${MODULOGD_VERSAO}" >> envlocal.env
                     
@@ -434,7 +469,7 @@ pipeline {
                     echo "export MODULO_WSSUPER_URL_NOTIFICACAO=${MODULOWSSUPER_URLNOTIFICACAO}" >> envlocal.env
                     echo "export MODULO_WSSUPER_ID_APP=${MODULOWSSUPER_IDAPP}" >> envlocal.env
                     echo "export MODULO_WSSUPER_TOKEN_SECRET=${MODULOWSSUPER_TOKEN}" >> envlocal.env
-                    
+
                     """
                     
                     withCredentials([ string(credentialsId: MODULOWSSUPER_CHAVE, variable: 'LHAVE')]) {
@@ -454,6 +489,8 @@ pipeline {
                     
                     echo "export MODULO_RESPOSTA_INSTALAR=${MODULORESPOSTA_INSTALAR}" >> envlocal.env
                     echo "export MODULO_RESPOSTA_VERSAO=${MODULORESPOSTA_VERSAO}" >> envlocal.env
+                    echo "export MODULO_RESPOSTA_SISTEMA_ID=${MODULORESPOSTA_SISTEMA_ID}" >> envlocal.env
+                    echo "export MODULO_RESPOSTA_DOCUMENTO_ID=${MODULORESPOSTA_DOCUMENTO_ID}" >> envlocal.env
                     
                     echo "export MODULO_LOGINUNICO_INSTALAR=${MODULOLOGINUNICO_INSTALAR}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_VERSAO=${MODULOLOGINUNICO_VERSAO}" >> envlocal.env
