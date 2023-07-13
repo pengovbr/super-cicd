@@ -248,7 +248,7 @@ pipeline {
                             sh """
                             cd infra
                             echo "export APP_HOST=sei.pi.teste.processoeletronico.gov.br" >> envlocal.env
-                            make check_isalive-timeout=60 check-sei-isalive
+                            make check_isalive-timeout=120 check-sei-isalive
                             """
                         }
                     }
