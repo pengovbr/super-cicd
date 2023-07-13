@@ -149,7 +149,7 @@ pipeline {
                         sh """
                       
                         cd infra
-                        echo "export MODULO_PI_USUARIO=${MODULOPI_USUARIO}" >> envlocal.env
+                        echo "export MODULO_PI_USUARIO=${LHAVE}" >> envlocal.env
                       
                         """
                     }
@@ -159,7 +159,7 @@ pipeline {
                         sh """
                       
                         cd infra
-                        echo "export MODULO_PI_SENHA=${MODULOPI_SENHA}" >> envlocal.env
+                        echo "export MODULO_PI_SENHA=${LHAVE}" >> envlocal.env
                       
                         """
                     }
