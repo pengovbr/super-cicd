@@ -31,8 +31,8 @@ pipeline {
 	          defaultValue:"CredGitSuper",
 	          description: "Chave git em formato base64 em jenkins secret")
           choice(
-              name: 'servicoProtocoloDigitalInstalar',
-              choices: ['false', 'true'],
+              name: 'servicoProtocoloDigitalInstalar', 
+              choices: ['false', 'true'], 
               description: 'Habilitar nesse ambiente o Protocolo Digital')
 	      string(
 	          name: 'servicoProtocoloDigitalSigla',
@@ -83,6 +83,14 @@ pipeline {
 	          name: 'moduloPenCertSenha',
 	          defaultValue:"credModuloPenCertSenha",
 	          description: "Senha do Certificado do módulo em jenkins secret")
+	      string(
+	          name: 'moduloPenGearmanIp',
+	          defaultValue:"127.0.0.1",
+	          description: "Caso queira usar gearman informe o endereco. Caso n queira deixe em branco")
+	      string(
+	          name: 'moduloPenGearmanPorta',
+	          defaultValue:"4730",
+	          description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
 	      string(
 	          name: 'moduloPenRepositorioOrigem',
 	          defaultValue:"37",
@@ -264,7 +272,7 @@ pipeline {
                     SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
                     SERVICOPD_NOME = params.servicoProtocoloDigitalNome
                     SERVICOPD_OPERACOES = params.servicoProtocoloDigitalOperacoes
-
+                    
                     MODULOESTATISTICA_INSTALAR = params.moduloEstatisticaInstalar
                     MODULOESTATISTICA_VERSAO = params.moduloEstatisticaVersao
                     MODULOESTATISTICA_URL = params.moduloEstatisticasUrl
@@ -275,6 +283,8 @@ pipeline {
                     MODULOPEN_VERSAO = params.moduloPenVersao
                     MODULOPEN_CERT = params.moduloPenCert
                     MODULOPEN_CERTSENHA = params.moduloPenCertSenha
+                    MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
+                    MODULOPEN_GEARMAN_PORTA = params.moduloPenGearmanPorta
                     MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem
                     MODULOPEN_TIPOPROCESSO = params.moduloPenTipoProcessoExterno
                     MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
@@ -406,7 +416,7 @@ pipeline {
                     echo "export SERVICO_PD_SIGLA=${SERVICOPD_SIGLA}" >> envlocal.env
                     echo "export SERVICO_PD_NOME=${SERVICOPD_NOME}" >> envlocal.env
                     echo "export SERVICO_PD_OPERACOES=${SERVICOPD_OPERACOES}" >> envlocal.env
-
+                    
                     echo "export MODULO_ESTATISTICAS_INSTALAR=${MODULOESTATISTICA_INSTALAR}" >> envlocal.env
                     echo "export MODULO_ESTATISTICAS_VERSAO=${MODULOESTATISTICA_VERSAO}" >> envlocal.env
                     echo "export MODULO_ESTATISTICAS_SIGLA=${MODULOESTATISTICA_SIGLA}" >> envlocal.env
@@ -455,12 +465,14 @@ pipeline {
                     sh """
                     
                     cd infra
+                    echo "export MODULO_PEN_GEARMAN_IP=${MODULOPEN_GEARMAN_IP}" >> envlocal.env
+                    echo "export MODULO_PEN_GEARMAN_PORTA=${MODULOPEN_GEARMAN_PORTA}" >> envlocal.env
                     echo "export MODULO_PEN_REPOSITORIO_ORIGEM=${MODULOPEN_REPOSITORIOORIGEM}" >> envlocal.env
                     echo "export MODULO_PEN_TIPO_PROCESSO_EXTERNO=${MODULOPEN_TIPOPROCESSO}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_GERADORA=${MODULOPEN_UNIDADEGERADORA}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SUPER=${MODULOPEN_UNIDADEASSOCIACAOSUPER}" >> envlocal.env
-
+                    
                     echo "export MODULO_GESTAODOCUMENTAL_INSTALAR=${MODULOGD_INSTALAR}" >> envlocal.env
                     echo "export MODULO_GESTAODOCUMENTAL_VERSAO=${MODULOGD_VERSAO}" >> envlocal.env
                     
@@ -469,7 +481,7 @@ pipeline {
                     echo "export MODULO_WSSUPER_URL_NOTIFICACAO=${MODULOWSSUPER_URLNOTIFICACAO}" >> envlocal.env
                     echo "export MODULO_WSSUPER_ID_APP=${MODULOWSSUPER_IDAPP}" >> envlocal.env
                     echo "export MODULO_WSSUPER_TOKEN_SECRET=${MODULOWSSUPER_TOKEN}" >> envlocal.env
-
+                    
                     """
                     
                     withCredentials([ string(credentialsId: MODULOWSSUPER_CHAVE, variable: 'LHAVE')]) {
@@ -588,7 +600,7 @@ pipeline {
                         dir('kube'){
                             sh """
                             cd infra
-                            make KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
+                            make kube_timeout=300s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
                             """
                         }
                     }
@@ -601,7 +613,7 @@ pipeline {
                             sh """
                             cd infra
                             echo "export APP_HOST=super.dev.processoeletronico.gov.br" >> envlocal.env
-                            make check-super-isalive
+                            make check_isalive-timeout=60 check-super-isalive
                             """
                         }
                     }
