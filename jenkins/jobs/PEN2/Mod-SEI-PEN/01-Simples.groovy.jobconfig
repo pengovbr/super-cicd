@@ -1,2 +1,4 @@
 GIT=https://github.com/supergovbr/mod-sei-pen
 JOB=jenkins/01-Simples.groovy
+BRANCH=master
+CREDENTIAL=

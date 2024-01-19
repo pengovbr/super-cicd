@@ -1,2 +1,4 @@
 GIT=https://github.com/supergovbr/super
-JOB=ops/jenkins/01.00-TestsUp.groovy
+JOB=jenkins/01.00-TestsUp.groovy
+BRANCH=main
+CREDENTIAL=githubseitoken

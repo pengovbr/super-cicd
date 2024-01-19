@@ -1,4 +1,4 @@
 GIT=https://github.com/pengovbr/tramitagovbr.git
-JOB=jenkins/03-TodasVersoes.groovy
+JOB=jenkins/01_BuildBarramento.groovy
 BRANCH=master
-CREDENTIAL=
+CREDENTIAL=githubseitoken

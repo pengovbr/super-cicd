@@ -1,4 +1,0 @@
-GIT=https://github.com/pengovbr/mod-gestao-documental
-JOB=jenkins/01.00-UpAndTest.groovy
-BRANCH=master
-CREDENTIAL=gittmp
