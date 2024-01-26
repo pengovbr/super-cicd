@@ -68,47 +68,36 @@ def createCred(tipo, id, desc, username, password, secrettext, filenamedesired, 
 
 }
 
+// separador de campo: @@#@@
+// separador de linha : &&& 
+//ver Readme
 
-secrets = """
-usernamepass|zzjenkins-agents|desc|jenkins|jenkinsuser&&&
-usernamepass|zzjenkinsagent-ssh|desc|jenkins|jenkinsuser&&&
-usernamepass|zzmpgitlab|desc|jenkins|nTsYOYadhyUVXPuzxes5iBi6eQZmSpHOSeDfekTj&&&
-secrettext|zcredModuloPenCert|desc|jlkhjklhjkl hjklhjklhjkl&&&
-secrettext|zcredModuloPenCert2|desc2|2jlkhjklhjkl hjklhjklhjkl&&&
-sshprivkey|zgitcredmoduloresposta|desc|username|---begin
+secrets = '''
+usernamepass@@#@@zzjenkins-agents@@#@@desc@@#@@jenkins@@#@@nova@a#a$a%a&a|a\\a(a?a&&&
+usernamepass@@#@@zzjenkinsagent-ssh@@#@@desc@@#@@jenkins@@#@@jenkinsuser&&&
+usernamepass@@#@@zzmpgitlab@@#@@desc@@#@@jenkins@@#@@nTsYOYadhyUVXPuzxes5iBi6eQZmSpHOSeDfekTj&&&
+secrettext@@#@@zcredModuloPenCert@@#@@desc@@#@@jlkhjklhjkl hjklhjklhjkl&&&
+secrettext@@#@@zcredModuloPenCert2@@#@@desc2@@#@@2jlkhjklhjkl hjklhjklhjkl&&&
+sshprivkey@@#@@zgitcredmoduloresposta@@#@@desc@@#@@username@@#@@---begin
 asdfhjkl
-end----|passp&&&
-sshprivkey|z2gitcredmoduloresposta|desc|username|---begin
+end----@@#@@passp&&&
+sshprivkey@@#@@z2gitcredmoduloresposta@@#@@desc@@#@@username@@#@@---begin
 asdfhjkl
-end----|passp&&&
-secretfile|zsecfile|desc|arquivo.txt|---begin
+end----@@#@@passp&&&
+secretfile@@#@@zsecfile@@#@@desc@@#@@arquivo.txt@@#@@---begin
 asdfhjkl
 end----&&&
-secretfile|zsecfile2|desc|arquivo2.txt|---begin
+secretfile@@#@@zsecfile2@@#@@desc@@#@@arquivo2.txt@@#@@---begin
 dddd2222
 end----&&&
-"""
+'''
 
-//secrets = secrets.replace("&&&\\n", "&&&")
-//println secrets
 secretsarr = secrets.trim().split("&&&")
 
-/*
-for (i=0;i<1;i++){
 
-    s = secretsarr[i].trim().split("\\|")
-    switch(s[0]){
-        case "usernamepass":
-            println s[1]
-            createCred(s[0], s[1], s[2], s[3], s[4], "", "", "", "")
-            break;
-    }
-
-}
-*/
 secretsarr.each{ value ->
     //println value
-    s = value.trim().split("\\|")
+    s = value.trim().split("@@#@@")
     
     println s[0]
     println s[1]
