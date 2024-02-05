@@ -70,7 +70,17 @@ def createCred(tipo, id, desc, username, password, secrettext, filenamedesired, 
 
 // separador de campo: @@#@@
 // separador de linha : &&& 
+// note q o backslash devera estar duplicado (cada 2 vira 1 na sua senha/texto)
 //ver Readme
+// abaixo um ex. vai criar uma primeira credencial do tipo usernamepass com o nome zzjenkins-agents, descricao = desc
+// username: jenkins - password: nova@a#a$a%a&a|a\a(a?a
+// note q o backslash devera estar duplicado
+// mais abaixo criar um texto secreto com nome: zcredModuloPenCert descricao=desc texto=jlkhjklhjkl hjklhjklhjkl
+// mais abaixo cria um arquivo secreto com nome: zsecfile nome_arquvo: arquivo.txt e texto do aquivo: 
+//---begin
+//asdfhjkl
+//end----
+// esse campo secrets nao pode ultrapassar 65000 caracteres. caso ultrapasse esse valor rode em mas de uma rodada
 
 secrets = '''
 usernamepass@@#@@zzjenkins-agents@@#@@desc@@#@@jenkins@@#@@nova@a#a$a%a&a|a\\a(a?a&&&

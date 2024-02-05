@@ -36,7 +36,7 @@ copie a chave e continue
 instale os plugins sugeridos
 ![install](../../docs/images/03-install.png)
 
-Aguarde a instalaçã
+Aguarde a instalação
 ![install](../../docs/images/04-install.png)
 
 Defina um nome para sua instalação. Garanta que esse nome/endereço seja acessível
@@ -46,4 +46,5 @@ Defina um nome para sua instalação. Garanta que esse nome/endereço seja acess
 ![install](../../docs/images/06-install.png)
 
 Pronto! Jenkins no ar agora vamos passar a parte de criar e pré-popular os segredos e os jobs.
+Dirija-se aos bootup jobs.
 
