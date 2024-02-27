@@ -12,68 +12,84 @@ pipeline {
     }
 
     parameters {
-      
+
         booleanParam(
-            name: 'Leiame', 
-            defaultValue: false, 
-            description: 'Atenção. A versão dos módulos ou do SEI pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto sei-docker') 
-        
-	      string(
-	          name: 'versaoSei',
-	          defaultValue:"main",
-	          description: "Branch/Tag do git para o SEI")
-	      string(
-	          name: 'gitSeiAddress',
-	          defaultValue:"git@github.com:supergovbr/super",
-	          description: "Endereco git do Fonte do Super")
-	      string(
-	          name: 'gitSeiKey',
-	          defaultValue:"CredGitSuper",
-	          description: "Chave git em formato base64 em jenkins secret")
-          choice(
-            name: 'moduloPenInstalar', 
-            choices: ['true', 'false'], 
+            name: 'Leiame',
+            defaultValue: false,
+            description: 'Atenção. A versão dos módulos ou do SEI pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto sei-docker')
+
+        string(
+            name: 'versaoSei',
+            defaultValue:"main",
+            description: "Branch/Tag do git para o SEI")
+        string(
+            name: 'gitSeiAddress',
+            defaultValue:"git@github.com:supergovbr/super",
+            description: "Endereco git do Fonte do Super")
+        string(
+            name: 'gitSeiKey',
+            defaultValue:"CredGitSuper",
+            description: "Chave git em formato base64 em jenkins secret")
+        choice(
+            name: 'multiorgao',
+            choices: ['false', 'true'],
+            description: 'Caso deseje criar um ambiente Multiorgao marque true e preencha corretamente os dois campos abaixo')
+        string(
+            name: 'multiorgaoSiglas',
+            defaultValue:"SIGLA1/SIGLA2",
+            description: "Depois de habilitar Multiorgao acima. Passe aqui as siglas desejadas separadas por /")
+        string(
+            name: 'multiorgaoNomes',
+            defaultValue:"nome do orgao1/nome do orgao2",
+            description: "Depois de habilitar Multiorgao acima. Passe aqui os nomes respectivos às siglas separadas por /. Informar a mesma qtde de siglas e nomes, caso contrário o parametro será ignorado na instalação")
+        choice(
+            name: 'federacao',
+            choices: ['false', 'true'],
+            description: 'Caso deseje habilitar a federação nessa instalação, informe true. Após a criação do ambiente você terá que configurar com que outro ambiente será a federação')
+        choice(
+            name: 'moduloPenInstalar',
+            choices: ['true', 'false'],
             description: 'Instalar Módulo PEN')
-	      string(
-	          name: 'moduloPenVersao',
-	          defaultValue:"master",
-	          description: "Versao do Módulo PEN")
-	      string(
-	          name: 'moduloPenCert',
-	          defaultValue:"credModuloPenCertOrgao5",
-	          description: "Certificado base64 do módulo em jenkins secret")
-	      string(
-	          name: 'moduloPenCertSenha',
-	          defaultValue:"credModuloPenCertSenhaOrgao5",
-	          description: "Senha do Certificado do módulo em jenkins secret")
-	      string(
-	          name: 'moduloPenGearmanIp',
-	          defaultValue:"127.0.0.1",
-	          description: "Caso queira usar gearman informe o endereco. Caso n queira deixe em branco")
-	      string(
-	          name: 'moduloPenGearmanPorta',
-	          defaultValue:"4730",
-	          description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
-	      string(
-	          name: 'moduloPenRepositorioOrigem',
-	          defaultValue:"37",
-	          description: "Repositorio de Origem do Módulo")
-	      string(
-	          name: 'moduloPenTipoProcessoExterno',
-	          defaultValue:"100000256",
-	          description: "Tipo de Processo para o Módulo PEN")
-	      string(
-	          name: 'moduloPenUnidadeGeradora',
-	          defaultValue:"110000003",
-	          description: "Unidade do PEN")
-	      string(
-	          name: 'moduloPenUnidadeAssociacaoSuper',
-	          defaultValue:"110000001",
-	          description: "Unidade Associação do Super")
-	      string(
-	          name: 'moduloPenUnidadeAssociacaoPen',
-	          defaultValue:"151861",
-	          description: "Unidade Associação do PEN")
+        string(
+            name: 'moduloPenVersao',
+            defaultValue:"master",
+            description: "Versao do Módulo PEN")
+        string(
+            name: 'moduloPenCert',
+            defaultValue:"credModuloPenCertOrgao5",
+            description: "Certificado base64 do módulo em jenkins secret")
+        string(
+            name: 'moduloPenCertSenha',
+            defaultValue:"credModuloPenCertSenhaOrgao5",
+            description: "Senha do Certificado do módulo em jenkins secret")
+        string(
+            name: 'moduloPenGearmanIp',
+            defaultValue:"127.0.0.1",
+            description: "Caso queira usar gearman informe o endereco. Caso n queira deixe em branco")
+        string(
+            name: 'moduloPenGearmanPorta',
+            defaultValue:"4730",
+            description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
+        string(
+            name: 'moduloPenRepositorioOrigem',
+            defaultValue:"37",
+            description: "Repositorio de Origem do Módulo")
+        string(
+            name: 'moduloPenTipoProcessoExterno',
+            defaultValue:"100000256",
+            description: "Tipo de Processo para o Módulo PEN")
+        string(
+            name: 'moduloPenUnidadeGeradora',
+            defaultValue:"110000003",
+            description: "Unidade do PEN")
+        string(
+            name: 'moduloPenUnidadeAssociacaoSei',
+            defaultValue:"110000001",
+            description: "Unidade Associação do Sei")
+        string(
+            name: 'moduloPenUnidadeAssociacaoPen',
+            defaultValue:"151860",
+            description: "Unidade Associação do PEN")
 
     }
 
@@ -85,9 +101,14 @@ pipeline {
                 script{
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
 					GITCRED = ""
-					GITSEIVERSAO = params.versaoSei
+                    GITSEIVERSAO = params.versaoSei
                     GITSEIKEY = params.gitSeiKey
-                    
+
+                    MULTIORGAO = params.multiorgao
+                    MULTIORGAOSIGLAS = (MULTIORGAO == 'true' ? params.multiorgaoSiglas : "");
+                    MULTIORGAONOMES = (MULTIORGAO == 'true' ? params.multiorgaoNomes : "");
+                    FEDERACAO = params.federacao
+
                     MODULOPEN_INSTALAR = params.moduloPenInstalar
                     MODULOPEN_VERSAO = params.moduloPenVersao
                     MODULOPEN_CERT = params.moduloPenCert
@@ -97,7 +118,7 @@ pipeline {
                     MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem
                     MODULOPEN_TIPOPROCESSO = params.moduloPenTipoProcessoExterno
                     MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
-                    MODULOPEN_UNIDADEASSOCIACAOSUPER = params.moduloPenUnidadeAssociacaoSuper
+                    MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
                     MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen
 
                     if ( env.BUILD_NUMBER == '1' ){
@@ -110,7 +131,7 @@ pipeline {
                 sh """
                 echo ${WORKSPACE}
                 ls -lha
-				
+
                 sudo rm -rf kube
                 """
             }
@@ -131,7 +152,7 @@ pipeline {
                         url: GITURL
 
                     sh """
-                    
+
                     ls -l
                     """
 
@@ -143,22 +164,23 @@ pipeline {
 
             steps {
                 dir('kube'){
-                    
+
                     withCredentials([ string(credentialsId: GITSEIKEY, variable: 'LHAVE')]) {
-                            
+
                         sh """
-                      
+
                         cd infra
                         echo "" >> envlocal.env
                         echo "export APP_FONTES_GIT_PRIVKEY_BASE64=${LHAVE}" >> envlocal.env
-                      
+
                         """
                     }
-                    
+
                     sh """
                     cd infra
                     echo "" >> envlocal.env
-                    echo "export APP_HOST=super.orgao5.tramita.processoeletronico.gov.br" >> envlocal.env
+                    echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
+                    echo "export APP_HOST=sei.orgao5.tramita.processoeletronico.gov.br" >> envlocal.env
                     echo "export APP_ORGAO=ORGAO5" >> envlocal.env
                     echo "export APP_FONTES_GIT_PATH=git@github.com:supergovbr/super" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
@@ -177,32 +199,37 @@ pipeline {
                     echo "export KUBERNETES_REQUEST_MEMORY_APP=1Gi" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_CPU_APP=1000m" >> envlocal.env
 
+					echo "export APP_ORGAOS_ADICIONAIS_SIGLA=${MULTIORGAOSIGLAS}" >> envlocal.env
+					echo "export APP_ORGAOS_ADICIONAIS_NOME=${MULTIORGAONOMES}" >> envlocal.env
+					echo "export APP_FEDERACAO_HABILITAR=${FEDERACAO}" >> envlocal.env
+
                     echo "export MODULO_PEN_INSTALAR=${MODULOPEN_INSTALAR}" >> envlocal.env
                     echo "export MODULO_PEN_VERSAO=${MODULOPEN_VERSAO}" >> envlocal.env
                     """
-                    
+
+
                     withCredentials([ string(credentialsId: MODULOPEN_CERT, variable: 'LHAVE')]) {
-                            
+
                         sh """
-                      
+
                         cd infra
                         echo "export MODULO_PEN_CERTIFICADO_BASE64=${LHAVE}" >> envlocal.env
-                      
+
                         """
                     }
-                    
+
                     withCredentials([ string(credentialsId: MODULOPEN_CERTSENHA, variable: 'LHAVE')]) {
-                            
+
                         sh """
-                      
+
                         cd infra
                         echo "export MODULO_PEN_CERTIFICADO_SENHA=${LHAVE}" >> envlocal.env
-                      
+
                         """
                     }
-                    
+
                     sh """
-                    
+
                     cd infra
                     echo "export MODULO_PEN_GEARMAN_IP=${MODULOPEN_GEARMAN_IP}" >> envlocal.env
                     echo "export MODULO_PEN_GEARMAN_PORTA=${MODULOPEN_GEARMAN_PORTA}" >> envlocal.env
@@ -210,7 +237,7 @@ pipeline {
                     echo "export MODULO_PEN_TIPO_PROCESSO_EXTERNO=${MODULOPEN_TIPOPROCESSO}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_GERADORA=${MODULOPEN_UNIDADEGERADORA}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
-                    echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SUPER=${MODULOPEN_UNIDADEASSOCIACAOSUPER}" >> envlocal.env
+                    echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=${MODULOPEN_UNIDADEASSOCIACAOSEI}" >> envlocal.env
 
                     make kubernetes_montar_yaml
                     make kubernetes_delete || true
@@ -218,7 +245,7 @@ pipeline {
                     make kubernetes_montar_yaml
                     make kubernetes_apply
                     """
-                  
+
 
                 }
 
@@ -226,9 +253,9 @@ pipeline {
         }
 
         stage('Verificando Componentes Kube'){
-            
+
             parallel {
-              
+
                 stage('Database'){
                     steps {
                         dir('kube'){
@@ -239,8 +266,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('JOD'){
                     steps {
                         dir('kube'){
@@ -251,8 +278,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('Memcached'){
                     steps {
                         dir('kube'){
@@ -263,8 +290,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('Solr'){
                     steps {
                         dir('kube'){
@@ -275,8 +302,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('APP'){
                     steps {
                         dir('kube'){
@@ -287,27 +314,27 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('URL Respondendo'){
                     steps {
                         dir('kube'){
                             sh """
                             cd infra
-                            echo "export APP_HOST=super.orgao5.tramita.processoeletronico.gov.br" >> envlocal.env
+                            echo "export APP_HOST=sei.orgao5.tramita.processoeletronico.gov.br" >> envlocal.env
                             make check_isalive-timeout=600 check-sei-isalive
                             """
                         }
                     }
                 }
-                
-                
-                
+
+
+
             }
-            
+
         }
 
 
     }
-    
+
 }
