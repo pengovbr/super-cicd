@@ -72,7 +72,7 @@ pipeline {
             steps {
 
                 script{
-                    GITURL = "https://github.com/supergovbr/super-docker.git"
+                    GITURL = "https://github.com/spbgovbr/sei-docker.git"
 					          GITCRED = ""
 					          GITSUPERVERSAO = params.versaoSuper
                     GITSUPERKEY = params.gitSuperKey
