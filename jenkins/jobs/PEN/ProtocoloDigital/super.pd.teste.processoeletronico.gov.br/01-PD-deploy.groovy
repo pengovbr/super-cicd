@@ -12,12 +12,12 @@ pipeline {
     }
 
     parameters {
-      
+
         booleanParam(
-            name: 'Leiame', 
-            defaultValue: false, 
-            description: 'Atenção. A versão dos módulos ou do SUPER pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto super-docker') 
-        
+            name: 'Leiame',
+            defaultValue: false,
+            description: 'Atenção. A versão dos módulos ou do SUPER pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto super-docker')
+
 	      string(
 	          name: 'versaoSuper',
 	          defaultValue:"main",
@@ -31,8 +31,8 @@ pipeline {
 	          defaultValue:"CredGitSuper",
 	          description: "Chave git em formato base64 em jenkins secret")
           choice(
-              name: 'servicoProtocoloDigitalInstalar', 
-              choices: ['true', 'false'], 
+              name: 'servicoProtocoloDigitalInstalar',
+              choices: ['true', 'false'],
               description: 'Habilitar nesse ambiente o Protocolo Digital')
 	      string(
 	          name: 'servicoProtocoloDigitalSigla',
@@ -46,11 +46,11 @@ pipeline {
 	          name: 'servicoProtocoloDigitalOperacoes',
 	          defaultValue:"3,2,15,0,1",
 	          description: "Id das operacoes para o PD")
-        
-            
+
+
         choice(
-            name: 'moduloRespostaInstalar', 
-            choices: ['true', 'false'], 
+            name: 'moduloRespostaInstalar',
+            choices: ['true', 'false'],
             description: 'Instalar Módulo Resposta')
 	      string(
 	          name: 'moduloRespostaVersao',
@@ -76,12 +76,12 @@ pipeline {
 					          GITCRED = ""
 					          GITSUPERVERSAO = params.versaoSuper
                     GITSUPERKEY = params.gitSuperKey
-                    
+
                     SERVICOPD_INSTALAR = params.servicoProtocoloDigitalInstalar
                     SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
                     SERVICOPD_NOME = params.servicoProtocoloDigitalNome
                     SERVICOPD_OPERACOES = params.servicoProtocoloDigitalOperacoes
-                    
+
                     MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
                     MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
                     MODULORESPOSTA_SISTEMA_ID = params.moduloRespostaSistemaId
@@ -122,7 +122,7 @@ pipeline {
                         url: GITURL
 
                     sh """
-                    
+
                     ls -l
                     """
 
@@ -134,18 +134,18 @@ pipeline {
 
             steps {
                 dir('kube'){
-                    
+
                     withCredentials([ string(credentialsId: GITSUPERKEY, variable: 'LHAVE')]) {
-                            
+
                         sh """
-                      
+
                         cd infra
                         echo "" >> envlocal.env
                         echo "export APP_FONTES_GIT_PRIVKEY_BASE64=${LHAVE}" >> envlocal.env
-                      
+
                         """
                     }
-                    
+
                     sh """
                     cd infra
                     echo "" >> envlocal.env
@@ -166,24 +166,26 @@ pipeline {
                     echo "export KUBERNETES_LIMITS_CPU_APP=1000m" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_MEMORY_APP=1Gi" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_CPU_APP=1000m" >> envlocal.env
-                    
+
                     echo "export SERVICO_PD_INSTALAR=${SERVICOPD_INSTALAR}" >> envlocal.env
                     echo "export SERVICO_PD_SIGLA=${SERVICOPD_SIGLA}" >> envlocal.env
                     echo "export SERVICO_PD_NOME=${SERVICOPD_NOME}" >> envlocal.env
                     echo "export SERVICO_PD_OPERACOES=${SERVICOPD_OPERACOES}" >> envlocal.env
-                    
+
                     echo "export MODULO_RESPOSTA_INSTALAR=${MODULORESPOSTA_INSTALAR}" >> envlocal.env
                     echo "export MODULO_RESPOSTA_VERSAO=${MODULORESPOSTA_VERSAO}" >> envlocal.env
                     echo "export MODULO_RESPOSTA_SISTEMA_ID=${MODULORESPOSTA_SISTEMA_ID}" >> envlocal.env
                     echo "export MODULO_RESPOSTA_DOCUMENTO_ID=${MODULORESPOSTA_DOCUMENTO_ID}" >> envlocal.env
 
+                    echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
+
                     make kubernetes_montar_yaml
                     make kubernetes_delete || true
-        
+
                     make kubernetes_montar_yaml
                     make kubernetes_apply
                     """
-                  
+
 
                 }
 
@@ -191,9 +193,9 @@ pipeline {
         }
 
         stage('Verificando Componentes Kube'){
-            
+
             parallel {
-              
+
                 stage('Database'){
                     steps {
                         dir('kube'){
@@ -204,8 +206,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('JOD'){
                     steps {
                         dir('kube'){
@@ -216,8 +218,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('Memcached'){
                     steps {
                         dir('kube'){
@@ -228,8 +230,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('Solr'){
                     steps {
                         dir('kube'){
@@ -240,8 +242,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('APP'){
                     steps {
                         dir('kube'){
@@ -252,8 +254,8 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage('URL Respondendo'){
                     steps {
                         dir('kube'){
@@ -265,14 +267,14 @@ pipeline {
                         }
                     }
                 }
-                
-                
-                
+
+
+
             }
-            
+
         }
 
 
     }
-    
+
 }
