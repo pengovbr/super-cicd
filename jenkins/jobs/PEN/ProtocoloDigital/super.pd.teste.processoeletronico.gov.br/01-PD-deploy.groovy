@@ -262,7 +262,7 @@ pipeline {
                             sh """
                             cd infra
                             echo "export APP_HOST=super.pd.teste.processoeletronico.gov.br" >> envlocal.env
-                            make check_isalive-timeout=180 check-super-isalive
+                            make check_isalive-timeout=180 check-sei-isalive
                             """
                         }
                     }
