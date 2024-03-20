@@ -249,7 +249,7 @@ pipeline {
                         dir('kube'){
                             sh """
                             cd infra
-                            make kube_timeout=300s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
+                            make kube_timeout=900s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
                             """
                         }
                     }
@@ -262,7 +262,7 @@ pipeline {
                             sh """
                             cd infra
                             echo "export APP_HOST=super.pd.teste.processoeletronico.gov.br" >> envlocal.env
-                            make check_isalive-timeout=60 check-super-isalive
+                            make check_isalive-timeout=180 check-super-isalive
                             """
                         }
                     }
