@@ -308,7 +308,7 @@ pipeline {
                         dir('kube'){
                             sh """
                             cd infra
-                            make kube_timeout=600s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
+                            make kube_timeout=1200s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
                             """
                         }
                     }
@@ -321,7 +321,7 @@ pipeline {
                             sh """
                             cd infra
                             echo "export APP_HOST=sei.orgao6.tramita.processoeletronico.gov.br" >> envlocal.env
-                            make check_isalive-timeout=600 check-sei-isalive
+                            make check_isalive-timeout=1200 check-sei-isalive
                             """
                         }
                     }
