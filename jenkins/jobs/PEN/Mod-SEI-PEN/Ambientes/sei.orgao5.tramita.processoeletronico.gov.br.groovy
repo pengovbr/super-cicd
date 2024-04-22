@@ -92,7 +92,7 @@ pipeline {
             description: "Unidade Associação do Super")
         string(
             name: 'moduloPenUnidadeAssociacaoPen',
-            defaultValue:"158775",
+            defaultValue:"151860",
             description: "Unidade Associação do PEN")
 
     }
