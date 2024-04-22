@@ -24,8 +24,12 @@ pipeline {
             description: "Branch/Tag do git para o SEI")
         string(
             name: 'gitSeiAddress',
-            defaultValue:"git@github.com:supergovbr/super",
-            description: "Endereco git do Fonte do Super")
+            defaultValue:"git@github.com:pengovbr/sei",
+            description: "Endereco git do Fonte do Sei")
+        string(
+            name: 'gitSeiKeyJenkins',
+            defaultValue:"gitcredsuper",
+            description: "Secret Jenkins para o Repo")
         string(
             name: 'gitSeiKey',
             defaultValue:"CredGitSuper",
@@ -100,7 +104,8 @@ pipeline {
 
                 script{
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
-					GITCRED = ""
+					GITSEIADDRESS = params.gitSeiAddress
+                    GITCRED = params.gitSeiKeyJenkins
                     GITSEIVERSAO = params.versaoSei
                     GITSEIKEY = params.gitSeiKey
 
@@ -136,6 +141,46 @@ pipeline {
                 """
             }
         }
+        
+        stage('Checkout-SEI'){
+
+            steps {
+
+                dir('sei'){
+
+                    sh """
+                    git config --global http.sslVerify false
+                    """
+
+                    git branch: 'main',
+                        credentialsId: GITCRED,
+                        url: GITSEIADDRESS
+
+                    sh """
+                    echo "" > ../envstageanterior.env
+                    ls -l
+                    
+                    git checkout ${GITSEIVERSAO}
+                    
+                    set +e
+                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
+                    e=\$?
+                    set -e
+                    
+                    
+                    if [ "\$e" = "0" ]; then
+                    
+                        echo "export DOCKER_IMAGE_BD=processoeletronico/mysql8:latest" >> ../envstageanterior.env
+                        echo "export DOCKER_IMAGE_SOLR=processoeletronico/solr9.4.0:latest" >> ../envstageanterior.env
+                        echo "export DOCKER_IMAGE_APP=processoeletronico/app-ci-php8:latest" >> ../envstageanterior.env
+                        echo "export DOCKER_IMAGE_APP_AGENDADOR=processoeletronico/app-ci-php8-agendador:latest" >> ../envstageanterior.env
+                    fi
+
+                    """
+
+                }
+            }
+        }
 
         stage('Checkout-ProjetoKube'){
 
@@ -152,8 +197,9 @@ pipeline {
                         url: GITURL
 
                     sh """
-
+                    cat ../envstageanterior.env
                     ls -l
+                    
                     """
 
                 }
@@ -237,6 +283,9 @@ pipeline {
                     echo "export MODULO_PEN_UNIDADE_GERADORA=${MODULOPEN_UNIDADEGERADORA}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=${MODULOPEN_UNIDADEASSOCIACAOSEI}" >> envlocal.env
+                    
+                    cat ../../envstageanterior.env >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env  
 
                     make kubernetes_montar_yaml
                     make kubernetes_delete || true
