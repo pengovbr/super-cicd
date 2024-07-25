@@ -58,6 +58,10 @@ pipeline {
             name: 'moduloPenVersao',
             defaultValue:"master",
             description: "Versao do Módulo PEN")
+        choice(
+            name: 'moduloPenConfigurar',
+            choices: ['true', 'false'],
+            description: 'Caso deseje que o módulo confgure automaticamente para envio e recebimento. Se marcar falso, deverá configurar no menu de admin do módulo')
         string(
             name: 'moduloPenCert',
             defaultValue:"credModuloPenCertOrgao7",
@@ -116,6 +120,7 @@ pipeline {
 
                     MODULOPEN_INSTALAR = params.moduloPenInstalar
                     MODULOPEN_VERSAO = params.moduloPenVersao
+                    MODULOPEN_CONFIGURAR = params.moduloPenConfigurar
                     MODULOPEN_CERT = params.moduloPenCert
                     MODULOPEN_CERTSENHA = params.moduloPenCertSenha
                     MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
@@ -141,7 +146,7 @@ pipeline {
                 """
             }
         }
-        
+
         stage('Checkout-SEI'){
 
             steps {
@@ -159,17 +164,17 @@ pipeline {
                     sh """
                     echo "" > ../envstageanterior.env
                     ls -l
-                    
+
                     git checkout ${GITSEIVERSAO}
-                    
+
                     set +e
                     grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
                     e=\$?
                     set -e
-                    
-                    
+
+
                     if [ "\$e" = "0" ]; then
-                    
+
                         echo "export DOCKER_IMAGE_BD=processoeletronico/mysql8:latest" >> ../envstageanterior.env
                         echo "export DOCKER_IMAGE_SOLR=processoeletronico/solr9.4.0:latest" >> ../envstageanterior.env
                         echo "export DOCKER_IMAGE_APP=processoeletronico/app-ci-php8:latest" >> ../envstageanterior.env
@@ -199,7 +204,7 @@ pipeline {
                     sh """
                     cat ../envstageanterior.env
                     ls -l
-                    
+
                     """
 
                 }
@@ -283,9 +288,32 @@ pipeline {
                     echo "export MODULO_PEN_UNIDADE_GERADORA=${MODULOPEN_UNIDADEGERADORA}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=${MODULOPEN_UNIDADEASSOCIACAOSEI}" >> envlocal.env
-                    
+
+                    """
+
+                    script {
+                        if (MODULOPEN_CONFIGURAR == "false" ){
+
+                            sh """
+
+                            cd infra
+                            echo "export MODULO_PEN_REPOSITORIO_ORIGEM=" >> envlocal.env
+                            echo "export MODULO_PEN_TIPO_PROCESSO_EXTERNO=" >> envlocal.env
+                            echo "export MODULO_PEN_UNIDADE_GERADORA=" >> envlocal.env
+                            echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=" >> envlocal.env
+                            echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=" >> envlocal.env
+                            """
+
+                        }
+                    }
+
+                    sh """
+
+                    cd infra
                     cat ../../envstageanterior.env >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env  
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
+
+
 
                     make kubernetes_montar_yaml
                     make kubernetes_delete || true

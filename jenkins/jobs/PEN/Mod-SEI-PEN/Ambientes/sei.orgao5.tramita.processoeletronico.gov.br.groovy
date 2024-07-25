@@ -292,19 +292,19 @@ pipeline {
                     """
 
                     script {
-                    if (MODULOPEN_CONFIGURAR == "false" ){
+                        if (MODULOPEN_CONFIGURAR == "false" ){
 
-                        sh """
+                            sh """
 
-                        cd infra
-                        echo "export MODULO_PEN_REPOSITORIO_ORIGEM=" >> envlocal.env
-                        echo "export MODULO_PEN_TIPO_PROCESSO_EXTERNO=" >> envlocal.env
-                        echo "export MODULO_PEN_UNIDADE_GERADORA=" >> envlocal.env
-                        echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=" >> envlocal.env
-                        echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=" >> envlocal.env
-                        """
+                            cd infra
+                            echo "export MODULO_PEN_REPOSITORIO_ORIGEM=" >> envlocal.env
+                            echo "export MODULO_PEN_TIPO_PROCESSO_EXTERNO=" >> envlocal.env
+                            echo "export MODULO_PEN_UNIDADE_GERADORA=" >> envlocal.env
+                            echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=" >> envlocal.env
+                            echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=" >> envlocal.env
+                            """
 
-                    }
+                        }
                     }
 
                     sh """
