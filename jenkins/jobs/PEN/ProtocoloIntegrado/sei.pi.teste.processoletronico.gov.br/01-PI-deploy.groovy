@@ -123,7 +123,8 @@ pipeline {
                     echo "export APP_FONTES_GIT_PATH=git@github.com:supergovbr/super" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${VERSAOSEI}" >> envlocal.env
                     echo "export KUBERNETES_NAMESPACE=sei-pi" >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
+                    echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_MEMORY_SOLR=1.5Gi" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_CPU_SOLR=1000m" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_MEMORY_SOLR=1.5Gi" >> envlocal.env
