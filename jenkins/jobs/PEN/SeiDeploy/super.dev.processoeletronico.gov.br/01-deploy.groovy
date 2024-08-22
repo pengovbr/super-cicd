@@ -1,13 +1,13 @@
 /*
-
-Job para Publicar o SUPER em Cluster Kubernetes
+0101
+Job para Publicar o SEI em Cluster Kubernetes
 
 */
 
 pipeline {
     agent {
         node{
-            label "SUPER-FONTE"
+            label "SEI-FONTE"
         }
     }
 
@@ -16,18 +16,18 @@ pipeline {
         booleanParam(
             name: 'Leiame', 
             defaultValue: false, 
-            description: 'Atenção. A versão dos módulos ou do SUPER pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto super-docker') 
+            description: 'Atenção. A versão dos módulos ou do SEI pode ser o hash do commit; tag; branch;') 
         
 	      string(
-	          name: 'versaoSuper',
+	          name: 'versaoSei',
 	          defaultValue:"main",
-	          description: "Branch/Tag do git para o SUPER")
+	          description: "Branch/Tag do git para o SEI")
 	      string(
-	          name: 'gitSuperAddress',
-	          defaultValue:"git@github.com:supergovbr/super",
-	          description: "Endereco git do Fonte do Super")
+	          name: 'gitSeiAddress',
+	          defaultValue:"git@github.com:pengovbr/sei",
+	          description: "Endereco git do Fonte do SEI")
 	      string(
-	          name: 'gitSuperKey',
+	          name: 'gitSeiKey',
 	          defaultValue:"CredGitSuper",
 	          description: "Chave git em formato base64 em jenkins secret")
           choice(
@@ -104,9 +104,9 @@ pipeline {
 	          defaultValue:"110000003",
 	          description: "Unidade do PEN")
 	      string(
-	          name: 'moduloPenUnidadeAssociacaoSuper',
+	          name: 'moduloPenUnidadeAssociacaoSei',
 	          defaultValue:"110000001",
-	          description: "Unidade Associação do Super")
+	          description: "Unidade Associação do Sei")
 	      string(
 	          name: 'moduloPenUnidadeAssociacaoPen',
 	          defaultValue:"125025",
@@ -122,27 +122,27 @@ pipeline {
 	          description: "Versão do Gestão Documental")
 
         choice(
-            name: 'moduloWSSuperInstalar', 
+            name: 'moduloWSInstalar', 
             choices: ['true', 'false'], 
-            description: 'Instalar Módulo WSSUPER - WSSEI')
+            description: 'Instalar Módulo WS')
 	      string(
-	          name: 'moduloWSSuperVersao',
+	          name: 'moduloWSVersao',
 	          defaultValue:"master",
-	          description: "Versao do Módulo WSSUPER")
+	          description: "Versao do Módulo WS")
 	      string(
-	          name: 'moduloWSSuperUrlNotificacao',
+	          name: 'moduloWSUrlNotificacao',
 	          defaultValue:"https://app-push-gestao-api.dev.nuvem.gov.br/mba-mmmessage/message",
-	          description: "Url do serviço de Notificação do WSSUPER")
+	          description: "Url do serviço de Notificação do WS")
 	      string(
-	          name: 'moduloWSSuperIdApp',
+	          name: 'moduloWSSIdApp',
 	          defaultValue:"4",
-	          description: "Id App do WSSUPER")
+	          description: "Id App do WS")
 	      string(
-	          name: 'moduloWSSuperChave',
+	          name: 'moduloWSChave',
 	          defaultValue:"credModWsSuperChave",
 	          description: "Chave para o serviço de notificação em jenkins secret")
 	      string(
-	          name: 'moduloWSSuperToken',
+	          name: 'moduloWSToken',
 	          defaultValue:"504CE1E9-8913-488F-AB3E-EDDABC065B0B",
 	          description: "Token para o serviço de notificação")
             
@@ -173,11 +173,11 @@ pipeline {
 	          description: "Versao do Módulo Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoClientId',
-	          defaultValue:"sistemas/homologacao/sei/controlador_externo",
+	          defaultValue:"credLoginUnicoClientId",
 	          description: "Client Id do Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoSecret',
-	          defaultValue:"AKymcJm_lNOzfo5p-FflKC6uYLgTTHWfAbFpQFmb64I4kNvT4yEoAvgIlDtR17-FlTI4BcUKXH6E9OejIGPbLQA",
+	          defaultValue:"credLoginUnicoSecret",
 	          description: "Segredo do Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoUrlProvider',
@@ -209,7 +209,7 @@ pipeline {
 	          description: "ClientId de Validação Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoSecretValidacao',
-	          defaultValue:"AKymcJm_lNOzfo5p-FflKC6uYLgTTHWfAbFpQFmb64I4kNvT4yEoAvgIlDtR17-FlTI4BcUKXH6E9OejIGPbLQB",
+	          defaultValue:"credLoginUnicoSecretValidacao",
 	          description: "Secret de Validação Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoOrgao',
@@ -226,11 +226,11 @@ pipeline {
 	          description: "Versão do Módulo Assinatura Avançada")
 	      string(
 	          name: 'moduloAssinaturaClientID',
-	          defaultValue:"assinaturaAvancadaSeges",
+	          defaultValue:"credAssinaturaClientID",
 	          description: "Client Id do Assinatura Avançada")
 	      string(
 	          name: 'moduloAssinaturaSecret',
-	          defaultValue:"dIEeKdctWWQQHxXFuutj",
+	          defaultValue:"credAssinaturaSecret",
 	          description: "Segredo da Assinatura Avançada")
 	      string(
 	          name: 'moduloAssinaturaUrlProvider',
@@ -238,7 +238,7 @@ pipeline {
 	          description: "Url Provider da Assinatura Avançada")
 	      string(
 	          name: 'moduloAssinaturaUrlServicos',
-	          defaultValue:"assinatura-api.staging.iti.br/externo/v2",
+	          defaultValue:"https://assinatura-api.staging.iti.br/externo/v2",
 	          description: "Url de Serviços Assinatura Avancada")
 	          
 	          
@@ -263,10 +263,12 @@ pipeline {
             steps {
 
                 script{
-                    GITURL = "https://github.com/supergovbr/super-docker.git"
+                    GITURL = "https://github.com/spbgovbr/sei-docker.git"
 					          GITCRED = ""
-					          GITSUPERVERSAO = params.versaoSuper
-                    GITSUPERKEY = params.gitSuperKey
+					          GITSEIVERSAO = params.versaoSei
+                    GITSEIKEY = params.gitSeiKey
+                    
+                    GITSEIADDRESS = params.gitSeiAddress
                     
                     SERVICOPD_INSTALAR = params.servicoProtocoloDigitalInstalar
                     SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
@@ -288,18 +290,18 @@ pipeline {
                     MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem
                     MODULOPEN_TIPOPROCESSO = params.moduloPenTipoProcessoExterno
                     MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
-                    MODULOPEN_UNIDADEASSOCIACAOSUPER = params.moduloPenUnidadeAssociacaoSuper
+                    MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
                     MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen
                     
                     MODULOGD_INSTALAR = params.moduloGDInstalar
                     MODULOGD_VERSAO = params.moduloGDVersao
                     
-                    MODULOWSSUPER_INSTALAR = params.moduloWSSuperInstalar
-                    MODULOWSSUPER_VERSAO = params.moduloWSSuperVersao
-                    MODULOWSSUPER_URLNOTIFICACAO = params.moduloWSSuperUrlNotificacao
-                    MODULOWSSUPER_IDAPP = params.moduloWSSuperIdApp
-                    MODULOWSSUPER_CHAVE = params.moduloWSSuperChave
-                    MODULOWSSUPER_TOKEN = params.moduloWSSuperToken
+                    MODULOWS_INSTALAR = params.moduloWSInstalar
+                    MODULOWS_VERSAO = params.moduloWSVersao
+                    MODULOWS_URLNOTIFICACAO = params.moduloWSUrlNotificacao
+                    MODULOWS_IDAPP = params.moduloWSIdApp
+                    MODULOWS_CHAVE = params.moduloWSChave
+                    MODULOWS_TOKEN = params.moduloWSToken
                     
                     MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
                     MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
@@ -342,12 +344,7 @@ pipeline {
                 sh """
                 echo ${WORKSPACE}
                 ls -lha
-
-                cd super || true
-                make  destroy || true
-
-                cd ${WORKSPACE}
-                sudo rm -rf super
+                
                 """
             }
         }
@@ -380,7 +377,7 @@ pipeline {
             steps {
                 dir('kube'){
                     
-                    withCredentials([ string(credentialsId: GITSUPERKEY, variable: 'LHAVE')]) {
+                    withCredentials([ string(credentialsId: GITSEIKEY, variable: 'LHAVE')]) {
                             
                         sh """
                       
@@ -391,14 +388,70 @@ pipeline {
                         """
                     }
                     
+                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_CLIENTID, variable: 'LHAVE')]) {
+                            
+                        sh """
+                      
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_LOGINUNICO_CLIENTID=${LHAVE}" >> envlocal.env
+                      
+                        """
+                    }
+                    
+                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_SECRET, variable: 'LHAVE')]) {
+                            
+                        sh """
+                      
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_LOGINUNICO_SECRET=${LHAVE}" >> envlocal.env
+                      
+                        """
+                    }
+                    
+                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_SECRETVALIDACAO, variable: 'LHAVE')]) {
+                            
+                        sh """
+                      
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_LOGINUNICO_SECRETVALIDACAO=${LHAVE}" >> envlocal.env
+                      
+                        """
+                    }
+                    
+                    withCredentials([ string(credentialsId: MODULOASSINATURA_CLIENTID, variable: 'LHAVE')]) {
+                            
+                        sh """
+                      
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_ASSINATURAVANCADA_CLIENTID=${LHAVE}" >> envlocal.env
+                      
+                        """
+                    }
+                    
+                    withCredentials([ string(credentialsId: MODULOASSINATURA_SECRET, variable: 'LHAVE')]) {
+                            
+                        sh """
+                      
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_ASSINATURAVANCADA_SECRET=${LHAVE}" >> envlocal.env
+                      
+                        """
+                    }
+                    
                     sh """
                     cd infra
                     echo "" >> envlocal.env
                     echo "export APP_HOST=super.dev.processoeletronico.gov.br" >> envlocal.env
-                    echo "export APP_FONTES_GIT_PATH=git@github.com:supergovbr/super" >> envlocal.env
-                    echo "export APP_FONTES_GIT_CHECKOUT=${VERSAOSUPER}" >> envlocal.env
+                    echo "export APP_FONTES_GIT_PATH=${GITSEIADDRESS}" >> envlocal.env
+                    echo "export APP_FONTES_GIT_CHECKOUT=${VERSAOSEI}" >> envlocal.env
+                    echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
                     echo "export KUBERNETES_NAMESPACE=superns" >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_MEMORY_SOLR=1.5Gi" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_CPU_SOLR=1000m" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_MEMORY_SOLR=1.5Gi" >> envlocal.env
@@ -471,25 +524,25 @@ pipeline {
                     echo "export MODULO_PEN_TIPO_PROCESSO_EXTERNO=${MODULOPEN_TIPOPROCESSO}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_GERADORA=${MODULOPEN_UNIDADEGERADORA}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
-                    echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SUPER=${MODULOPEN_UNIDADEASSOCIACAOSUPER}" >> envlocal.env
+                    echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=${MODULOPEN_UNIDADEASSOCIACAOSEI}" >> envlocal.env
                     
                     echo "export MODULO_GESTAODOCUMENTAL_INSTALAR=${MODULOGD_INSTALAR}" >> envlocal.env
                     echo "export MODULO_GESTAODOCUMENTAL_VERSAO=${MODULOGD_VERSAO}" >> envlocal.env
                     
-                    echo "export MODULO_WSSUPER_INSTALAR=${MODULOWSSUPER_INSTALAR}" >> envlocal.env
-                    echo "export MODULO_WSSUPER_VERSAO=${MODULOWSSUPER_VERSAO}" >> envlocal.env
-                    echo "export MODULO_WSSUPER_URL_NOTIFICACAO=${MODULOWSSUPER_URLNOTIFICACAO}" >> envlocal.env
-                    echo "export MODULO_WSSUPER_ID_APP=${MODULOWSSUPER_IDAPP}" >> envlocal.env
-                    echo "export MODULO_WSSUPER_TOKEN_SECRET=${MODULOWSSUPER_TOKEN}" >> envlocal.env
+                    echo "export MODULO_WS_INSTALAR=${MODULOWS_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_WS_VERSAO=${MODULOWS_VERSAO}" >> envlocal.env
+                    echo "export MODULO_WS_URL_NOTIFICACAO=${MODULOWS_URLNOTIFICACAO}" >> envlocal.env
+                    echo "export MODULO_WS_ID_APP=${MODULOWS_IDAPP}" >> envlocal.env
+                    echo "export MODULO_WS_TOKEN_SECRET=${MODULOWS_TOKEN}" >> envlocal.env
                     
                     """
                     
-                    withCredentials([ string(credentialsId: MODULOWSSUPER_CHAVE, variable: 'LHAVE')]) {
+                    withCredentials([ string(credentialsId: MODULOWS_CHAVE, variable: 'LHAVE')]) {
                             
                         sh """
                       
                         cd infra
-                        echo "export MODULO_WSSUPER_CHAVE=${LHAVE}" >> envlocal.env
+                        echo "export MODULO_WS_CHAVE=${LHAVE}" >> envlocal.env
                       
                         """
                     }
@@ -506,8 +559,6 @@ pipeline {
                     
                     echo "export MODULO_LOGINUNICO_INSTALAR=${MODULOLOGINUNICO_INSTALAR}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_VERSAO=${MODULOLOGINUNICO_VERSAO}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_CLIENTID=${MODULOLOGINUNICO_CLIENTID}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_SECRET=${MODULOLOGINUNICO_SECRET}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_URLPROVIDER=${MODULOLOGINUNICO_URLPROVIDER}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_REDIRECTURL=${MODULOLOGINUNICO_REDIRECTURL}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_URLLOGOUT=${MODULOLOGINUNICO_URLLOGOUT}" >> envlocal.env
@@ -515,13 +566,10 @@ pipeline {
                     echo "export MODULO_LOGINUNICO_URLSERVICOS=${MODULOLOGINUNICO_SERVICOS}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_URLREVALIDACAO=${MODULOLOGINUNICO_REVALIDACAO}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_CIENTIDVALIDACAO=${MODULOLOGINUNICO_CLIENTIDVALIDACAO}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_SECRETVALIDACAO=${MODULOLOGINUNICO_SECRETVALIDACAO}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_ORGAO=${MODULOLOGINUNICO_ORGAO}" >> envlocal.env
                     
                     echo "export MODULO_ASSINATURAVANCADA_INSTALAR=${MODULOASSINATURA_INSTALAR}" >> envlocal.env
                     echo "export MODULO_ASSINATURAVANCADA_VERSAO=${MODULOASSINATURA_VERSAO}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_CLIENTID=${MODULOASSINATURA_CLIENTID}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_SECRET=${MODULOASSINATURA_SECRET}" >> envlocal.env
                     echo "export MODULO_ASSINATURAVANCADA_URLPROVIDER=${MODULOASSINATURA_URLPROVIDER}" >> envlocal.env
                     echo "export MODULO_ASSINATURAVANCADA_URL_SERVICOS=${MODULOASSINATURA_URLSERVICOS}" >> envlocal.env
                     
@@ -600,7 +648,7 @@ pipeline {
                         dir('kube'){
                             sh """
                             cd infra
-                            make kube_timeout=300s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
+                            make kube_timeout=900s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
                             """
                         }
                     }
@@ -613,7 +661,7 @@ pipeline {
                             sh """
                             cd infra
                             echo "export APP_HOST=super.dev.processoeletronico.gov.br" >> envlocal.env
-                            make check_isalive-timeout=60 check-super-isalive
+                            make check_isalive-timeout=900 check-sei-isalive
                             """
                         }
                     }
