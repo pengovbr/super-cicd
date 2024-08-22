@@ -16,7 +16,7 @@ pipeline {
         booleanParam(
             name: 'Leiame', 
             defaultValue: false, 
-            description: 'Atenção. A versão dos módulos ou do SEI pode ser o hash do commit; tag; branch;') 
+            description: 'AtenÃ§Ã£o. A versÃ£o dos mÃ³dulos ou do SEI pode ser o hash do commit; tag; branch;') 
         
 	      string(
 	          name: 'versaoSei',
@@ -35,11 +35,11 @@ pipeline {
         choice(
             name: 'moduloLoginUnicoInstalar', 
             choices: ['false', 'true'], 
-            description: 'Instalar Módulo Login Unico')
+            description: 'Instalar MÃ³dulo Login Unico')
 	      string(
 	          name: 'moduloLoginUnicoVersao',
 	          defaultValue:"master",
-	          description: "Versao do Módulo Login Unico")
+	          description: "Versao do MÃ³dulo Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoClientId',
 	          defaultValue:"credLoginUnicoClientId",
@@ -67,58 +67,58 @@ pipeline {
 	      string(
 	          name: 'moduloLoginUnicoServicos',
 	          defaultValue:"https://api.staging.acesso.gov.br/",
-	          description: "Url de Serviços do Login Unico")
+	          description: "Url de ServiÃ§os do Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoRevalidacao',
 	          defaultValue:"https://oauth.staging.acesso.gov.br/v1/",
-	          description: "Url para Revalidação do Login Unico")
+	          description: "Url para RevalidaÃ§Ã£o do Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoClientIdValidacao',
 	          defaultValue:"sei.resposta.nuvem.gov.br/validacaosenha",
-	          description: "ClientId de Validação Login Unico")
+	          description: "ClientId de ValidaÃ§Ã£o Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoSecretValidacao',
 	          defaultValue:"credLoginUnicoSecretValidacao",
-	          description: "Secret de Validação Login Unico")
+	          description: "Secret de ValidaÃ§Ã£o Login Unico")
 	      string(
 	          name: 'moduloLoginUnicoOrgao',
 	          defaultValue:"0",
-	          description: "Orgão para aceitação do Login Unico")
+	          description: "OrgÃ£o para aceitaÃ§Ã£o do Login Unico")
 
         choice(
             name: 'moduloAssinaturaInstalar', 
             choices: ['false', 'true'], 
-            description: 'Instalar Módulo Assinatura Avançada')
+            description: 'Instalar MÃ³dulo Assinatura AvanÃ§ada')
 	      string(
 	          name: 'moduloAssinaturaVersao',
 	          defaultValue:"master",
-	          description: "Versão do Módulo Assinatura Avançada")
+	          description: "VersÃ£o do MÃ³dulo Assinatura AvanÃ§ada")
 	      string(
 	          name: 'moduloAssinaturaClientID',
 	          defaultValue:"credAssinaturaClientID",
-	          description: "Client Id do Assinatura Avançada")
+	          description: "Client Id do Assinatura AvanÃ§ada")
 	      string(
 	          name: 'moduloAssinaturaSecret',
 	          defaultValue:"credAssinaturaSecret",
-	          description: "Segredo da Assinatura Avançada")
+	          description: "Segredo da Assinatura AvanÃ§ada")
 	      string(
 	          name: 'moduloAssinaturaUrlProvider',
 	          defaultValue:"https://cas.staging.iti.br/oauth2.0",
-	          description: "Url Provider da Assinatura Avançada")
+	          description: "Url Provider da Assinatura AvanÃ§ada")
 	      string(
 	          name: 'moduloAssinaturaUrlServicos',
 	          defaultValue:"https://assinatura-api.staging.iti.br/externo/v2",
-	          description: "Url de Serviços Assinatura Avancada")
+	          description: "Url de ServiÃ§os Assinatura Avancada")
 	          
 	          
 	      choice(
             name: 'moduloPeticionamentoInstalar', 
             choices: ['false', 'true'], 
-            description: 'Instalar Módulo Peticionamento')
+            description: 'Instalar MÃ³dulo Peticionamento')
 	      string(
 	          name: 'moduloPeticionamentoVersao',
 	          defaultValue:"master",
-	          description: "Versão do Módulo Peticionamento")
+	          description: "VersÃ£o do MÃ³dulo Peticionamento")
 	      string(
 	          name: 'moduloPeticionamentoURL',
 	          defaultValue:"https://github.com/anatelgovbr/mod-sei-peticionamento",
@@ -166,7 +166,7 @@ pipeline {
                     
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
-                        warning('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faça login novamente')
+                        warning('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faÃ§a login novamente')
                     }
 
                 }
