@@ -1,13 +1,13 @@
 /*
 
-Job para Publicar o SUPER em Cluster Kubernetes
+Job para Publicar o SEI em Cluster Kubernetes
 
 */
 
 pipeline {
     agent {
         node{
-            label "SUPER-FONTE"
+            label "SEI-FONTE"
         }
     }
 
@@ -16,54 +16,85 @@ pipeline {
         booleanParam(
             name: 'Leiame',
             defaultValue: false,
-            description: 'Atenção. A versão dos módulos ou do SUPER pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto super-docker')
+            description: 'Atenção. A versão dos módulos ou do SEI pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto sei-docker')
 
-	      string(
-	          name: 'versaoSuper',
-	          defaultValue:"main",
-	          description: "Branch/Tag do git para o SUPER")
-	      string(
-	          name: 'gitSuperAddress',
-	          defaultValue:"git@github.com:supergovbr/super",
-	          description: "Endereco git do Fonte do Super")
-	      string(
-	          name: 'gitSuperKey',
-	          defaultValue:"CredGitSuper",
-	          description: "Chave git em formato base64 em jenkins secret")
-          choice(
-              name: 'servicoProtocoloDigitalInstalar',
-              choices: ['true', 'false'],
-              description: 'Habilitar nesse ambiente o Protocolo Digital')
-	      string(
-	          name: 'servicoProtocoloDigitalSigla',
-	          defaultValue:"GOV.BR",
-	          description: "Sigla para o Sistema PD")
-	      string(
-	          name: 'servicoProtocoloDigitalNome',
-	          defaultValue:"Protocolo.GOV.BR",
-	          description: "Nome para o Sistema PD")
-	      string(
-	          name: 'servicoProtocoloDigitalOperacoes',
-	          defaultValue:"3,2,15,0,1",
-	          description: "Id das operacoes para o PD")
-
-
+        string(
+            name: 'versaoSei',
+            defaultValue:"main",
+            description: "Branch/Tag do git para o SEI")
+        string(
+            name: 'gitSeiAddress',
+            defaultValue:"git@github.com:pengovbr/sei",
+            description: "Endereco git do Fonte do Sei")
+        string(
+            name: 'gitSeiKeyJenkins',
+            defaultValue:"gitcredsuper",
+            description: "Secret Jenkins para o Repo")
+        string(
+            name: 'gitSeiKey',
+            defaultValue:"CredGitSuper",
+            description: "Chave git em formato base64 em jenkins secret")
         choice(
-            name: 'moduloRespostaInstalar',
+            name: 'multiorgao',
+            choices: ['false', 'true'],
+            description: 'Caso deseje criar um ambiente Multiorgao marque true e preencha corretamente os dois campos abaixo')
+        string(
+            name: 'multiorgaoSiglas',
+            defaultValue:"SIGLA1/SIGLA2",
+            description: "Depois de habilitar Multiorgao acima. Passe aqui as siglas desejadas separadas por /")
+        string(
+            name: 'multiorgaoNomes',
+            defaultValue:"nome do orgao1/nome do orgao2",
+            description: "Depois de habilitar Multiorgao acima. Passe aqui os nomes respectivos às siglas separadas por /. Informar a mesma qtde de siglas e nomes, caso contrário o parametro será ignorado na instalação")
+        choice(
+            name: 'federacao',
+            choices: ['false', 'true'],
+            description: 'Caso deseje habilitar a federação nessa instalação, informe true. Após a criação do ambiente você terá que configurar com que outro ambiente será a federação')
+        choice(
+            name: 'moduloPenInstalar',
             choices: ['true', 'false'],
-            description: 'Instalar Módulo Resposta')
-	      string(
-	          name: 'moduloRespostaVersao',
-	          defaultValue:"master",
-	          description: "Versão do Módulo Resposta")
-	      string(
-	          name: 'moduloRespostaSistemaId',
-	          defaultValue:'a:1:{i:0;s:1:"8";}',
-	          description: "Id do Sistema a ser Vinculado, coloque vazio caso n deseje vincular nada")
-	      string(
-	          name: 'moduloRespostaDocumentoId',
-	          defaultValue:'153',
-	          description: "Id do Documento a ser Vinculado")
+            description: 'Instalar Módulo PEN')
+        string(
+            name: 'moduloPenVersao',
+            defaultValue:"master",
+            description: "Versao do Módulo PEN")
+        string(
+            name: 'moduloPenCert',
+            defaultValue:"credModuloPenCertOrgao7",
+            description: "Certificado base64 do módulo em jenkins secret")
+        string(
+            name: 'moduloPenCertSenha',
+            defaultValue:"credModuloPenCertSenhaOrgao7",
+            description: "Senha do Certificado do módulo em jenkins secret")
+        string(
+            name: 'moduloPenGearmanIp',
+            defaultValue:"127.0.0.1",
+            description: "Caso queira usar gearman informe o endereco. Caso n queira deixe em branco")
+        string(
+            name: 'moduloPenGearmanPorta',
+            defaultValue:"4730",
+            description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
+        string(
+            name: 'moduloPenRepositorioOrigem',
+            defaultValue:"37",
+            description: "Repositorio de Origem do Módulo")
+        string(
+            name: 'moduloPenTipoProcessoExterno',
+            defaultValue:"100000256",
+            description: "Tipo de Processo para o Módulo PEN")
+        string(
+            name: 'moduloPenUnidadeGeradora',
+            defaultValue:"110000003",
+            description: "Unidade do PEN")
+        string(
+            name: 'moduloPenUnidadeAssociacaoSei',
+            defaultValue:"110000001",
+            description: "Unidade Associação do Super")
+        string(
+            name: 'moduloPenUnidadeAssociacaoPen',
+            defaultValue:"158775",
+            description: "Unidade Associação do PEN")
+
     }
 
     stages {
@@ -73,19 +104,27 @@ pipeline {
 
                 script{
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
-					          GITCRED = ""
-					          GITSUPERVERSAO = params.versaoSuper
-                    GITSUPERKEY = params.gitSuperKey
+					GITSEIADDRESS = params.gitSeiAddress
+                    GITCRED = params.gitSeiKeyJenkins
+                    GITSEIVERSAO = params.versaoSei
+                    GITSEIKEY = params.gitSeiKey
 
-                    SERVICOPD_INSTALAR = params.servicoProtocoloDigitalInstalar
-                    SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
-                    SERVICOPD_NOME = params.servicoProtocoloDigitalNome
-                    SERVICOPD_OPERACOES = params.servicoProtocoloDigitalOperacoes
+                    MULTIORGAO = params.multiorgao
+                    MULTIORGAOSIGLAS = (MULTIORGAO == 'true' ? params.multiorgaoSiglas : "");
+                    MULTIORGAONOMES = (MULTIORGAO == 'true' ? params.multiorgaoNomes : "");
+                    FEDERACAO = params.federacao
 
-                    MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
-                    MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
-                    MODULORESPOSTA_SISTEMA_ID = params.moduloRespostaSistemaId
-                    MODULORESPOSTA_DOCUMENTO_ID = params.moduloRespostaDocumentoId
+                    MODULOPEN_INSTALAR = params.moduloPenInstalar
+                    MODULOPEN_VERSAO = params.moduloPenVersao
+                    MODULOPEN_CERT = params.moduloPenCert
+                    MODULOPEN_CERTSENHA = params.moduloPenCertSenha
+                    MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
+                    MODULOPEN_GEARMAN_PORTA = params.moduloPenGearmanPorta
+                    MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem
+                    MODULOPEN_TIPOPROCESSO = params.moduloPenTipoProcessoExterno
+                    MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
+                    MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
+                    MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
@@ -98,12 +137,48 @@ pipeline {
                 echo ${WORKSPACE}
                 ls -lha
 
-                cd super || true
-                make  destroy || true
-
-                cd ${WORKSPACE}
-                sudo rm -rf super
+                sudo rm -rf kube
                 """
+            }
+        }
+        
+        stage('Checkout-SEI'){
+
+            steps {
+
+                dir('sei'){
+
+                    sh """
+                    git config --global http.sslVerify false
+                    """
+
+                    git branch: 'main',
+                        credentialsId: GITCRED,
+                        url: GITSEIADDRESS
+
+                    sh """
+                    echo "" > ../envstageanterior.env
+                    ls -l
+                    
+                    git checkout ${GITSEIVERSAO}
+                    
+                    set +e
+                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
+                    e=\$?
+                    set -e
+                    
+                    
+                    if [ "\$e" = "0" ]; then
+                    
+                        echo "export DOCKER_IMAGE_BD=processoeletronico/mysql8:latest" >> ../envstageanterior.env
+                        echo "export DOCKER_IMAGE_SOLR=processoeletronico/solr9.4.0:latest" >> ../envstageanterior.env
+                        echo "export DOCKER_IMAGE_APP=processoeletronico/app-ci-php8:latest" >> ../envstageanterior.env
+                        echo "export DOCKER_IMAGE_APP_AGENDADOR=processoeletronico/app-ci-php8-agendador:latest" >> ../envstageanterior.env
+                    fi
+
+                    """
+
+                }
             }
         }
 
@@ -122,8 +197,9 @@ pipeline {
                         url: GITURL
 
                     sh """
-
+                    cat ../envstageanterior.env
                     ls -l
+                    
                     """
 
                 }
@@ -135,7 +211,7 @@ pipeline {
             steps {
                 dir('kube'){
 
-                    withCredentials([ string(credentialsId: GITSUPERKEY, variable: 'LHAVE')]) {
+                    withCredentials([ string(credentialsId: GITSEIKEY, variable: 'LHAVE')]) {
 
                         sh """
 
@@ -149,10 +225,12 @@ pipeline {
                     sh """
                     cd infra
                     echo "" >> envlocal.env
-                    echo "export APP_HOST=super.pd.teste.processoeletronico.gov.br" >> envlocal.env
+                    echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
+                    echo "export APP_HOST=sei.orgao7.tramita.processoeletronico.gov.br" >> envlocal.env
+                    echo "export APP_ORGAO=ORGAO7" >> envlocal.env
                     echo "export APP_FONTES_GIT_PATH=git@github.com:supergovbr/super" >> envlocal.env
-                    echo "export APP_FONTES_GIT_CHECKOUT=${VERSAOSUPER}" >> envlocal.env
-                    echo "export KUBERNETES_NAMESPACE=superns-pd" >> envlocal.env
+                    echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
+                    echo "export KUBERNETES_NAMESPACE=mod-sei-pen-orgao7" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_MEMORY_SOLR=1.5Gi" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_CPU_SOLR=1000m" >> envlocal.env
@@ -167,17 +245,47 @@ pipeline {
                     echo "export KUBERNETES_REQUEST_MEMORY_APP=1Gi" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_CPU_APP=1000m" >> envlocal.env
 
-                    echo "export SERVICO_PD_INSTALAR=${SERVICOPD_INSTALAR}" >> envlocal.env
-                    echo "export SERVICO_PD_SIGLA=${SERVICOPD_SIGLA}" >> envlocal.env
-                    echo "export SERVICO_PD_NOME=${SERVICOPD_NOME}" >> envlocal.env
-                    echo "export SERVICO_PD_OPERACOES=${SERVICOPD_OPERACOES}" >> envlocal.env
+					echo "export APP_ORGAOS_ADICIONAIS_SIGLA=${MULTIORGAOSIGLAS}" >> envlocal.env
+					echo "export APP_ORGAOS_ADICIONAIS_NOME=${MULTIORGAONOMES}" >> envlocal.env
+					echo "export APP_FEDERACAO_HABILITAR=${FEDERACAO}" >> envlocal.env
 
-                    echo "export MODULO_RESPOSTA_INSTALAR=${MODULORESPOSTA_INSTALAR}" >> envlocal.env
-                    echo "export MODULO_RESPOSTA_VERSAO=${MODULORESPOSTA_VERSAO}" >> envlocal.env
-                    echo "export MODULO_RESPOSTA_SISTEMA_ID=${MODULORESPOSTA_SISTEMA_ID}" >> envlocal.env
-                    echo "export MODULO_RESPOSTA_DOCUMENTO_ID=${MODULORESPOSTA_DOCUMENTO_ID}" >> envlocal.env
+                    echo "export MODULO_PEN_INSTALAR=${MODULOPEN_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_PEN_VERSAO=${MODULOPEN_VERSAO}" >> envlocal.env
+                    """
 
-                    echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
+                    withCredentials([ string(credentialsId: MODULOPEN_CERT, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "export MODULO_PEN_CERTIFICADO_BASE64=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    withCredentials([ string(credentialsId: MODULOPEN_CERTSENHA, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "export MODULO_PEN_CERTIFICADO_SENHA=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    sh """
+
+                    cd infra
+                    echo "export MODULO_PEN_GEARMAN_IP=${MODULOPEN_GEARMAN_IP}" >> envlocal.env
+                    echo "export MODULO_PEN_GEARMAN_PORTA=${MODULOPEN_GEARMAN_PORTA}" >> envlocal.env
+                    echo "export MODULO_PEN_REPOSITORIO_ORIGEM=${MODULOPEN_REPOSITORIOORIGEM}" >> envlocal.env
+                    echo "export MODULO_PEN_TIPO_PROCESSO_EXTERNO=${MODULOPEN_TIPOPROCESSO}" >> envlocal.env
+                    echo "export MODULO_PEN_UNIDADE_GERADORA=${MODULOPEN_UNIDADEGERADORA}" >> envlocal.env
+                    echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
+                    echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=${MODULOPEN_UNIDADEASSOCIACAOSEI}" >> envlocal.env
+                    
+                    cat ../../envstageanterior.env >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env  
 
                     make kubernetes_montar_yaml
                     make kubernetes_delete || true
@@ -249,7 +357,7 @@ pipeline {
                         dir('kube'){
                             sh """
                             cd infra
-                            make kube_timeout=900s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
+                            make kube_timeout=1200s KUBE_DEPLOY_NAME=sei-app kubernetes_check_deploy_generic
                             """
                         }
                     }
@@ -261,8 +369,8 @@ pipeline {
                         dir('kube'){
                             sh """
                             cd infra
-                            echo "export APP_HOST=super.pd.teste.processoeletronico.gov.br" >> envlocal.env
-                            make check_isalive-timeout=180 check-sei-isalive
+                            echo "export APP_HOST=sei.orgao7.tramita.processoeletronico.gov.br" >> envlocal.env
+                            make check_isalive-timeout=1200 check-sei-isalive
                             """
                         }
                     }
