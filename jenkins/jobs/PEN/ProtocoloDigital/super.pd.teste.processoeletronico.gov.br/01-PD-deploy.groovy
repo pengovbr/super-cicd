@@ -249,7 +249,7 @@ pipeline {
                     make kubernetes_montar_yaml
                     make kubernetes_apply
 
-                    sleep 10
+                    sleep 20
                     kubectl -n superns-pd scale --replicas=0 deployment/jod || true
                     """
 

@@ -51,6 +51,26 @@ pipeline {
             choices: ['false', 'true'],
             description: 'Caso deseje habilitar a federação nessa instalação, informe true. Após a criação do ambiente você terá que configurar com que outro ambiente será a federação')
         choice(
+            name: 'moduloEstatisticaInstalar',
+            choices: ['true', 'false'],
+            description: 'Instalar Módulo Estatisticas')
+        string(
+            name: 'moduloEstatisticaVersao',
+            defaultValue:"master",
+            description: "Versao do Módulo Estatisticas")
+        string(
+            name: 'moduloEstatisticasUrl',
+            defaultValue:"https://estatistica.dev.processoeletronico.gov.br",
+            description: "Url para Envio das Informações")
+        string(
+            name: 'moduloEstatisticaSigla',
+            defaultValue:"SEIPUBLICO",
+            description: "Sigla do orgão para envio das informaçõess")
+        string(
+            name: 'moduloEstatisticaChave',
+            defaultValue:"pass",
+            description: "Chave para envio dos dados")
+        choice(
             name: 'moduloPenInstalar',
             choices: ['true', 'false'],
             description: 'Instalar Módulo PEN')
@@ -58,6 +78,10 @@ pipeline {
             name: 'moduloPenVersao',
             defaultValue:"master",
             description: "Versao do Módulo PEN")
+        choice(
+            name: 'moduloPenEndpoint',
+            choices: ['soap', 'rest'],
+            description: 'Antes de subir o ambiente, verifique se o módulo é compatível com SOAP ou REST e ajuste aqui')
         choice(
             name: 'moduloPenConfigurar',
             choices: ['true', 'false'],
@@ -107,8 +131,13 @@ pipeline {
             steps {
 
                 script{
+
+                    JOB_URL = "sei.orgao5.tramita.processoeletronico.gov.br"
+                    JOB_ORGAO = "ORGAO5"
+                    JOB_NS = "mod-sei-pen-orgao5"
+
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
-					GITSEIADDRESS = params.gitSeiAddress
+                    GITSEIADDRESS = params.gitSeiAddress
                     GITCRED = params.gitSeiKeyJenkins
                     GITSEIVERSAO = params.versaoSei
                     GITSEIKEY = params.gitSeiKey
@@ -118,8 +147,15 @@ pipeline {
                     MULTIORGAONOMES = (MULTIORGAO == 'true' ? params.multiorgaoNomes : "");
                     FEDERACAO = params.federacao
 
+                    MODULOESTATISTICA_INSTALAR = params.moduloEstatisticaInstalar
+                    MODULOESTATISTICA_VERSAO = params.moduloEstatisticaVersao
+                    MODULOESTATISTICA_URL = params.moduloEstatisticasUrl
+                    MODULOESTATISTICA_SIGLA = params.moduloEstatisticaSigla
+                    MODULOESTATISTICA_CHAVE = params.moduloEstatisticaChave
+
                     MODULOPEN_INSTALAR = params.moduloPenInstalar
                     MODULOPEN_VERSAO = params.moduloPenVersao
+                    MODULOPEN_ENDPOINT = params.moduloPenEndpoint
                     MODULOPEN_CONFIGURAR = params.moduloPenConfigurar
                     MODULOPEN_CERT = params.moduloPenCert
                     MODULOPEN_CERTSENHA = params.moduloPenCertSenha
@@ -167,19 +203,6 @@ pipeline {
 
                     git checkout ${GITSEIVERSAO}
 
-                    set +e
-                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
-                    e=\$?
-                    set -e
-
-
-                    if [ "\$e" = "0" ]; then
-
-                        echo "export DOCKER_IMAGE_BD=processoeletronico/mysql8:latest" >> ../envstageanterior.env
-                        echo "export DOCKER_IMAGE_SOLR=processoeletronico/solr9.4.0:latest" >> ../envstageanterior.env
-                        echo "export DOCKER_IMAGE_APP=processoeletronico/app-ci-php8:latest" >> ../envstageanterior.env
-                        echo "export DOCKER_IMAGE_APP_AGENDADOR=processoeletronico/app-ci-php8-agendador:latest" >> ../envstageanterior.env
-                    fi
 
                     """
 
@@ -202,7 +225,6 @@ pipeline {
                         url: GITURL
 
                     sh """
-                    cat ../envstageanterior.env
                     ls -l
 
                     """
@@ -231,12 +253,12 @@ pipeline {
                     cd infra
                     echo "" >> envlocal.env
                     echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
-                    echo "export APP_HOST=sei.orgao5.tramita.processoeletronico.gov.br" >> envlocal.env
-                    echo "export APP_ORGAO=ORGAO5" >> envlocal.env
+                    echo "export APP_HOST=${JOB_URL}" >> envlocal.env
+                    echo "export APP_ORGAO=${JOB_ORGAO}" >> envlocal.env
                     echo "export APP_FONTES_GIT_PATH=git@github.com:supergovbr/super" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
-                    echo "export KUBERNETES_NAMESPACE=mod-sei-pen-orgao5" >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
+                    echo "export KUBERNETES_NAMESPACE=${JOB_NS}" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_MEMORY_SOLR=1.5Gi" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_CPU_SOLR=1000m" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_MEMORY_SOLR=1.5Gi" >> envlocal.env
@@ -250,9 +272,16 @@ pipeline {
                     echo "export KUBERNETES_REQUEST_MEMORY_APP=1Gi" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_CPU_APP=1000m" >> envlocal.env
 
-					echo "export APP_ORGAOS_ADICIONAIS_SIGLA=${MULTIORGAOSIGLAS}" >> envlocal.env
-					echo "export APP_ORGAOS_ADICIONAIS_NOME=${MULTIORGAONOMES}" >> envlocal.env
-					echo "export APP_FEDERACAO_HABILITAR=${FEDERACAO}" >> envlocal.env
+                    echo "export APP_ORGAOS_ADICIONAIS_SIGLA=${MULTIORGAOSIGLAS}" >> envlocal.env
+                    echo "export APP_ORGAOS_ADICIONAIS_NOME=${MULTIORGAONOMES}" >> envlocal.env
+                    echo "export APP_FEDERACAO_HABILITAR=${FEDERACAO}" >> envlocal.env
+
+                    echo "export MODULO_ESTATISTICAS_INSTALAR=${MODULOESTATISTICA_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_ESTATISTICAS_VERSAO=${MODULOESTATISTICA_VERSAO}" >> envlocal.env
+                    echo "export MODULO_ESTATISTICAS_SIGLA=${MODULOESTATISTICA_SIGLA}" >> envlocal.env
+                    echo "export MODULO_ESTATISTICAS_CHAVE=${MODULOESTATISTICA_CHAVE}" >> envlocal.env
+                    echo "export MODULO_ESTATISTICAS_URL=${MODULOESTATISTICA_URL}" >> envlocal.env
+
 
                     echo "export MODULO_PEN_INSTALAR=${MODULOPEN_INSTALAR}" >> envlocal.env
                     echo "export MODULO_PEN_VERSAO=${MODULOPEN_VERSAO}" >> envlocal.env
@@ -281,6 +310,8 @@ pipeline {
                     sh """
 
                     cd infra
+
+
                     echo "export MODULO_PEN_GEARMAN_IP=${MODULOPEN_GEARMAN_IP}" >> envlocal.env
                     echo "export MODULO_PEN_GEARMAN_PORTA=${MODULOPEN_GEARMAN_PORTA}" >> envlocal.env
                     echo "export MODULO_PEN_REPOSITORIO_ORIGEM=${MODULOPEN_REPOSITORIOORIGEM}" >> envlocal.env
@@ -288,6 +319,8 @@ pipeline {
                     echo "export MODULO_PEN_UNIDADE_GERADORA=${MODULOPEN_UNIDADEGERADORA}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=${MODULOPEN_UNIDADEASSOCIACAOSEI}" >> envlocal.env
+
+                    echo "export MODULO_PEN_WEBSERVICE=https://homolog.api.processoeletronico.gov.br/interoperabilidade/${MODULOPEN_ENDPOINT}/v3/" >> envlocal.env
 
                     """
 
@@ -310,9 +343,26 @@ pipeline {
                     sh """
 
                     cd infra
-                    cat ../../envstageanterior.env >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
 
+                    dcomp=""
+                    if [ -d "../../sei/src" ]; then
+                        dcomp="src/"
+                    fi
+
+                    set +e
+                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" ../../sei/\${dcomp}sei/web/SEI.php
+                    e=\$?
+                    set -e
+
+
+                    if [ "\$e" = "0" ]; then
+
+                        cat envlocal-example-mysql-sei5.env >> envlocal.env
+                        echo "export DOCKER_IMAGE_BD=processoeletronico/mariadb10.5-sei50:latest" >> envlocal.env
+
+                    fi
+
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
 
 
                     make kubernetes_montar_yaml
@@ -320,6 +370,9 @@ pipeline {
 
                     make kubernetes_montar_yaml
                     make kubernetes_apply
+
+                    sleep 20
+                    kubectl -n ${JOB_NS} scale --replicas=0 deployment/jod || true
                     """
 
 
@@ -397,7 +450,7 @@ pipeline {
                         dir('kube'){
                             sh """
                             cd infra
-                            echo "export APP_HOST=sei.orgao5.tramita.processoeletronico.gov.br" >> envlocal.env
+                            echo "export APP_HOST=${JOB_URL}" >> envlocal.env
                             make check_isalive-timeout=1200 check-sei-isalive
                             """
                         }
