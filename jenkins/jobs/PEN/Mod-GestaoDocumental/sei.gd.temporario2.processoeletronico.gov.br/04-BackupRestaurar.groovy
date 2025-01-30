@@ -88,6 +88,8 @@ pipeline {
                         sudo rsync -av /root/bkpgdjenkins/\${drestaurar}/local-storage-db /var/lib/docker/volumes/
                         sudo rsync -av /root/bkpgdjenkins/\${drestaurar}/local-volume-solr /var/lib/docker/volumes/
                         make run
+						docker stop docker-compose_app-agendador_1 docker-compose-app-agendador-1  || true
+						docker rm docker-compose_app-agendador_1 docker-compose-app-agendador-1  || true
                         
                         sleep 60
                         

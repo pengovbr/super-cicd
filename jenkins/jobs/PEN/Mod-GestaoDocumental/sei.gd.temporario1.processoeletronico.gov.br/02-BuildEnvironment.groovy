@@ -16,20 +16,20 @@ PS: ele usa o sei-docker para rodar o modulo, portanto verifique se a data do bu
 pipeline {
 
     agent {
-	    node{
-	        label "temporario1"
-	    }
-	}
+        node{
+            label "temporario1"
+        }
+    }
 
     parameters {
         string(
             name: 'versaoSei',
             defaultValue: 'main',
             description: 'Versao do Sei')
-		booleanParam(name: 'bolInstalarModulo',
-		    defaultValue: true,
-		    description: 'Marque/desmarque para instalar o módulo GD')
-		string(
+        booleanParam(name: 'bolInstalarModulo',
+            defaultValue: true,
+            description: 'Marque/desmarque para instalar o módulo GD')
+        string(
             name: 'versaoGestaoDocumental',
             defaultValue: '1.2.7',
             description: 'Caso a opção acima esteja marcada informe uma versão válida')
@@ -49,10 +49,10 @@ pipeline {
             name: 'branchGit',
             defaultValue:"main",
             description: "Branch principal do git onde encontra-se o Sei")
-   		string(
- 		    name: 'folderSei',
- 		    defaultValue:"/home/jenkins/foldersei",
- 		    description: "Pasta onde vai clonar o Sei")
+        string(
+            name: 'folderSei',
+            defaultValue:"/home/jenkins/foldersei",
+            description: "Pasta onde vai clonar o Sei")
         string(
             name: 'urlGitSeiDocker',
             defaultValue:"https://github.com/spbgovbr/sei-docker",
@@ -65,205 +65,217 @@ pipeline {
             name: 'branchGitSeiDocker',
             defaultValue:"main",
             description: "Branch principal do git onde encontra-se o sei-docker")
-		string(
-		    name: 'folderSeiDocker',
-		    defaultValue:"/home/jenkins/folderseidocker",
-		    description: "Pasta onde vai clonar o sei-docker")
-		booleanParam(name: 'bolLimparConteiners',
-		      defaultValue: false,
-		      description: 'Marque para remover conteineres e volumes antes de subir o ambiente')
+        string(
+            name: 'folderSeiDocker',
+            defaultValue:"/home/jenkins/folderseidocker",
+            description: "Pasta onde vai clonar o sei-docker")
+        booleanParam(name: 'bolLimparConteiners',
+              defaultValue: false,
+              description: 'Marque para remover conteineres e volumes antes de subir o ambiente')
         choice(
-	        name: 'choiceAviso',
-	        choices: "Não Ignorar Aviso\nIgnorar Aviso",
-	        description: 'Mostrar Aviso de checagem antes de rodar' )
+            name: 'choiceAviso',
+            choices: "Não Ignorar Aviso\nIgnorar Aviso",
+            description: 'Mostrar Aviso de checagem antes de rodar' )
 
     }
 
     stages {
 
-		stage('Checkout Sei e sei-docker'){
+        stage('Checkout Sei e sei-docker'){
 
-			steps {
+            steps {
 
-				script{
+                script{
 
-					if ( env.BUILD_NUMBER == '1' ){
+                    if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
                         error('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faça login novamente')
                     }
 
-					DIRECTORY = WORKSPACE
+                    DIRECTORY = WORKSPACE
                     VERSAO_SEI = params.versaoSei
-					BOLINSTALARMODULO = params.bolInstalarModulo
-					VERSAO_GD = params.versaoGestaoDocumental
-					DATABASE = params.database
+                    BOLINSTALARMODULO = params.bolInstalarModulo
+                    VERSAO_GD = params.versaoGestaoDocumental
+                    DATABASE = params.database
                     GITURL = params.urlGit
-					GITCRED = params.credentialGit
-					GITBRANCH = params.branchGit
-					FOLDERSEI = params.folderSei
+                    GITCRED = params.credentialGit
+                    GITBRANCH = params.branchGit
+                    FOLDERSEI = params.folderSei
                     GITURLSEIDOCKER = params.urlGitSeiDocker
-					GITCREDSEIDOCKER = params.credentialGitSeiDocker
-					GITBRANCHSEIDOCKER = params.branchGitSeiDocker
-					FOLDERSEIDOCKER = params.folderSeiDocker
-					BOLLIMPARCONTEINERES = params.bolLimparConteiners
-					IGNORARAVISO = params.choiceAviso
+                    GITCREDSEIDOCKER = params.credentialGitSeiDocker
+                    GITBRANCHSEIDOCKER = params.branchGitSeiDocker
+                    FOLDERSEIDOCKER = params.folderSeiDocker
+                    BOLLIMPARCONTEINERES = params.bolLimparConteiners
+                    IGNORARAVISO = params.choiceAviso
 
-					if(IGNORARAVISO != 'Ignorar Aviso'){
+                    if(IGNORARAVISO != 'Ignorar Aviso'){
                         msg = "ATENÇÃO. Antes de continuar, verifique o seguinte:\n"
-						msg = msg + "- RODE ANTES O JOB PARA ATUALIZAR A DATA DO AMBIENTE PARA O MOMENTO ESPERADO\n"
+                        msg = msg + "- RODE ANTES O JOB PARA ATUALIZAR A DATA DO AMBIENTE PARA O MOMENTO ESPERADO\n"
                         msg = msg + "- veja se não há outros jobs referentes ao GD rodando\n"
                         msg = msg + "- Caso exista espere a finalização ou encerre-os. \n"
                         r = input message: msg, ok: 'Já olhei. Manda ver!'
 
-					}
-					
-					sh """
-					mkdir -p ${FOLDERSEIDOCKER}/infra
-	                """
-					
-					dir("${FOLDERSEIDOCKER}/infra"){
-						
-						sh """
-		                make clear || true
-						make apagar_volumes || true
-		                """
-					}
-					
-					sh """
-	                rm -rf ${FOLDERSEIDOCKER} || true
-					rm -rf ${FOLDERSEI} || true
-	                """
+                    }
+
+                    sh """
+                    mkdir -p ${FOLDERSEIDOCKER}/infra
+                    """
+
+                    dir("${FOLDERSEIDOCKER}/infra"){
+
+                        sh """
+                        make clear || true
+                        make apagar_volumes || true
+                        """
+                    }
+
+                    sh """
+                    rm -rf ${FOLDERSEIDOCKER} || true
+                    rm -rf ${FOLDERSEI} || true
+                    """
 
 
-					dir("${FOLDERSEI}"){
+                    dir("${FOLDERSEI}"){
 
-	                    sh """
-	                    git config --global http.sslVerify false
-	                    """
+                        sh """
+                        git config --global http.sslVerify false
+                        """
 
-	                    git branch: GITBRANCH,
-	                        credentialsId: GITCRED,
-	                        url: GITURL
+                        git branch: GITBRANCH,
+                            credentialsId: GITCRED,
+                            url: GITURL
 
-	                    sh """
-	                    git checkout ${VERSAO_SEI}
-	                    ls -l
-						
-						mkdir -p src
-						\\cp -R infra sei sip src || true
-	                    """
+                        sh """
+                        git checkout ${VERSAO_SEI}
+                        ls -l
 
-	                }
+                        mkdir -p src
+                        \\cp -R infra sei sip src || true
+                        """
 
-					dir("${FOLDERSEIDOCKER}"){
+                    }
 
-	                    sh """
-	                    git config --global http.sslVerify false
-	                    """
+                    dir("${FOLDERSEIDOCKER}"){
 
-	                    git branch: GITBRANCHSEIDOCKER,
-	                        credentialsId: GITCREDSEIDOCKER,
-	                        url: GITURLSEIDOCKER
+                        sh """
+                        git config --global http.sslVerify false
+                        """
 
-	                    sh """
-	                    ls -l
-	                    """
+                        git branch: GITBRANCHSEIDOCKER,
+                            credentialsId: GITCREDSEIDOCKER,
+                            url: GITURLSEIDOCKER
 
-	                }
+                        sh """
+                        ls -l
+                        """
+
+                    }
                 }
 
             }
 
-		}
+        }
 
-		stage('Limpar Conteineres/Volumes'){
-			when {
-			    expression { BOLLIMPARCONTEINERES }
-			}
-		    steps{
-			    script{
-				    sh """
-					docker stop \$(docker ps -aq) || true
-					docker rm \$(docker ps -aq) || true
-					docker volume prune -f || true
-					"""
-				}
-			}
-		}
+        stage('Limpar Conteineres/Volumes'){
+            when {
+                expression { BOLLIMPARCONTEINERES }
+            }
+            steps{
+                script{
+                    sh """
+                    docker stop \$(docker ps -aq) || true
+                    docker rm \$(docker ps -aq) || true
+                    docker volume prune -f || true
+                    """
+                }
+            }
+        }
 
         stage("Subir Ambiente"){
 
-		    steps{
-			    script{
+            steps{
+                script{
 
-					dir("${FOLDERSEIDOCKER}/infra"){
-						
-						sh """
-		                make clear || true
-						make apagar_volumes || true
-                        
+                    dir("${FOLDERSEIDOCKER}/infra"){
+
+                        sh """
+                        make clear || true
+                        make apagar_volumes || true
+
                         versao=\$(grep -o -E '[0-9]{1}\\.[0-9]{1,2}\\.[0-9]{1,2}' ${FOLDERSEI}/src/sei/web/SEI.php | head -1 | head -c 1)
 
-						\\cp envlocal-example-${DATABASE}-sei\${versao}.env envlocal.env
+                        rm -rf envlocal.env
+                        \\cp envlocal-example-mysql-sei4.env envlocal.env
+                        \\cat envlocal-example-${DATABASE}-sei\${versao}.env >> envlocal.env
 
-						sed -i "s|LOCALIZACAO_FONTES_SEI=.*|LOCALIZACAO_FONTES_SEI=${FOLDERSEI}/src|g" envlocal.env
-						sed -i "s|export APP_PROTOCOLO=.*|export APP_PROTOCOLO=http|g" envlocal.env
-						sed -i "s|export APP_HOST=.*|export APP_HOST=sei.gd.temporario1.processoeletronico.gov.br|g" envlocal.env
-						
-						sed -i "s|MODULO_GESTAODOCUMENTAL_VERSAO=.*|MODULO_GESTAODOCUMENTAL_VERSAO=${VERSAO_GD}|g" envlocal.env
-						echo "export JOD_PRESENTE=false" >> envlocal.env
-						echo "export APP_PORTA_80_MAP_EXPOR=true" >> envlocal.env 
+                        sed -i "s|LOCALIZACAO_FONTES_SEI=.*|LOCALIZACAO_FONTES_SEI=${FOLDERSEI}/src|g" envlocal.env
+                        sed -i "s|export APP_PROTOCOLO=.*|export APP_PROTOCOLO=http|g" envlocal.env
+                        sed -i "s|export APP_HOST=.*|export APP_HOST=sei.gd.temporario1.processoeletronico.gov.br|g" envlocal.env
+
+                        sed -i "s|MODULO_GESTAODOCUMENTAL_VERSAO=.*|MODULO_GESTAODOCUMENTAL_VERSAO=${VERSAO_GD}|g" envlocal.env
+                        echo "export JOD_PRESENTE=false" >> envlocal.env
+                        echo "export APP_PORTA_80_MAP_EXPOR=true" >> envlocal.env
                         echo "export BALANCEADOR_PRESENTE=false" >> envlocal.env
                         echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
-                        
-		                """
-						
-						if(BOLINSTALARMODULO){
-	                        
-							sh """
-							sed -i "s|export MODULO_GESTAODOCUMENTAL_INSTALAR=.*|export MODULO_GESTAODOCUMENTAL_INSTALAR=true|g" envlocal.env
-							"""
-							
-						}else{
-							
-							sh """
-							sed -i "s|export MODULO_GESTAODOCUMENTAL_INSTALAR=.*|export MODULO_GESTAODOCUMENTAL_INSTALAR=false|g" envlocal.env
-							"""
 
-						}
-						
-						sh """
-						make setup
-						
-						docker stop docker-compose_app-agendador_1 || true
-						docker rm docker-compose_app-agendador_1 || true	
-						"""
-						
-					}
+                        """
 
-				}
-			}
-		}
+                        withCredentials([ string(credentialsId: "github_pat_readonly_pengovbr", variable: 'LHAVE')]) {
+
+                            sh """
+                            echo "" >> envlocal.env
+                            echo "export GITUSER_REPO_MODULOS=marlinhares" >> envlocal.env
+                            echo "export GITPASS_REPO_MODULOS=${LHAVE}" >> envlocal.env
+                            """
+                        }
+
+
+                        if(BOLINSTALARMODULO){
+
+                            sh """
+                            sed -i "s|export MODULO_GESTAODOCUMENTAL_INSTALAR=.*|export MODULO_GESTAODOCUMENTAL_INSTALAR=true|g" envlocal.env
+                            """
+
+                        }else{
+
+                            sh """
+                            sed -i "s|export MODULO_GESTAODOCUMENTAL_INSTALAR=.*|export MODULO_GESTAODOCUMENTAL_INSTALAR=false|g" envlocal.env
+                            """
+
+                        }
+
+                        sh """
+                        make setup
+
+                        docker stop docker-compose_app-agendador_1 docker-compose-app-agendador-1  || true
+                        docker rm docker-compose_app-agendador_1 docker-compose-app-agendador-1  || true
+                        """
+
+                    }
+
+                }
+            }
+        }
 
         stage('Wait Environments Wakeup'){
             steps {
-				script {
-				    timeout(time: 3, unit: 'MINUTES') {
-				        sh script: """
-				        set +e
+                script {
+                    timeout(time: 3, unit: 'MINUTES') {
+                        sh script: """
+                        set +e
 
-				        resultado=1;
-				        while [ ! \$resultado -eq 0 ];
-				        do
-				           sleep 5;
-				           echo "Ainda nao esta pronto, Tentando acessar novamente...";
+                        resultado=1;
+                        while [ ! \$resultado -eq 0 ];
+                        do
+                           sleep 5;
+                           echo "Ainda nao esta pronto, Tentando acessar novamente...";
 
-				           curl -sL --head --resolve "sei.gd.temporario1.processoeletronico.gov.br:80:192.168.0.2" --request GET sei.gd.temporario1.processoeletronico.gov.br/sei/ | grep "200 OK"
-				           resultado=\$?;
-				        done
-				        """, label: "Testando se url online"
-				    }
-				}
+                           curl -sL --head --resolve "sei.gd.temporario1.processoeletronico.gov.br:80:192.168.0.2" --request GET sei.gd.temporario1.processoeletronico.gov.br/sei/ | grep "200 OK"
+                           resultado=\$?;
+                        done
+                        """, label: "Testando se url online"
+                    }
+                }
 
             }
         }
