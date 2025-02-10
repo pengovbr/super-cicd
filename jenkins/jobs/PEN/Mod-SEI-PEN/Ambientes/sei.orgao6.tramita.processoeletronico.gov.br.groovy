@@ -122,6 +122,26 @@ pipeline {
             name: 'moduloPenUnidadeAssociacaoPen',
             defaultValue:"151861",
             description: "Unidade Associação do PEN")
+        choice(
+            name: 'moduloPIInstalar',
+            choices: ['false', 'true'],
+            description: 'Instalar Módulo Protocolo Integrado')
+        string(
+            name: 'moduloPIVersao',
+            defaultValue:"master",
+            description: "Versao do Módulo Protocolo Integrado. Vai apontar para o PI de homolog. Nome Orgao: Teste 5.0")
+        string(
+            name: 'moduloPIEmail',
+            defaultValue:"example@example.com",
+            description: "Email do Módulo do Protocolo Integrado")
+        choice(
+            name: 'moduloRestInstalar',
+            choices: ['false', 'true'],
+            description: 'Instalar Módulo Rest')
+        string(
+            name: 'moduloRestVersao',
+            defaultValue:"master",
+            description: "Versao do Módulo Rest")
 
     }
 
@@ -135,6 +155,15 @@ pipeline {
                     JOB_URL = "sei.orgao6.tramita.processoeletronico.gov.br"
                     JOB_ORGAO = "ORGAO6"
                     JOB_NS = "mod-sei-pen-orgao6"
+
+                    JOB_MODULOPI_URL = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl"
+                    JOB_MODULOPI_USUARIO = "credModuloPIOrgao6Usuario"
+                    JOB_MODULOPI_SENHA = "credModuloPIOrgao6Senha"
+
+                    JOB_MODULOREST_URLNOTIFICACAO = "https://app-push-gestao-api.dev.nuvem.gov.br/mba-mmmessage/message"
+                    JOB_MODULOREST_IDAPP = "4"
+                    JOB_MODULOREST_CHAVE = "credModWsSuperChave"
+                    JOB_MODULOREST_TOKEN = "504CE1E9-8913-488F-AB3E-EDDABC065B06"
 
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
                     GITSEIADDRESS = params.gitSeiAddress
@@ -166,6 +195,20 @@ pipeline {
                     MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
                     MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
                     MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen
+
+                    MODULOPI_INSTALAR = params.moduloPIInstalar
+                    MODULOPI_VERSAO = params.moduloPIVersao
+                    MODULOPI_EMAIL = params.moduloPIemail
+                    MODULOPI_URL = JOB_MODULOPI_URL
+                    MODULOPI_USUARIO = JOB_MODULOPI_USUARIO
+                    MODULOPI_SENHA = JOB_MODULOPI_SENHA
+
+                    MODULOREST_INSTALAR = params.moduloRestInstalar
+                    MODULOREST_VERSAO = params.moduloRestVersao
+                    MODULOREST_URLNOTIFICACAO = JOB_MODULOREST_URLNOTIFICACAO
+                    MODULOREST_IDAPP = JOB_MODULOREST_IDAPP
+                    MODULOREST_CHAVE = JOB_MODULOREST_CHAVE
+                    MODULOREST_TOKEN = JOB_MODULOREST_TOKEN
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
@@ -338,6 +381,58 @@ pipeline {
                             """
 
                         }
+                    }
+
+                    sh """
+
+                    cd infra
+
+                    echo "export MODULO_PI_INSTALAR=${MODULOPI_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_PI_VERSAO=${MODULOPI_VERSAO}" >> envlocal.env
+                    echo "export MODULO_PI_URL=${MODULOPI_URL}" >> envlocal.env
+                    echo "export MODULO_PI_EMAIL=${MODULOPI_EMAIL}" >> envlocal.env
+
+                    """
+
+                    withCredentials([ string(credentialsId: MODULOPI_USUARIO, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "export MODULO_PI_USUARIO=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    withCredentials([ string(credentialsId: MODULOPI_SENHA, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "export MODULO_PI_SENHA=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    sh """
+
+                    cd infra
+
+                    echo "export MODULO_REST_INSTALAR=${MODULOREST_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_REST_VERSAO=${MODULOREST_VERSAO}" >> envlocal.env
+                    echo "export MODULO_REST_URL_NOTIFICACAO=${MODULOREST_URLNOTIFICACAO}" >> envlocal.env
+                    echo "export MODULO_REST_ID_APP=${MODULOREST_IDAPP}" >> envlocal.env
+                    echo "export MODULO_REST_TOKEN_SECRET=${MODULOREST_TOKEN}" >> envlocal.env
+                    """
+
+                    withCredentials([ string(credentialsId: MODULOREST_CHAVE, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "export MODULO_REST_CHAVE=${LHAVE}" >> envlocal.env
+
+                        """
                     }
 
                     sh """
