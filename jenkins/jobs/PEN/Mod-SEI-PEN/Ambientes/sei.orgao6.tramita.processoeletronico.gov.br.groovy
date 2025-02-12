@@ -641,6 +641,49 @@ pipeline {
             }
         }
 
+        stage('Rodando Atualizador'){
+
+            steps {
+
+                dir('kube'){
+
+                    sh """
+
+                    sleep 60
+                    i=0
+                    while true; do
+
+                      echo "Vamos printar o log dessa execucao, atencao que pode haver mais logs acima de outras tentativas..."
+                      set +e
+                      kubectl -n ${JOB_NS} logs -f job.batch/sei-inicializador
+                      set -e
+
+                      if kubectl -n ${JOB_NS} wait --for=condition=complete job/sei-inicializador --timeout=0 2>/dev/null; then
+                        job_result=0
+                        break
+                      fi
+
+                      if kubectl -n ${JOB_NS} wait --for=condition=failed job/sei-inicializador --timeout=0 2>/dev/null; then
+                        job_result=1
+                        break
+                      fi
+
+                      sleep 60
+
+
+                    done
+
+                    if [[ \$job_result -eq 1 ]]; then
+                        echo "Job failed!"
+                        exit 1
+                    fi
+
+                    """
+
+                }
+            }
+        }
+
         stage('Verificando Componentes Kube'){
 
             parallel {
