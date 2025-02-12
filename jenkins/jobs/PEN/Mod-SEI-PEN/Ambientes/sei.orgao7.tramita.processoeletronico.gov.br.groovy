@@ -621,7 +621,7 @@ pipeline {
 
                     fi
 
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
 
 
                     make kubernetes_montar_yaml
