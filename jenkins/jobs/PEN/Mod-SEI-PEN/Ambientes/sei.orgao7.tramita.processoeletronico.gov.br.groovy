@@ -170,7 +170,6 @@ pipeline {
             defaultValue:"master",
             description: "Versao do Módulo Incom")
 
-
     }
 
     stages {
@@ -287,7 +286,7 @@ pipeline {
                     MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL
                     MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS
                     MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR
-                    
+
                     MODULOINCOM_INSTALAR = params.moduloIncomInstalar
                     MODULOINCOM_VERSAO = params.moduloIncomVersao
 
@@ -605,7 +604,7 @@ pipeline {
                     echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL}" >> envlocal.env
                     echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS}" >> envlocal.env
                     echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR}" >> envlocal.env
-                    
+
                     echo "export MODULO_INCOM_INSTALAR=${MODULOINCOM_INSTALAR}" >> envlocal.env
                     echo "export MODULO_INCOM_VERSAO=${MODULOINCOM_VERSAO}" >> envlocal.env
 
@@ -653,7 +652,7 @@ pipeline {
 
             }
         }
-        
+
         stage('Rodando Atualizador'){
 
             steps {
