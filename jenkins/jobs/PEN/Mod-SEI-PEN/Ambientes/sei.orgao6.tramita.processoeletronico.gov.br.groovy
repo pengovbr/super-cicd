@@ -170,6 +170,15 @@ pipeline {
             defaultValue:"master",
             description: "Versao do Módulo Incom")
 
+        choice(
+            name: 'moduloRespostaInstalar',
+            choices: ['false', 'true'],
+            description: 'Instalar Módulo Resposta')
+        string(
+            name: 'moduloRespostaVersao',
+            defaultValue:"master",
+            description: "Versão do Módulo Resposta")
+
     }
 
     stages {
@@ -290,6 +299,9 @@ pipeline {
 
                     MODULOINCOM_INSTALAR = params.moduloIncomInstalar
                     MODULOINCOM_VERSAO = params.moduloIncomVersao
+
+                    MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
+                    MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
@@ -607,6 +619,9 @@ pipeline {
 
                     echo "export MODULO_INCOM_INSTALAR=${MODULOINCOM_INSTALAR}" >> envlocal.env
                     echo "export MODULO_INCOM_VERSAO=${MODULOINCOM_VERSAO}" >> envlocal.env
+
+                    echo "export MODULO_RESPOSTA_INSTALAR=${MODULORESPOSTA_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_RESPOSTA_VERSAO=${MODULORESPOSTA_VERSAO}" >> envlocal.env
 
                     """
 
