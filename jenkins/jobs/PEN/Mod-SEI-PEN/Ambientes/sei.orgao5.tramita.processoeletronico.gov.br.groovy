@@ -122,6 +122,7 @@ pipeline {
             name: 'moduloPenUnidadeAssociacaoPen',
             defaultValue:"151860",
             description: "Unidade Associação do PEN")
+        
 
     }
 
@@ -135,6 +136,38 @@ pipeline {
                     JOB_URL = "sei.orgao5.tramita.processoeletronico.gov.br"
                     JOB_ORGAO = "ORGAO5"
                     JOB_NS = "mod-sei-pen-orgao5"
+
+                    JOB_MODULOPI_URL = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl"
+                    JOB_MODULOPI_USUARIO = "credModuloPIOrgao7Usuario"
+                    JOB_MODULOPI_SENHA = "credModuloPIOrgao7Senha"
+
+                    JOB_MODULOREST_URLNOTIFICACAO = "https://app-push-gestao-api.dev.nuvem.gov.br/mba-mmmessage/message"
+                    JOB_MODULOREST_IDAPP = "4"
+                    JOB_MODULOREST_CHAVE = "credModWsSuperChave"
+                    JOB_MODULOREST_TOKEN = "504CE1E9-8913-488F-AB3E-EDDABC065B07"
+
+                    JOB_MODULOLOGINUNICO_CLIENTID = "credLoginUnicoClientId"
+                    JOB_MODULOLOGINUNICO_SECRET = "credLoginUnicoSecret"
+                    JOB_MODULOLOGINUNICO_URLPROVIDER = "https://sso.staging.acesso.gov.br/"
+                    JOB_MODULOLOGINUNICO_REDIRECTURL = "https://sei.orgao7.tramita.processoeletronico.gov.br/sei/modulos/loginunico/controlador_loginunico.php"
+                    JOB_MODULOLOGINUNICO_URLLOGOUT = "https://sei.orgao7.tramita.processoeletronico.gov.br/sei/modulos/loginunico/logout.php"
+                    JOB_MODULOLOGINUNICO_SCOPE = "openid+email+phone+profile+govbr_empresa+govbr_confiabilidades"
+                    JOB_MODULOLOGINUNICO_SERVICOS = "https://api.staging.acesso.gov.br/"
+                    JOB_MODULOLOGINUNICO_REVALIDACAO = "https://oauth.staging.acesso.gov.br/v1/"
+                    JOB_MODULOLOGINUNICO_CLIENTIDVALIDACAO = "sei.resposta.nuvem.gov.br/validacaosenha"
+                    JOB_MODULOLOGINUNICO_SECRETVALIDACAO = "credLoginUnicoSecretValidacao"
+                    JOB_MODULOLOGINUNICO_ORGAO = "0"
+
+                    JOB_MODULOASSINATURA_CLIENTID = "credAssinaturaClientID"
+                    JOB_MODULOASSINATURA_SECRET = "credAssinaturaSecret"
+                    JOB_MODULOASSINATURA_URLPROVIDER = "https://cas.staging.iti.br/oauth2.0"
+                    JOB_MODULOASSINATURA_URLSERVICOS = "https://assinatura-api.staging.iti.br/externo/v2"
+
+                    JOB_MODULO_ASSINATURAVANCADA_VALIDAR_API_URL="https://h-api.iti.gov.br/validar"
+                    JOB_MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY="sk-8I4Y04vakqb993M70433s4K1p3LYJ4344rfo2gndQ3N96n8D"
+                    JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL="http://192.168.0.60:8080/integraICP"
+                    JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS="/get-clearings"
+                    JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR="/sign"
 
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
                     GITSEIADDRESS = params.gitSeiAddress
@@ -166,6 +199,53 @@ pipeline {
                     MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
                     MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
                     MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen
+
+                    MODULOPI_INSTALAR = "false"
+                    MODULOPI_VERSAO = ""
+                    MODULOPI_EMAIL = ""
+                    MODULOPI_URL = JOB_MODULOPI_URL
+                    MODULOPI_USUARIO = JOB_MODULOPI_USUARIO
+                    MODULOPI_SENHA = JOB_MODULOPI_SENHA
+
+                    MODULOREST_INSTALAR = "false"
+                    MODULOREST_VERSAO = ""
+                    MODULOREST_URLNOTIFICACAO = JOB_MODULOREST_URLNOTIFICACAO
+                    MODULOREST_IDAPP = JOB_MODULOREST_IDAPP
+                    MODULOREST_CHAVE = JOB_MODULOREST_CHAVE
+                    MODULOREST_TOKEN = JOB_MODULOREST_TOKEN
+
+                    MODULOLOGINUNICO_INSTALAR = "false"
+                    MODULOLOGINUNICO_VERSAO = ""
+                    MODULOLOGINUNICO_CLIENTID = JOB_MODULOLOGINUNICO_CLIENTID
+                    MODULOLOGINUNICO_SECRET = JOB_MODULOLOGINUNICO_SECRET
+                    MODULOLOGINUNICO_URLPROVIDER = JOB_MODULOLOGINUNICO_URLPROVIDER
+                    MODULOLOGINUNICO_REDIRECTURL = JOB_MODULOLOGINUNICO_REDIRECTURL
+                    MODULOLOGINUNICO_URLLOGOUT = JOB_MODULOLOGINUNICO_URLLOGOUT
+                    MODULOLOGINUNICO_SCOPE = JOB_MODULOLOGINUNICO_SCOPE
+                    MODULOLOGINUNICO_SERVICOS = JOB_MODULOLOGINUNICO_SERVICOS
+                    MODULOLOGINUNICO_REVALIDACAO = JOB_MODULOLOGINUNICO_REVALIDACAO
+                    MODULOLOGINUNICO_CLIENTIDVALIDACAO = JOB_MODULOLOGINUNICO_CLIENTIDVALIDACAO
+                    MODULOLOGINUNICO_SECRETVALIDACAO = JOB_MODULOLOGINUNICO_SECRETVALIDACAO
+                    MODULOLOGINUNICO_ORGAO = JOB_MODULOLOGINUNICO_ORGAO
+
+                    MODULOASSINATURA_INSTALAR = "false"
+                    MODULOASSINATURA_VERSAO = ""
+                    MODULOASSINATURA_CLIENTID = JOB_MODULOASSINATURA_CLIENTID
+                    MODULOASSINATURA_SECRET = JOB_MODULOASSINATURA_SECRET
+                    MODULOASSINATURA_URLPROVIDER = JOB_MODULOASSINATURA_URLPROVIDER
+                    MODULOASSINATURA_URLSERVICOS = JOB_MODULOASSINATURA_URLSERVICOS
+
+                    MODULO_ASSINATURAVANCADA_VALIDAR_API_URL=JOB_MODULO_ASSINATURAVANCADA_VALIDAR_API_URL
+                    MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY=JOB_MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY
+                    MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL
+                    MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS
+                    MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR
+
+                    MODULOINCOM_INSTALAR = "false"
+                    MODULOINCOM_VERSAO = ""
+
+                    MODULORESPOSTA_INSTALAR = "false"
+                    MODULORESPOSTA_VERSAO = ""
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
@@ -249,10 +329,21 @@ pipeline {
                         """
                     }
 
+                    withCredentials([ string(credentialsId: "github_pat_readonly_pengovbr", variable: 'LHAVE')]) {
+
+                        sh """
+                        cd infra
+                        echo "export GITUSER_REPO_MODULOS=marlinhares" >> envlocal.env
+                        echo "export GITPASS_REPO_MODULOS=${LHAVE}" >> envlocal.env
+                        """
+                    }
+
                     sh """
                     cd infra
                     echo "" >> envlocal.env
+                    echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
                     echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
+                    echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
                     echo "export APP_HOST=${JOB_URL}" >> envlocal.env
                     echo "export APP_ORGAO=${JOB_ORGAO}" >> envlocal.env
                     echo "export APP_FONTES_GIT_PATH=git@github.com:supergovbr/super" >> envlocal.env
@@ -344,6 +435,148 @@ pipeline {
 
                     cd infra
 
+                    echo "export MODULO_PI_INSTALAR=${MODULOPI_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_PI_VERSAO=${MODULOPI_VERSAO}" >> envlocal.env
+                    echo "export MODULO_PI_URL=${MODULOPI_URL}" >> envlocal.env
+                    echo "export MODULO_PI_EMAIL=${MODULOPI_EMAIL}" >> envlocal.env
+
+                    """
+
+                    withCredentials([ string(credentialsId: MODULOPI_USUARIO, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "export MODULO_PI_USUARIO=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    withCredentials([ string(credentialsId: MODULOPI_SENHA, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "export MODULO_PI_SENHA=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    sh """
+
+                    cd infra
+
+                    echo "export MODULO_REST_INSTALAR=${MODULOREST_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_REST_VERSAO=${MODULOREST_VERSAO}" >> envlocal.env
+                    echo "export MODULO_REST_URL_NOTIFICACAO=${MODULOREST_URLNOTIFICACAO}" >> envlocal.env
+                    echo "export MODULO_REST_ID_APP=${MODULOREST_IDAPP}" >> envlocal.env
+                    echo "export MODULO_REST_TOKEN_SECRET=${MODULOREST_TOKEN}" >> envlocal.env
+                    """
+
+                    withCredentials([ string(credentialsId: MODULOREST_CHAVE, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "export MODULO_REST_CHAVE=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_CLIENTID, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_LOGINUNICO_CLIENTID=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_SECRET, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_LOGINUNICO_SECRET=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_SECRETVALIDACAO, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_LOGINUNICO_SECRETVALIDACAO=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    withCredentials([ string(credentialsId: MODULOASSINATURA_CLIENTID, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_ASSINATURAVANCADA_CLIENTID=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    withCredentials([ string(credentialsId: MODULOASSINATURA_SECRET, variable: 'LHAVE')]) {
+
+                        sh """
+
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export MODULO_ASSINATURAVANCADA_SECRET=${LHAVE}" >> envlocal.env
+
+                        """
+                    }
+
+                    sh """
+                    cd infra
+
+                    echo "export MODULO_LOGINUNICO_INSTALAR=${MODULOLOGINUNICO_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_VERSAO=${MODULOLOGINUNICO_VERSAO}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_URLPROVIDER=${MODULOLOGINUNICO_URLPROVIDER}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_REDIRECTURL=${MODULOLOGINUNICO_REDIRECTURL}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_URLLOGOUT=${MODULOLOGINUNICO_URLLOGOUT}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_SCOPE=${MODULOLOGINUNICO_SCOPE}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_URLSERVICOS=${MODULOLOGINUNICO_SERVICOS}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_URLREVALIDACAO=${MODULOLOGINUNICO_REVALIDACAO}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_CIENTIDVALIDACAO=${MODULOLOGINUNICO_CLIENTIDVALIDACAO}" >> envlocal.env
+                    echo "export MODULO_LOGINUNICO_ORGAO=${MODULOLOGINUNICO_ORGAO}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURAVANCADA_INSTALAR=${MODULOASSINATURA_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_ASSINATURAVANCADA_VERSAO=${MODULOASSINATURA_VERSAO}" >> envlocal.env
+                    echo "export MODULO_ASSINATURAVANCADA_URLPROVIDER=${MODULOASSINATURA_URLPROVIDER}" >> envlocal.env
+                    echo "export MODULO_ASSINATURAVANCADA_URL_SERVICOS=${MODULOASSINATURA_URLSERVICOS}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURAVANCADA_VALIDAR_API_URL=${MODULO_ASSINATURAVANCADA_VALIDAR_API_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY=${MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY}" >> envlocal.env
+                    echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS}" >> envlocal.env
+                    echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR}" >> envlocal.env
+
+                    echo "export MODULO_INCOM_INSTALAR=${MODULOINCOM_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_INCOM_VERSAO=${MODULOINCOM_VERSAO}" >> envlocal.env
+
+                    echo "export MODULO_RESPOSTA_INSTALAR=${MODULORESPOSTA_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_RESPOSTA_VERSAO=${MODULORESPOSTA_VERSAO}" >> envlocal.env
+
+                    """
+
+
+
+                    sh """
+
+                    cd infra
+
                     dcomp=""
                     if [ -d "../../sei/src" ]; then
                         dcomp="src/"
@@ -362,7 +595,7 @@ pipeline {
 
                     fi
 
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
 
 
                     make kubernetes_montar_yaml
@@ -378,6 +611,49 @@ pipeline {
 
                 }
 
+            }
+        }
+
+        stage('Rodando Atualizador'){
+
+            steps {
+
+                dir('kube'){
+
+                    sh """
+
+                    sleep 60
+                    i=0
+                    while true; do
+
+                      echo "Vamos printar o log dessa execucao, atencao que pode haver mais logs acima de outras tentativas..."
+                      set +e
+                      kubectl -n ${JOB_NS} logs -f job.batch/sei-inicializador
+                      set -e
+
+                      if kubectl -n ${JOB_NS} wait --for=condition=complete job/sei-inicializador --timeout=0 2>/dev/null; then
+                        job_result=0
+                        break
+                      fi
+
+                      if kubectl -n ${JOB_NS} wait --for=condition=failed job/sei-inicializador --timeout=0 2>/dev/null; then
+                        job_result=1
+                        break
+                      fi
+
+                      sleep 60
+
+
+                    done
+
+                    if [[ \$job_result -eq 1 ]]; then
+                        echo "Job failed!"
+                        exit 1
+                    fi
+
+                    """
+
+                }
             }
         }
 
