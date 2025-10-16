@@ -124,11 +124,11 @@ pipeline {
             description: "Unidade Associação do PEN")
         choice(
             name: 'moduloPIInstalar',
-            choices: ['false', 'true'],
+            choices: ['true', 'false'],
             description: 'Instalar Módulo Protocolo Integrado')
         string(
             name: 'moduloPIVersao',
-            defaultValue:"master",
+            defaultValue: "feature/v3.1.0",
             description: "Versao do Módulo Protocolo Integrado. Vai apontar para o PI de homolog. Nome Orgao: Teste 5.0")
         string(
             name: 'moduloPIUrl',
