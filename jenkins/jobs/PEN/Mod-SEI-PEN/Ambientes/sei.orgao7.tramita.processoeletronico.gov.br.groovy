@@ -131,6 +131,19 @@ pipeline {
             defaultValue:"master",
             description: "Versao do Módulo Protocolo Integrado. Vai apontar para o PI de homolog. Nome Orgao: Teste 5.0")
         string(
+            name: 'moduloPIUrl',
+            defaultValue:"https://protocolointegrado.hom.processoeletronico.gov.br/integracao/",
+            description: "Url indo na versão NOVA do PI por padrão")
+        string(
+            name: 'moduloPIUsuario',
+            defaultValue:"credModuloPIUsuarioRest",
+            description: "Usuário do Protocolo Integrado, nao altere")
+        string(
+            name: 'moduloPISenha',
+            defaultValue:"credModuloPISenhaRest",
+            description: "Senha do Protocolo Integrado, nao altere")
+             
+        string(
             name: 'moduloPIEmail',
             defaultValue:"example@example.com",
             description: "Email do Módulo do Protocolo Integrado")
