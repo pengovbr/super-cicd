@@ -505,6 +505,7 @@ pipeline {
                     echo "export MODULO_PI_INSTALAR=${MODULOPI_INSTALAR}" >> envlocal.env
                     echo "export MODULO_PI_VERSAO=${MODULOPI_VERSAO}" >> envlocal.env
                     echo "export MODULO_PI_URL=${MODULOPI_URL}" >> envlocal.env
+                    echo "export PROTOCOLO_INTEGRADO_API_REST=${MODULOPI_URL}" >> envlocal.env
                     echo "export MODULO_PI_EMAIL=${MODULOPI_EMAIL}" >> envlocal.env
 
                     """
@@ -515,6 +516,7 @@ pipeline {
 
                         cd infra
                         echo "export MODULO_PI_USUARIO=${LHAVE}" >> envlocal.env
+                        echo "export PROTOCOLO_INTEGRADO_API_REST_LOGIN=${LHAVE}" >> envlocal.env
 
                         """
                     }
@@ -525,6 +527,7 @@ pipeline {
 
                         cd infra
                         echo "export MODULO_PI_SENHA=${LHAVE}" >> envlocal.env
+                        echo "export PROTOCOLO_INTEGRADO_API_REST_SENHA=${LHAVE}" >> envlocal.env
 
                         """
                     }
