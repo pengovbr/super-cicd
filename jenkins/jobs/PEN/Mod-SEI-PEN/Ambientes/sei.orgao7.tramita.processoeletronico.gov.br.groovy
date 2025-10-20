@@ -205,9 +205,14 @@ pipeline {
                     JOB_ORGAO = "ORGAO7"
                     JOB_NS = "mod-sei-pen-orgao7"
 
-                    JOB_MODULOPI_URL = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl"
-                    JOB_MODULOPI_USUARIO = "credModuloPIOrgao7Usuario"
-                    JOB_MODULOPI_SENHA = "credModuloPIOrgao7Senha"
+                    //JOB_MODULOPI_URL = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl"
+                    //JOB_MODULOPI_USUARIO = "credModuloPIOrgao7Usuario"
+                    //JOB_MODULOPI_SENHA = "credModuloPIOrgao7Senha"
+                    
+                    // Fixando no novo ambiente de homolog:
+                    JOB_MODULOPI_URL = "https://protocolointegrado.hom.processoeletronico.gov.br/integracao/"
+                    JOB_MODULOPI_USUARIO = "credModuloPIUsuarioRest"
+                    JOB_MODULOPI_SENHA = "credModuloPISenhaRest"
 
                     JOB_MODULOREST_URLNOTIFICACAO = "https://app-push-gestao-api.dev.nuvem.gov.br/mba-mmmessage/message"
                     JOB_MODULOREST_IDAPP = "4"
