@@ -132,7 +132,7 @@ pipeline {
             description: "Versao do Módulo Protocolo Integrado. Vai apontar para o PI de homolog. Nome Orgao: Teste 5.0")
         string(
             name: 'moduloPIUrl',
-            defaultValue:"https://protocolointegrado.hom.processoeletronico.gov.br/integracao/",
+            defaultValue:"https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/",
             description: "Url indo na versão NOVA do PI por padrão")
         string(
             name: 'moduloPIUsuario',
@@ -205,15 +205,6 @@ pipeline {
                     JOB_ORGAO = "ORGAO7"
                     JOB_NS = "mod-sei-pen-orgao7"
 
-                    //JOB_MODULOPI_URL = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl"
-                    //JOB_MODULOPI_USUARIO = "credModuloPIOrgao7Usuario"
-                    //JOB_MODULOPI_SENHA = "credModuloPIOrgao7Senha"
-                    
-                    // Fixando no novo ambiente de homolog:
-                    JOB_MODULOPI_URL = "https://protocolointegrado.hom.processoeletronico.gov.br/integracao/"
-                    JOB_MODULOPI_USUARIO = "credModuloPIUsuarioRest"
-                    JOB_MODULOPI_SENHA = "credModuloPISenhaRest"
-
                     JOB_MODULOREST_URLNOTIFICACAO = "https://app-push-gestao-api.dev.nuvem.gov.br/mba-mmmessage/message"
                     JOB_MODULOREST_IDAPP = "4"
                     JOB_MODULOREST_CHAVE = "credModWsSuperChave"
@@ -275,10 +266,10 @@ pipeline {
 
                     MODULOPI_INSTALAR = params.moduloPIInstalar
                     MODULOPI_VERSAO = params.moduloPIVersao
-                    MODULOPI_EMAIL = params.moduloPIemail
-                    MODULOPI_URL = JOB_MODULOPI_URL
-                    MODULOPI_USUARIO = JOB_MODULOPI_USUARIO
-                    MODULOPI_SENHA = JOB_MODULOPI_SENHA
+                    MODULOPI_EMAIL = params.moduloPIEmail
+                    MODULOPI_URL = params.moduloPIUrl
+                    MODULOPI_USUARIO = params.moduloPIUsuario
+                    MODULOPI_SENHA = params.moduloPISenha
 
                     MODULOREST_INSTALAR = params.moduloRestInstalar
                     MODULOREST_VERSAO = params.moduloRestVersao
