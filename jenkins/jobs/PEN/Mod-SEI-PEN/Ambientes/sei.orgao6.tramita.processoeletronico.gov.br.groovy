@@ -106,9 +106,9 @@ pipeline {
             name: 'moduloPenGearmanPorta',
             defaultValue:"4730",
             description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
-        string(
+        choice(
             name: 'moduloPenRepositorioOrigem',
-            defaultValue:"37",
+            choices: ['Homolog: Repo 37|37', 'Dev Interno: Repo 28|28']
             description: "Repositorio de Origem do Módulo")
         string(
             name: 'moduloPenTipoProcessoExterno',
@@ -122,9 +122,9 @@ pipeline {
             name: 'moduloPenUnidadeAssociacaoSei',
             defaultValue:"110000001",
             description: "Unidade Associação do Super")
-        string(
+        choice(
             name: 'moduloPenUnidadeAssociacaoPen',
-            defaultValue:"151861",
+            choices: ['Homolog: 151861|151861', 'Dev Interno: 165897|165897']
             description: "Unidade Associação do PEN")
         choice(
             name: 'moduloPIInstalar',
@@ -255,11 +255,11 @@ pipeline {
                     MODULOPEN_CERTSENHA = params.moduloPenCertSenha
                     MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
                     MODULOPEN_GEARMAN_PORTA = params.moduloPenGearmanPorta
-                    MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem
+                    MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem.split('\\|')[1]
                     MODULOPEN_TIPOPROCESSO = params.moduloPenTipoProcessoExterno
                     MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
                     MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
-                    MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen
+                    MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen.split('\\|')[1]
 
                     MODULOPI_INSTALAR = params.moduloPIInstalar
                     MODULOPI_VERSAO = params.moduloPIVersao
