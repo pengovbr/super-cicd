@@ -108,7 +108,7 @@ pipeline {
             description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
         choice(
             name: 'moduloPenRepositorioOrigem',
-            choices: ['Homolog: Repo ID 37', 'Dev Interno: Repo ID 28']
+            choices: ['Homolog: Repo ID 37', 'Dev Interno: Repo ID 28'],
             description: "Repositorio de Origem do Módulo")
         string(
             name: 'moduloPenTipoProcessoExterno',
@@ -124,7 +124,7 @@ pipeline {
             description: "Unidade Associação do Super")
         choice(
             name: 'moduloPenUnidadeAssociacaoPen',
-            choices: ['Homolog: Unidade ID 151861', 'Dev Interno: Unidade ID 165897']
+            choices: ['Homolog: Unidade ID 151861', 'Dev Interno: Unidade ID 165897'],
             description: "Unidade Associação do PEN")
         choice(
             name: 'moduloPIInstalar',
