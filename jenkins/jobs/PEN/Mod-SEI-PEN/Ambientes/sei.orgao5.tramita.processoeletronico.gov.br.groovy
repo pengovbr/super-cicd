@@ -79,6 +79,10 @@ pipeline {
             defaultValue:"master",
             description: "Versao do Módulo PEN")
         choice(
+            name: 'moduloPenAmbiente',
+            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br'],
+            description: 'Ambiente a ser utilizado')
+        choice(
             name: 'moduloPenEndpoint',
             choices: ['soap', 'rest'],
             description: 'Antes de subir o ambiente, verifique se o módulo é compatível com SOAP ou REST e ajuste aqui')
@@ -188,6 +192,7 @@ pipeline {
 
                     MODULOPEN_INSTALAR = params.moduloPenInstalar
                     MODULOPEN_VERSAO = params.moduloPenVersao
+                    MODULOPEN_AMBIENTE = params.moduloPenAmbiente                    
                     MODULOPEN_ENDPOINT = params.moduloPenEndpoint
                     MODULOPEN_CONFIGURAR = params.moduloPenConfigurar
                     MODULOPEN_CERT = params.moduloPenCert
@@ -411,7 +416,7 @@ pipeline {
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=${MODULOPEN_UNIDADEASSOCIACAOSEI}" >> envlocal.env
 
-                    echo "export MODULO_PEN_WEBSERVICE=https://homolog.api.processoeletronico.gov.br/interoperabilidade/${MODULOPEN_ENDPOINT}/v3/" >> envlocal.env
+                    echo "export MODULO_PEN_WEBSERVICE=${MODULOPEN_AMBIENTE}/interoperabilidade/${MODULOPEN_ENDPOINT}/v3/" >> envlocal.env
 
                     """
 
