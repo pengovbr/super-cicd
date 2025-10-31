@@ -84,7 +84,7 @@ pipeline {
             description: 'Ambiente a ser utilizado')
         choice(
             name: 'moduloPenEndpoint',
-            choices: ['soap', 'rest'],
+            choices: ['rest/v4', 'rest/v3', 'soap/v3', 'soap/v4'],
             description: 'Antes de subir o ambiente, verifique se o módulo é compatível com SOAP ou REST e ajuste aqui')
         choice(
             name: 'moduloPenConfigurar',
@@ -471,7 +471,7 @@ pipeline {
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_PEN=${MODULOPEN_UNIDADEASSOCIACAOPEN}" >> envlocal.env
                     echo "export MODULO_PEN_UNIDADE_ASSOCIACAO_SEI=${MODULOPEN_UNIDADEASSOCIACAOSEI}" >> envlocal.env
 
-                    echo "export MODULO_PEN_WEBSERVICE=${MODULOPEN_AMBIENTE}/interoperabilidade/${MODULOPEN_ENDPOINT}/v3/" >> envlocal.env
+                    echo "export MODULO_PEN_WEBSERVICE=${MODULOPEN_AMBIENTE}/interoperabilidade/${MODULOPEN_ENDPOINT}/" >> envlocal.env
 
                     """
 
