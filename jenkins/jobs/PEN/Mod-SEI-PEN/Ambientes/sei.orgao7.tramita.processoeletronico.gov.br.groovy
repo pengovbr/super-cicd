@@ -102,9 +102,9 @@ pipeline {
             name: 'moduloPenGearmanPorta',
             defaultValue:"4730",
             description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
-        string(
+        choice(
             name: 'moduloPenRepositorioOrigem',
-            defaultValue:"37",
+            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28', 'Homolog: Repo ID 37'],
             description: "Repositorio de Origem do Módulo")
         string(
             name: 'moduloPenTipoProcessoExterno',
@@ -258,7 +258,7 @@ pipeline {
                     MODULOPEN_CERTSENHA = params.moduloPenCertSenha
                     MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
                     MODULOPEN_GEARMAN_PORTA = params.moduloPenGearmanPorta
-                    MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem
+                    MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem.split('ID ')[1]
                     MODULOPEN_TIPOPROCESSO = params.moduloPenTipoProcessoExterno
                     MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
                     MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
