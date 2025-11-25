@@ -80,7 +80,7 @@ pipeline {
             description: "Versao do Módulo PEN")
         choice(
             name: 'moduloPenAmbiente',
-            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br'],
+            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br', 'https://teste.api.processoeletronico.gov.br'],
             description: 'Ambiente a ser utilizado')
         choice(
             name: 'moduloPenEndpoint',
@@ -90,13 +90,13 @@ pipeline {
             name: 'moduloPenConfigurar',
             choices: ['true', 'false'],
             description: 'Caso deseje que o módulo confgure automaticamente para envio e recebimento. Se marcar falso, deverá configurar no menu de admin do módulo')
-        string(
+        choice(
             name: 'moduloPenCert',
-            defaultValue:"credModuloPenCertOrgao5",
-            description: "Certificado base64 do módulo em jenkins secret")
-        string(
+            choices: ['homolog certId: credModuloPenCertOrgao5', 'dev certId: credModuloPenCertOrgao5', 'teste certId: credModuloPenCertTesteOrgao5' ],
+            description: 'Certificado base64 do módulo em jenkins secret')
+        choice(
             name: 'moduloPenCertSenha',
-            defaultValue:"credModuloPenCertSenhaOrgao5",
+            choices: ['homolog Senha: credModuloPenCertSenhaOrgao5', 'dev Senha: credModuloPenCertSenhaOrgao5', 'teste Senha: credModuloPenCertSenhaTesteOrgao5' ],
             description: "Senha do Certificado do módulo em jenkins secret")
         string(
             name: 'moduloPenGearmanIp',
@@ -108,7 +108,7 @@ pipeline {
             description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
         choice(
             name: 'moduloPenRepositorioOrigem',
-            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28', 'Homolog: Repo ID 37'],
+            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28', 'Homolog: Repo ID 37', 'Teste: Repo ID 5'],
             description: "Repositorio de Origem do Módulo")
         string(
             name: 'moduloPenTipoProcessoExterno',
@@ -124,7 +124,7 @@ pipeline {
             description: "Unidade Associação do Super")
         choice(
             name: 'moduloPenUnidadeAssociacaoPen',
-            choices: ['Homolog: Unidade ID 151860', 'Dev Interno: Unidade ID 165898'],
+            choices: ['Homolog: Unidade ID 151860', 'Dev Interno: Unidade ID 165898', 'Teste: Unidade ID 190887'],
             description: "Unidade Associação do PEN")
         
 
@@ -195,8 +195,8 @@ pipeline {
                     MODULOPEN_AMBIENTE = params.moduloPenAmbiente                    
                     MODULOPEN_ENDPOINT = params.moduloPenEndpoint
                     MODULOPEN_CONFIGURAR = params.moduloPenConfigurar
-                    MODULOPEN_CERT = params.moduloPenCert
-                    MODULOPEN_CERTSENHA = params.moduloPenCertSenha
+                    MODULOPEN_CERT = params.moduloPenCert.split(' certId: ')[1]
+                    MODULOPEN_CERTSENHA = params.moduloPenCertSenha.split(' Senha: ')[1]
                     MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
                     MODULOPEN_GEARMAN_PORTA = params.moduloPenGearmanPorta
                     MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem.split('ID ')[1]
@@ -273,12 +273,61 @@ pipeline {
             steps {
 
                 dir('sei'){
+                                        
+                    withCredentials([sshUserPrivateKey(credentialsId: GITCRED, keyFileVariable: 'LHAVE')]) {
 
+                        sh """
+                        echo "${LHAVE}"
+                        cat "${LHAVE}" > /tmp/lhave.key
+                                        
+                        """
+                    }
+                    
+                    
+                    sh """
+                    
+                    chmod 500 /tmp/lhave.key
+
+                    echo '#!/bin/bash' > /tmp/gitwrap.sh
+                    echo 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /tmp/lhave.key "\$@"' >> /tmp/gitwrap.sh
+                    chmod +x gitwrap.sh
+
+                    echo "Fazendo o clone dos fontes. Aguarde..."
+                    export GIT_SSH=/tmp/gitwrap.sh
+                    git clone --filter=tree:0 ${GITSEIADDRESS} .
+                    export GIT_SSH=ssh
+
+                    echo "Fazendo a copia dos fontes. Aguarde..."
+                    git checkout ${GITSEIVERSAO}
+                    
+                    ls -lha
+                    du -hs .
+                    
+                    
+                    #if [ -d "src" ] ; then
+                    #    cd src
+                    #fi
+                    #cp -R * /opt/
+                    #cd /
+                    #rm -rf /tmp/sei /tmp/lhave.key
+                    
+                    """
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     sh """
                     git config --global http.sslVerify false
                     """
 
-                    git branch: 'main',
+                    git branch: 'mains',
                         credentialsId: GITCRED,
                         url: GITSEIADDRESS
 
