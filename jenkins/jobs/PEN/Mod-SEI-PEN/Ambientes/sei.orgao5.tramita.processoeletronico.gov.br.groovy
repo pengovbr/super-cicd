@@ -126,7 +126,7 @@ pipeline {
             name: 'moduloPenUnidadeAssociacaoPen',
             choices: ['Homolog: Unidade ID 151860', 'Dev Interno: Unidade ID 165898', 'Teste: Unidade ID 190887'],
             description: "Unidade Associação do PEN")
-        
+
 
     }
 
@@ -192,7 +192,7 @@ pipeline {
 
                     MODULOPEN_INSTALAR = params.moduloPenInstalar
                     MODULOPEN_VERSAO = params.moduloPenVersao
-                    MODULOPEN_AMBIENTE = params.moduloPenAmbiente                    
+                    MODULOPEN_AMBIENTE = params.moduloPenAmbiente
                     MODULOPEN_ENDPOINT = params.moduloPenEndpoint
                     MODULOPEN_CONFIGURAR = params.moduloPenConfigurar
                     MODULOPEN_CERT = params.moduloPenCert.split(' certId: ')[1]
@@ -264,6 +264,9 @@ pipeline {
                 ls -lha
 
                 sudo rm -rf kube
+
+                sudo rm -rf sei
+
                 """
             }
         }
@@ -272,74 +275,67 @@ pipeline {
 
             steps {
 
-                dir('sei'){
-                                        
-                    withCredentials([sshUserPrivateKey(credentialsId: GITCRED, keyFileVariable: 'LHAVE')]) {
+                dir('Baixar SEI.php'){
+
+                    withCredentials([ string(credentialsId: "github_pat_readonly_pengovbr", variable: 'LHAVE')]) {
 
                         sh """
-                        echo "${LHAVE}"
-                        cat "${LHAVE}" > /tmp/lhave.key
-                                        
+
+                        baixar_seiphp(){
+
+                            if [ ! -f SEI.php ]; then
+
+                                curl -H 'Authorization: token ${LHAVE}' \
+                                     -H 'Accept: application/vnd.github.v3.raw' \
+                                     -o SEI.php \
+                                     -L https://api.github.com/repos/pengovbr/sei/contents/\${1}
+
+                                set +e
+                                grep -e "SEI_VERSAO" SEI.php
+                                e=\$?
+                                set -e
+
+                                if [ ! "\$e" = "0" ]; then
+                                    rm SEI.php
+                                fi
+
+                            fi
+                        }
+
+                        gettaghash(){
+
+                            r=\$(curl -H 'Authorization: token ${LHAVE}' \
+                                 https://api.github.com/repos/pengovbr/sei/git/refs/tags/\${1})
+
+                            hash=\$(echo \$r | grep -oP 'git/tags/.*?"' | sed "s|git/tags/||g" | sed 's|"||g')
+                            if [ "\$hash" = "" ]; then
+                                echo "Versao nao encontrada no git"
+                                exit 1
+                            fi
+                            echo "\$hash"
+
+
+                        }
+
+
+                        rm -rf SEI.php
+
+                        baixar_seiphp "src/sei/web/SEI.php?ref=${GITSEIVERSAO}"
+                        baixar_seiphp "sei/web/SEI.php?ref=${GITSEIVERSAO}"
+                        hash=\$(gettaghash "${GITSEIVERSAO}")
+                        baixar_seiphp "src/sei/web/SEI.php?ref=\${hash}"
+                        baixar_seiphp "sei/web/SEI.php?ref=\${hash}"
+
+                        if [ ! -f SEI.php ]; then
+                            echo "Versao nao encontrada no repo git"
+                            exit 1
+                        fi
+
+                        ls -lha
+                        cat SEI.php
+
                         """
                     }
-                    
-                    
-                    sh """
-                    
-                    chmod 500 /tmp/lhave.key
-
-                    echo '#!/bin/bash' > /tmp/gitwrap.sh
-                    echo 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /tmp/lhave.key "\$@"' >> /tmp/gitwrap.sh
-                    chmod +x gitwrap.sh
-
-                    echo "Fazendo o clone dos fontes. Aguarde..."
-                    export GIT_SSH=/tmp/gitwrap.sh
-                    git clone --filter=tree:0 ${GITSEIADDRESS} .
-                    export GIT_SSH=ssh
-
-                    echo "Fazendo a copia dos fontes. Aguarde..."
-                    git checkout ${GITSEIVERSAO}
-                    
-                    ls -lha
-                    du -hs .
-                    
-                    
-                    #if [ -d "src" ] ; then
-                    #    cd src
-                    #fi
-                    #cp -R * /opt/
-                    #cd /
-                    #rm -rf /tmp/sei /tmp/lhave.key
-                    
-                    """
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    sh """
-                    git config --global http.sslVerify false
-                    """
-
-                    git branch: 'mains',
-                        credentialsId: GITCRED,
-                        url: GITSEIADDRESS
-
-                    sh """
-                    echo "" > ../envstageanterior.env
-                    ls -l
-
-                    git checkout ${GITSEIVERSAO}
-
-
-                    """
-
                 }
             }
         }
