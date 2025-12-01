@@ -72,7 +72,7 @@ pipeline {
             description: "Versao do Módulo PEN")
         choice(
             name: 'moduloPenAmbiente',
-            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br', 'https://teste.api.processoeletronico.gov.br', , 'https://api.conectagov.processoeletronico.gov.br'],
+            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br', 'https://teste.api.processoeletronico.gov.br', 'https://api.conectagov.processoeletronico.gov.br', 'https://api-tramita.hom.dataprev.gov.br'],
             description: 'Ambiente a ser utilizado')
         choice(
             name: 'moduloPenEndpoint',
@@ -84,11 +84,11 @@ pipeline {
             description: 'Caso deseje que o módulo confgure automaticamente para envio e recebimento. Se marcar falso, deverá configurar no menu de admin do módulo')
         choice(
             name: 'moduloPenCert',
-            choices: ['homolog certId: credModuloPenCertOrgao6', 'dev certId: credModuloPenCertDevOrgao6', 'teste certId: credModuloPenCertTesteOrgao6', 'prd certId: credModuloPenCertPrdOrgao6' ],
+            choices: ['homolog certId: credModuloPenCertOrgao6', 'dev certId: credModuloPenCertDevOrgao6', 'teste certId: credModuloPenCertTesteOrgao6', 'prd certId: credModuloPenCertPrdOrgao6', 'hom Dataprev certId: credModuloPenCertHomDtOrgao6' ],
             description: 'Certificado base64 do módulo em jenkins secret')
         choice(
             name: 'moduloPenCertSenha',
-            choices: ['homolog Senha: credModuloPenCertSenhaOrgao6', 'dev Senha: credModuloPenCertSenhaDevOrgao6', 'teste Senha: credModuloPenCertSenhaTesteOrgao6', 'prd Senha: credModuloPenCertSenhaPrdOrgao6' ],
+            choices: ['homolog Senha: credModuloPenCertSenhaOrgao6', 'dev Senha: credModuloPenCertSenhaDevOrgao6', 'teste Senha: credModuloPenCertSenhaTesteOrgao6', 'prd Senha: credModuloPenCertSenhaPrdOrgao6', 'hom Dataprev Senha: credModuloPenCertSenhaHomDtOrgao6' ],
             description: "Senha do Certificado do módulo em jenkins secret")
         string(
             name: 'moduloPenGearmanIp',
@@ -100,7 +100,7 @@ pipeline {
             description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
         choice(
             name: 'moduloPenRepositorioOrigem',
-            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28', 'Homolog: Repo ID 37', 'Teste: Repo ID 5', 'Prd: Repo ID 11'],
+            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28', 'Homolog: Repo ID 37', 'Teste: Repo ID 5', 'Prd: Repo ID 11', 'hom Dataprev: Repo ID 47'],
             description: "Repositorio de Origem do Módulo")
         string(
             name: 'moduloPenTipoProcessoExterno',
@@ -116,7 +116,7 @@ pipeline {
             description: "Unidade Associação do Super")
         choice(
             name: 'moduloPenUnidadeAssociacaoPen',
-            choices: ['Homolog: Unidade ID 151861', 'Dev Interno: Unidade ID 165897', 'Teste: Unidade ID 190888', 'Prd: Unidade ID 167295'],
+            choices: ['Homolog: Unidade ID 151861', 'Dev Interno: Unidade ID 165897', 'Teste: Unidade ID 190888', 'Prd: Unidade ID 167295', 'hom Dataprev: Unidade ID 118103'],
             description: "Unidade Associação do PEN")
         choice(
             name: 'moduloPIInstalar',

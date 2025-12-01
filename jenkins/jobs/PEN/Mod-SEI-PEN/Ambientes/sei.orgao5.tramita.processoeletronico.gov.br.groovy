@@ -23,17 +23,9 @@ pipeline {
             defaultValue:"main",
             description: "Branch/Tag do git para o SEI")
         string(
-            name: 'gitSeiAddress',
-            defaultValue:"git@github.com:pengovbr/sei",
-            description: "Endereco git do Fonte do Sei")
-        string(
             name: 'gitSeiKeyJenkins',
-            defaultValue:"gitcredsuper",
-            description: "Secret Jenkins para o Repo")
-        string(
-            name: 'gitSeiKey',
-            defaultValue:"CredGitSuper",
-            description: "Chave git em formato base64 em jenkins secret")
+            defaultValue:"github_pat_readonly_pengovbr",
+            description: "Secret Jenkins para o Repo Github dos Fontes")
         choice(
             name: 'multiorgao',
             choices: ['false', 'true'],
@@ -80,7 +72,7 @@ pipeline {
             description: "Versao do Módulo PEN")
         choice(
             name: 'moduloPenAmbiente',
-            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br'],
+            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br', 'https://teste.api.processoeletronico.gov.br', 'https://api.conectagov.processoeletronico.gov.br', 'https://api-tramita.hom.dataprev.gov.br'],
             description: 'Ambiente a ser utilizado')
         choice(
             name: 'moduloPenEndpoint',
@@ -90,13 +82,13 @@ pipeline {
             name: 'moduloPenConfigurar',
             choices: ['true', 'false'],
             description: 'Caso deseje que o módulo confgure automaticamente para envio e recebimento. Se marcar falso, deverá configurar no menu de admin do módulo')
-        string(
+        choice(
             name: 'moduloPenCert',
-            defaultValue:"credModuloPenCertOrgao5",
-            description: "Certificado base64 do módulo em jenkins secret")
-        string(
+            choices: ['homolog certId: credModuloPenCertOrgao5', 'dev certId: credModuloPenCertDevOrgao5', 'teste certId: credModuloPenCertTesteOrgao5', 'prd certId: credModuloPenCertPrdOrgao5', 'hom Dataprev certId: credModuloPenCertHomDtOrgao5' ],
+            description: 'Certificado base64 do módulo em jenkins secret')
+        choice(
             name: 'moduloPenCertSenha',
-            defaultValue:"credModuloPenCertSenhaOrgao5",
+            choices: ['homolog Senha: credModuloPenCertSenhaOrgao5', 'dev Senha: credModuloPenCertSenhaDevOrgao5', 'teste Senha: credModuloPenCertSenhaTesteOrgao5', 'prd Senha: credModuloPenCertSenhaPrdOrgao5', 'hom Dataprev Senha: credModuloPenCertSenhaHomDtOrgao5' ],
             description: "Senha do Certificado do módulo em jenkins secret")
         string(
             name: 'moduloPenGearmanIp',
@@ -108,7 +100,7 @@ pipeline {
             description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
         choice(
             name: 'moduloPenRepositorioOrigem',
-            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28', 'Homolog: Repo ID 37'],
+            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28', 'Homolog: Repo ID 37', 'Teste: Repo ID 5', 'Prd: Repo ID 11', 'hom Dataprev: Repo ID 47'],
             description: "Repositorio de Origem do Módulo")
         string(
             name: 'moduloPenTipoProcessoExterno',
@@ -124,9 +116,9 @@ pipeline {
             description: "Unidade Associação do Super")
         choice(
             name: 'moduloPenUnidadeAssociacaoPen',
-            choices: ['Homolog: Unidade ID 151860', 'Dev Interno: Unidade ID 165898'],
+            choices: ['Homolog: Unidade ID 151860', 'Dev Interno: Unidade ID 165898', 'Teste: Unidade ID 190887', 'Prd: Unidade ID 167294', 'hom Dataprev: Unidade ID 118102'],
             description: "Unidade Associação do PEN")
-        
+
 
     }
 
@@ -174,10 +166,8 @@ pipeline {
                     JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR="/sign"
 
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
-                    GITSEIADDRESS = params.gitSeiAddress
-                    GITCRED = params.gitSeiKeyJenkins
+                    GITCREDFONTE = params.gitSeiKeyJenkins
                     GITSEIVERSAO = params.versaoSei
-                    GITSEIKEY = params.gitSeiKey
 
                     MULTIORGAO = params.multiorgao
                     MULTIORGAOSIGLAS = (MULTIORGAO == 'true' ? params.multiorgaoSiglas : "");
@@ -192,11 +182,11 @@ pipeline {
 
                     MODULOPEN_INSTALAR = params.moduloPenInstalar
                     MODULOPEN_VERSAO = params.moduloPenVersao
-                    MODULOPEN_AMBIENTE = params.moduloPenAmbiente                    
+                    MODULOPEN_AMBIENTE = params.moduloPenAmbiente
                     MODULOPEN_ENDPOINT = params.moduloPenEndpoint
                     MODULOPEN_CONFIGURAR = params.moduloPenConfigurar
-                    MODULOPEN_CERT = params.moduloPenCert
-                    MODULOPEN_CERTSENHA = params.moduloPenCertSenha
+                    MODULOPEN_CERT = params.moduloPenCert.split(' certId: ')[1]
+                    MODULOPEN_CERTSENHA = params.moduloPenCertSenha.split(' Senha: ')[1]
                     MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
                     MODULOPEN_GEARMAN_PORTA = params.moduloPenGearmanPorta
                     MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem.split('ID ')[1]
@@ -264,33 +254,79 @@ pipeline {
                 ls -lha
 
                 sudo rm -rf kube
+
+                sudo rm -rf sei
                 """
             }
         }
 
-        stage('Checkout-SEI'){
+        stage('Baixar SEI.php'){
 
             steps {
 
                 dir('sei'){
 
-                    sh """
-                    git config --global http.sslVerify false
-                    """
+                    withCredentials([ string(credentialsId: GITCREDFONTE, variable: 'LHAVE')]) {
 
-                    git branch: 'main',
-                        credentialsId: GITCRED,
-                        url: GITSEIADDRESS
+                        sh """
 
-                    sh """
-                    echo "" > ../envstageanterior.env
-                    ls -l
+                        baixar_seiphp(){
 
-                    git checkout ${GITSEIVERSAO}
+                            if [ ! -f SEI.php ]; then
+
+                                curl -H 'Authorization: token ${LHAVE}' \
+                                     -H 'Accept: application/vnd.github.v3.raw' \
+                                     -o SEI.php \
+                                     -L https://api.github.com/repos/pengovbr/sei/contents/\${1}
+
+                                set +e
+                                grep -e "SEI_VERSAO" SEI.php
+                                e=\$?
+                                set -e
+
+                                if [ ! "\$e" = "0" ]; then
+                                    rm SEI.php
+                                fi
+
+                            fi
+                        }
+
+                        gettaghash(){
+
+                            r=\$(curl -H 'Authorization: token ${LHAVE}' \
+                                 https://api.github.com/repos/pengovbr/sei/git/refs/tags/\${1})
+
+                            hash=\$(echo \$r | grep -oP 'git/tags/.*?"' | sed "s|git/tags/||g" | sed 's|"||g')
+                            if [ "\$hash" = "" ]; then
+                                echo "Versao nao encontrada no git"
+                                exit 1
+                            fi
+                            echo "\$hash"
 
 
-                    """
+                        }
 
+
+                        rm -rf SEI.php
+
+                        baixar_seiphp "src/sei/web/SEI.php?ref=${GITSEIVERSAO}"
+                        baixar_seiphp "sei/web/SEI.php?ref=${GITSEIVERSAO}"
+                        if [ ! -f SEI.php ]; then
+                            hash=\$(gettaghash "${GITSEIVERSAO}")
+                            baixar_seiphp "src/sei/web/SEI.php?ref=\${hash}"
+                            baixar_seiphp "sei/web/SEI.php?ref=\${hash}"
+                        fi
+
+                        if [ ! -f SEI.php ]; then
+                            echo "Versao nao encontrada no repo git"
+                            exit 1
+                        fi
+
+                        ls -lha
+                        cat SEI.php
+
+                        """
+                    }
                 }
             }
         }
@@ -323,23 +359,13 @@ pipeline {
             steps {
                 dir('kube'){
 
-                    withCredentials([ string(credentialsId: GITSEIKEY, variable: 'LHAVE')]) {
-
-                        sh """
-
-                        cd infra
-                        echo "" >> envlocal.env
-                        echo "export APP_FONTES_GIT_PRIVKEY_BASE64=${LHAVE}" >> envlocal.env
-
-                        """
-                    }
-
-                    withCredentials([ string(credentialsId: "github_pat_readonly_pengovbr", variable: 'LHAVE')]) {
+                    withCredentials([ string(credentialsId: GITCREDFONTE, variable: 'LHAVE')]) {
 
                         sh """
                         cd infra
                         echo "export GITUSER_REPO_MODULOS=marlinhares" >> envlocal.env
                         echo "export GITPASS_REPO_MODULOS=${LHAVE}" >> envlocal.env
+                        echo "export APP_FONTES_GITHUB_TOKEN=${LHAVE}" >> envlocal.env
                         """
                     }
 
@@ -348,10 +374,8 @@ pipeline {
                     echo "" >> envlocal.env
                     echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
                     echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
-                    echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
                     echo "export APP_HOST=${JOB_URL}" >> envlocal.env
                     echo "export APP_ORGAO=${JOB_ORGAO}" >> envlocal.env
-                    echo "export APP_FONTES_GIT_PATH=git@github.com:supergovbr/super" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
                     echo "export KUBERNETES_NAMESPACE=${JOB_NS}" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
@@ -468,7 +492,6 @@ pipeline {
                     }
 
                     sh """
-
                     cd infra
 
                     echo "export MODULO_REST_INSTALAR=${MODULOREST_INSTALAR}" >> envlocal.env
@@ -582,13 +605,8 @@ pipeline {
 
                     cd infra
 
-                    dcomp=""
-                    if [ -d "../../sei/src" ]; then
-                        dcomp="src/"
-                    fi
-
                     set +e
-                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" ../../sei/\${dcomp}sei/web/SEI.php
+                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" ../../sei/SEI.php
                     e=\$?
                     set -e
 
