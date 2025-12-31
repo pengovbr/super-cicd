@@ -28,11 +28,11 @@ pipeline {
             description: 'Versao do Sei')
         booleanParam(name: 'bolInstalarModulo',
             defaultValue: true,
-            description: 'Marque/desmarque para instalar o módulo GD')
+            description: 'Marque/desmarque para instalar o mï¿½dulo GD')
         string(
             name: 'versaoGestaoDocumental',
             defaultValue: '1.2.7',
-            description: 'Caso a opção acima esteja marcada informe uma versão válida')
+            description: 'Caso a opï¿½ï¿½o acima esteja marcada informe uma versï¿½o vï¿½lida')
         choice(
             name: 'database',
             choices: "mysql\noracle\nsqlserver",
@@ -74,7 +74,7 @@ pipeline {
               description: 'Marque para remover conteineres e volumes antes de subir o ambiente')
         choice(
             name: 'choiceAviso',
-            choices: "Não Ignorar Aviso\nIgnorar Aviso",
+            choices: "Nï¿½o Ignorar Aviso\nIgnorar Aviso",
             description: 'Mostrar Aviso de checagem antes de rodar' )
 
     }
@@ -89,7 +89,7 @@ pipeline {
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
-                        error('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faça login novamente')
+                        error('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faï¿½a login novamente')
                     }
 
                     DIRECTORY = WORKSPACE
@@ -109,11 +109,11 @@ pipeline {
                     IGNORARAVISO = params.choiceAviso
 
                     if(IGNORARAVISO != 'Ignorar Aviso'){
-                        msg = "ATENÇÃO. Antes de continuar, verifique o seguinte:\n"
+                        msg = "ATENï¿½ï¿½O. Antes de continuar, verifique o seguinte:\n"
                         msg = msg + "- RODE ANTES O JOB PARA ATUALIZAR A DATA DO AMBIENTE PARA O MOMENTO ESPERADO\n"
-                        msg = msg + "- veja se não há outros jobs referentes ao GD rodando\n"
-                        msg = msg + "- Caso exista espere a finalização ou encerre-os. \n"
-                        r = input message: msg, ok: 'Já olhei. Manda ver!'
+                        msg = msg + "- veja se nï¿½o hï¿½ outros jobs referentes ao GD rodando\n"
+                        msg = msg + "- Caso exista espere a finalizaï¿½ï¿½o ou encerre-os. \n"
+                        r = input message: msg, ok: 'Jï¿½ olhei. Manda ver!'
 
                     }
 
@@ -252,6 +252,46 @@ pipeline {
                         """
 
                     }
+
+                }
+            }
+        }
+
+        stage('Executando Instalador'){
+
+            steps {
+
+                dir("${FOLDERSEIDOCKER}/infra"){
+
+                    sh """
+
+                    sleep 30
+                    i=0
+                    while true; do
+
+                      echo "Vamos printar o log dessa execucao, atencao que pode haver mais logs acima de outras tentativas..."
+                      set +e
+                      docker logs -f docker-compose-app-atualizador-1
+                      set -e
+
+                      if \$(docker logs -f docker-compose-app-atualizador-1 | grep "Atualizador chegou ao final..." >/dev/null); then
+                        job_result=0
+                        break
+                      else
+                        job_result=1
+                        break
+                      fi
+
+                      sleep 10
+
+                    done
+
+                    if [[ \$job_result -eq 1 ]]; then
+                        echo "Job failed!"
+                        exit 1
+                    fi
+
+                    """
 
                 }
             }
