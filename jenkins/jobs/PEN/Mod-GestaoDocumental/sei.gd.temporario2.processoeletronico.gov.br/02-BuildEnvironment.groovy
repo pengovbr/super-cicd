@@ -28,11 +28,11 @@ pipeline {
             description: 'Versao do Sei')
         booleanParam(name: 'bolInstalarModulo',
             defaultValue: true,
-            description: 'Marque/desmarque para instalar o m�dulo GD')
+            description: 'Marque/desmarque para instalar o módulo GD')
         string(
             name: 'versaoGestaoDocumental',
             defaultValue: '1.2.7',
-            description: 'Caso a op��o acima esteja marcada informe uma vers�o v�lida')
+            description: 'Caso a opção acima esteja marcada informe uma versão válida')
         choice(
             name: 'database',
             choices: "mysql\noracle\nsqlserver",
@@ -74,7 +74,7 @@ pipeline {
               description: 'Marque para remover conteineres e volumes antes de subir o ambiente')
         choice(
             name: 'choiceAviso',
-            choices: "N�o Ignorar Aviso\nIgnorar Aviso",
+            choices: "Não Ignorar Aviso\nIgnorar Aviso",
             description: 'Mostrar Aviso de checagem antes de rodar' )
 
     }
@@ -89,7 +89,7 @@ pipeline {
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
-                        error('Informe os valores de parametro iniciais. Caso eles n tenham aparecido fa�a login novamente')
+                        error('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faça login novamente')
                     }
 
                     DIRECTORY = WORKSPACE
@@ -109,12 +109,11 @@ pipeline {
                     IGNORARAVISO = params.choiceAviso
 
                     if(IGNORARAVISO != 'Ignorar Aviso'){
-                        msg = "ATEN��O. Antes de continuar, verifique o seguinte:\n"
+                        msg = "ATENÇÃO. Antes de continuar, verifique o seguinte:\n"
                         msg = msg + "- RODE ANTES O JOB PARA ATUALIZAR A DATA DO AMBIENTE PARA O MOMENTO ESPERADO\n"
-                        msg = msg + "- veja se n�o h� outros jobs referentes ao GD rodando\n"
-                        msg = msg + "- Caso exista espere a finaliza��o ou encerre-os. \n"
-                        r = input message: msg, ok: 'J� olhei. Manda ver!'
-
+                        msg = msg + "- veja se não há outros jobs referentes ao GD rodando\n"
+                        msg = msg + "- Caso exista espere a finalização ou encerre-os. \n"
+                        r = input message: msg, ok: 'Já olhei. Manda ver!'
                     }
 
                     sh """
