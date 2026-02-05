@@ -17,7 +17,6 @@ pipeline {
             name: 'Leiame',
             defaultValue: false,
             description: 'Atenção. A versão dos módulos ou do SEI pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto sei-docker')
-
         string(
             name: 'versaoSei',
             defaultValue:"main",
@@ -72,7 +71,7 @@ pipeline {
             description: "Versao do Módulo PEN")
         choice(
             name: 'moduloPenAmbiente',
-            choices: ['https://dev.api.processoeletronico.gov.br', 'https://homolog.api.processoeletronico.gov.brNAOUSARAGUARDANDOCRIACAO', 'https://teste.api.processoeletronico.gov.br', 'https://api.conectagov.processoeletronico.gov.brNAOUSARAGUARDANDOCRIACAO', 'https://api-tramita.hom.dataprev.gov.br'],
+            choices: ['https://dev.api.processoeletronico.gov.br', 'https://homolog.api.processoeletronico.gov.br', 'https://teste.api.processoeletronico.gov.br', 'https://api-tramita.hom.dataprev.gov.br'],
             description: 'Ambiente a ser utilizado')
         choice(
             name: 'moduloPenEndpoint',
@@ -84,11 +83,11 @@ pipeline {
             description: 'Caso deseje que o módulo confgure automaticamente para envio e recebimento. Se marcar falso, deverá configurar no menu de admin do módulo')
         choice(
             name: 'moduloPenCert',
-            choices: ['dev certId: credModuloPenCertDevIN', 'homolog certId: aguardandocriacao', 'teste certId: credModuloPenCertTesteIN', 'prd certId: aguardando', 'hom Dataprev certId: credModuloPenCertHomDtIN' ],
+            choices: ['dev certId: credModuloPenCertDevIN', 'homolog certId: credModuloPenCertDevFabio', 'teste certId: credModuloPenCertTesteIN', 'hom Dataprev certId: credModuloPenCertHomDtIN' ],
             description: 'Certificado base64 do módulo em jenkins secret')
         choice(
             name: 'moduloPenCertSenha',
-            choices: ['dev Senha: credModuloPenCertSenhaDevIN', 'homolog Senha: aguardando', 'teste Senha: credModuloPenCertSenhaTesteIN', 'prd Senha: aguardando', 'hom Dataprev Senha: credModuloPenCertSenhaHomDtIN' ],
+            choices: ['dev Senha: credModuloPenCertSenhaDevIN', 'homolog Senha: credModuloPenCertSenhaDevFabio', 'teste Senha: credModuloPenCertSenhaTesteIN', 'hom Dataprev Senha: credModuloPenCertSenhaHomDtIN' ],
             description: "Senha do Certificado do módulo em jenkins secret")
         string(
             name: 'moduloPenGearmanIp',
@@ -100,7 +99,7 @@ pipeline {
             description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
         choice(
             name: 'moduloPenRepositorioOrigem',
-            choices: ['Dev Interno: Repo ID 28', 'Homolog Dataprev: Repo ID 47', 'Homolog: Repo ID 37', 'Teste: Repo ID 5', 'Prd: Repo ID 11', 'hom Dataprev: Repo ID 47'],
+            choices: ['Dev Interno: Repo ID 28', 'Homolog Dataprev: Repo ID 65', 'Homolog: Repo ID 37', 'Teste: Repo ID 5', 'hom Dataprev: Repo ID 47'],
             description: "Repositorio de Origem do Módulo")
         string(
             name: 'moduloPenTipoProcessoExterno',
@@ -116,7 +115,7 @@ pipeline {
             description: "Unidade Associação do Super")
         choice(
             name: 'moduloPenUnidadeAssociacaoPen',
-            choices: ['Dev Interno: Unidade ID 169075', 'Homolog: Unidade ID aguardando', 'Teste: Unidade ID 192963', 'Prd: Unidade ID aguardando', 'hom Dataprev: Unidade ID 118153'],
+            choices: ['Dev Interno: Unidade ID 169075', 'Homolog: Unidade ID 208005', 'Teste: Unidade ID 192963', 'hom Dataprev: Unidade ID 118153'],
             description: "Unidade Associação do PEN")
         choice(
             name: 'moduloPIInstalar',
@@ -205,18 +204,6 @@ pipeline {
                     JOB_MODULOLOGINUNICO_SECRETVALIDACAO = "credLoginUnicoSecretValidacao"
                     JOB_MODULOLOGINUNICO_ORGAO = "0"
 
-                    JOB_MODULOASSINATURA_CLIENTID = "credAssinaturaClientID"
-                    JOB_MODULOASSINATURA_SECRET = "credAssinaturaSecret"
-                    JOB_MODULOASSINATURA_URLPROVIDER = "https://cas.staging.iti.br/oauth2.0"
-                    JOB_MODULOASSINATURA_URLSERVICOS = "https://assinatura-api.staging.iti.br/externo/v2"
-
-                    JOB_MODULO_ASSINATURAVANCADA_VALIDAR_API_URL="https://h-api.iti.gov.br/validar"
-                    JOB_MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY="sk-8I4Y04vakqb993M70433s4K1p3LYJ4344rfo2gndQ3N96n8D"
-                    JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL="http://192.168.0.60:8080/integraICP"
-                    JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS="/get-clearings"
-                    JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR="/sign"
-
-
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
                     GITCREDFONTE = params.gitSeiKeyJenkins
                     GITSEIVERSAO = params.versaoSei
@@ -277,16 +264,6 @@ pipeline {
 
                     MODULOASSINATURA_INSTALAR = params.moduloAssinaturaInstalar
                     MODULOASSINATURA_VERSAO = params.moduloAssinaturaVersao
-                    MODULOASSINATURA_CLIENTID = JOB_MODULOASSINATURA_CLIENTID
-                    MODULOASSINATURA_SECRET = JOB_MODULOASSINATURA_SECRET
-                    MODULOASSINATURA_URLPROVIDER = JOB_MODULOASSINATURA_URLPROVIDER
-                    MODULOASSINATURA_URLSERVICOS = JOB_MODULOASSINATURA_URLSERVICOS
-
-                    MODULO_ASSINATURAVANCADA_VALIDAR_API_URL=JOB_MODULO_ASSINATURAVANCADA_VALIDAR_API_URL
-                    MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY=JOB_MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY
-                    MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL
-                    MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS
-                    MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR=JOB_MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR
 
                     MODULOINCOM_INSTALAR = params.moduloIncomInstalar
                     MODULOINCOM_VERSAO = params.moduloIncomVersao
@@ -390,6 +367,7 @@ pipeline {
                 dir('kube'){
 
                     sh """
+                    rm -rf infra/envlocal.env
                     git config --global http.sslVerify false
                     """
 
@@ -399,6 +377,8 @@ pipeline {
 
                     sh """
                     ls -l
+
+
 
                     """
 
@@ -596,27 +576,33 @@ pipeline {
                         """
                     }
 
-                    withCredentials([ string(credentialsId: MODULOASSINATURA_CLIENTID, variable: 'LHAVE')]) {
 
-                        sh """
-
-                        cd infra
-                        echo "" >> envlocal.env
-                        echo "export MODULO_ASSINATURAVANCADA_CLIENTID=${LHAVE}" >> envlocal.env
-
-                        """
+                    withCredentials([file(credentialsId: "moduloassinatura.properties", variable: 'FILE')]) {
+                        sh "cp \$FILE moduloassinatura.properties; echo \$FILE "
+                        sh "cat moduloassinatura.properties "
                     }
 
-                    withCredentials([ string(credentialsId: MODULOASSINATURA_SECRET, variable: 'LHAVE')]) {
+                    script {
+                        def props = readProperties file: 'moduloassinatura.properties'
 
-                        sh """
+                        MODULOASSINATURA_URLPROVIDER = props['ASSINATURA_URL_PROVIDER']
+                        MODULOASSINATURA_CLIENTID = props['ASSINATURA_CLIENT_ID']
+                        MODULOASSINATURA_SECRET = props["ASSINATURA_SECRET"]
+                        MODULOASSINATURA_VALIDAR_API_URL = props["VALIDAR_API_URL"]
+                        MODULOASSINATURA_VALIDAR_API_KEY = props["VALIDAR_API_KEY"]
+                        MODULOASSINATURA_TOKEN_URL = props["TOKEN_URL"]
+                        MODULOASSINATURA_TOKEN_SIGN_URL = props["TOKEN_URL_ASSINAR"]
+                        MODULOASSINATURA_INTEGRA_ICP_URL = props["INTEGRA_ICP_URL"]
+                        MODULOASSINATURA_INTEGRA_ICP_URL_CLEARINGS = props["INTEGRA_ICP_URL_CLEARINGS"]
+                        MODULOASSINATURA_INTEGRA_ICP_URL_ASSINAR = props["INTEGRA_ICP_URL_ASSINAR"]
+                        MODULOASSINATURA_CLOUDPSC_URL = props["CLOUD_PSC_URL"]
+                        MODULOASSINATURA_CLOUDPSC_START_URL = props["CLOUD_PSC_URL_START"]
+                        MODULOASSINATURA_CLOUDPSC_SIGN_URL = props["CLOUD_PSC_URL_ASSINAR"]
+                        MODULOASSINATURA_API_KEY_ITYHY = props["API_KEY_ITYHY"]
 
-                        cd infra
-                        echo "" >> envlocal.env
-                        echo "export MODULO_ASSINATURAVANCADA_SECRET=${LHAVE}" >> envlocal.env
-
-                        """
                     }
+
+
 
                     sh """
                     cd infra
@@ -632,16 +618,23 @@ pipeline {
                     echo "export MODULO_LOGINUNICO_CIENTIDVALIDACAO=${MODULOLOGINUNICO_CLIENTIDVALIDACAO}" >> envlocal.env
                     echo "export MODULO_LOGINUNICO_ORGAO=${MODULOLOGINUNICO_ORGAO}" >> envlocal.env
 
-                    echo "export MODULO_ASSINATURAVANCADA_INSTALAR=${MODULOASSINATURA_INSTALAR}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_VERSAO=${MODULOASSINATURA_VERSAO}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_URLPROVIDER=${MODULOASSINATURA_URLPROVIDER}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_URL_SERVICOS=${MODULOASSINATURA_URLSERVICOS}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_INSTALAR=${MODULOASSINATURA_INSTALAR}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_VERSAO=${MODULOASSINATURA_VERSAO}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_URLPROVIDER=${MODULOASSINATURA_URLPROVIDER}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_CLIENTID=${MODULOASSINATURA_CLIENTID}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_SECRET=${MODULOASSINATURA_SECRET}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_VALIDAR_API_URL=${MODULOASSINATURA_VALIDAR_API_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_VALIDAR_API_KEY=${MODULOASSINATURA_VALIDAR_API_KEY}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_TOKEN_URL=${MODULOASSINATURA_TOKEN_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_TOKEN_SIGN_URL=${MODULOASSINATURA_TOKEN_SIGN_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL=${MODULOASSINATURA_INTEGRA_ICP_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL_CLEARINGS=${MODULOASSINATURA_INTEGRA_ICP_URL_CLEARINGS}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL_ASSINAR=${MODULOASSINATURA_INTEGRA_ICP_URL_ASSINAR}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_CLOUDPSC_URL=${MODULOASSINATURA_CLOUDPSC_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_CLOUDPSC_START_URL=${MODULOASSINATURA_CLOUDPSC_START_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_CLOUDPSC_SIGN_URL=${MODULOASSINATURA_CLOUDPSC_SIGN_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_API_KEY_ITYHY=${MODULOASSINATURA_API_KEY_ITYHY}" >> envlocal.env
 
-                    echo "export MODULO_ASSINATURAVANCADA_VALIDAR_API_URL=${MODULO_ASSINATURAVANCADA_VALIDAR_API_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY=${MODULO_ASSINATURAVANCADA_VALIDAR_API_KEY}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_CLEARINGS}" >> envlocal.env
-                    echo "export MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR=${MODULO_ASSINATURAVANCADA_INTEGRA_ICP_URL_ASSINAR}" >> envlocal.env
 
                     echo "export MODULO_INCOM_INSTALAR=${MODULOINCOM_INSTALAR}" >> envlocal.env
                     echo "export MODULO_INCOM_VERSAO=${MODULOINCOM_VERSAO}" >> envlocal.env
@@ -664,6 +657,8 @@ pipeline {
                     set -e
 
 
+
+
                     if [ "\$e" = "0" ]; then
 
                         cat envlocal-example-mysql-sei5.env >> envlocal.env
@@ -673,11 +668,11 @@ pipeline {
 
                     echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
 
-
                     make kubernetes_montar_yaml
                     make kubernetes_delete || true
 
                     make kubernetes_montar_yaml
+
                     sed -i "s|imagePullPolicy: Always|imagePullPolicy: IfNotPresent|g" orquestrators/rancher-kubernetes/topublish/*.yaml
                     make kubernetes_apply
 
@@ -718,7 +713,7 @@ pipeline {
                         break
                       fi
 
-                      sleep 60
+                      sleep 10
 
 
                     done
