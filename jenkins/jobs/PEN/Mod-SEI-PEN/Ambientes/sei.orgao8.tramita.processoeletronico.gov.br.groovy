@@ -40,11 +40,11 @@ pipeline {
             description: "Depois de habilitar Multiorgao acima. Passe aqui os nomes respectivos às siglas separadas por /. Informar a mesma qtde de siglas e nomes, caso contrário o parametro será ignorado na instalação")
         choice(
             name: 'federacao',
-            choices: ['false', 'true'],
+            choices: ['true', 'false'],
             description: 'Caso deseje habilitar a federação nessa instalação, informe true. Após a criação do ambiente você terá que configurar com que outro ambiente será a federação')
         choice(
             name: 'moduloEstatisticaInstalar',
-            choices: ['true', 'false'],
+            choices: ['false', 'true'],
             description: 'Instalar Módulo Estatisticas')
         string(
             name: 'moduloEstatisticaVersao',
@@ -72,7 +72,7 @@ pipeline {
             description: "Versao do Módulo PEN")
         choice(
             name: 'moduloPenAmbiente',
-            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br', 'https://teste.api.processoeletronico.gov.br', 'https://api.conectagov.processoeletronico.gov.br', 'https://api-tramita.hom.dataprev.gov.br'],
+            choices: ['https://homolog.api.processoeletronico.gov.br', 'https://dev.api.processoeletronico.gov.br'],
             description: 'Ambiente a ser utilizado')
         choice(
             name: 'moduloPenEndpoint',
@@ -84,11 +84,11 @@ pipeline {
             description: 'Caso deseje que o módulo confgure automaticamente para envio e recebimento. Se marcar falso, deverá configurar no menu de admin do módulo')
         choice(
             name: 'moduloPenCert',
-            choices: ['homolog certId: credModuloPenCertOrgao8', 'dev certId: credModuloPenCertDevOrgao8', 'teste certId: credModuloPenCertTesteOrgao8', 'prd certId: credModuloPenCertPrdOrgao8', 'hom Dataprev certId: credModuloPenCertHomDtOrgao8' ],
+            choices: ['homolog certId: credModuloPenCertOrgao8', 'dev certId: credModuloPenCertDevOrgao8' ],
             description: 'Certificado base64 do módulo em jenkins secret')
         choice(
             name: 'moduloPenCertSenha',
-            choices: ['homolog Senha: credModuloPenCertSenhaOrgao8', 'dev Senha: credModuloPenCertSenhaDevOrgao8', 'teste Senha: credModuloPenCertSenhaTesteOrgao8', 'prd Senha: credModuloPenCertSenhaPrdOrgao8', 'hom Dataprev Senha: credModuloPenCertSenhaHomDtOrgao8' ],
+            choices: ['homolog Senha: credModuloPenCertSenhaOrgao8', 'dev Senha: credModuloPenCertSenhaDevOrgao8'],
             description: "Senha do Certificado do módulo em jenkins secret")
         string(
             name: 'moduloPenGearmanIp',
@@ -100,7 +100,7 @@ pipeline {
             description: "Caso queira usar gearman informe a porta. Caso n queira deixe em branco")
         choice(
             name: 'moduloPenRepositorioOrigem',
-            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28', 'Homolog: Repo ID 37', 'Teste: Repo ID 5', 'Prd: Repo ID 11', 'hom Dataprev: Repo ID 47'],
+            choices: ['Homolog: Repo ID 65', 'Dev Interno: Repo ID 28'],
             description: "Repositorio de Origem do Módulo")
         string(
             name: 'moduloPenTipoProcessoExterno',
@@ -116,7 +116,7 @@ pipeline {
             description: "Unidade Associação do Super")
         choice(
             name: 'moduloPenUnidadeAssociacaoPen',
-            choices: ['Homolog: Unidade ID 151861', 'Dev Interno: Unidade ID 165897', 'Teste: Unidade ID 190888', 'Prd: Unidade ID 167295', 'hom Dataprev: Unidade ID 118103'],
+            choices: ['Homolog: Unidade ID 210473', 'Dev Interno: Unidade ID 171991'],
             description: "Unidade Associação do PEN")
         choice(
             name: 'moduloPIInstalar',
