@@ -82,24 +82,24 @@ pipeline {
             steps {
 
                 script{
-                    GITURL = "https://github.com/pengovbr/sei-docker.git"
+                    def GITURL = "https://github.com/pengovbr/sei-docker.git"
 
 
-                    GITSEIURL = params.gitSeiAddress
-                    GITSEIVERSAO = params.versaoSei
-                    GITSEIKEY = params.gitSeiKey
-                    GITCRED = params.gitSeiKeyJenkins
-                    GITKEYMODULO = params.gitKeyModulo
+                    def GITSEIURL = params.gitSeiAddress
+                    def GITSEIVERSAO = params.versaoSei
+                    def GITSEIKEY = params.gitSeiKey
+                    def GITCRED = params.gitSeiKeyJenkins
+                    def GITKEYMODULO = params.gitKeyModulo
 
-                    SERVICOPD_INSTALAR = params.servicoProtocoloDigitalInstalar
-                    SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
-                    SERVICOPD_NOME = params.servicoProtocoloDigitalNome
-                    SERVICOPD_OPERACOES = params.servicoProtocoloDigitalOperacoes
+                    def SERVICOPD_INSTALAR = params.servicoProtocoloDigitalInstalar
+                    def SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
+                    def SERVICOPD_NOME = params.servicoProtocoloDigitalNome
+                    def SERVICOPD_OPERACOES = params.servicoProtocoloDigitalOperacoes
 
-                    MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
-                    MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
-                    MODULORESPOSTA_SISTEMA_ID = params.moduloRespostaSistemaId
-                    MODULORESPOSTA_DOCUMENTO_ID = params.moduloRespostaDocumentoId
+                    def MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
+                    def MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
+                    def MODULORESPOSTA_SISTEMA_ID = params.moduloRespostaSistemaId
+                    def MODULORESPOSTA_DOCUMENTO_ID = params.moduloRespostaDocumentoId
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
