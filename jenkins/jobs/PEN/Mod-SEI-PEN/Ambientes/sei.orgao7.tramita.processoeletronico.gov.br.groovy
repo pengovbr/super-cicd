@@ -40,7 +40,7 @@ pipeline {
             description: "Depois de habilitar Multiorgao acima. Passe aqui os nomes respectivos às siglas separadas por /. Informar a mesma qtde de siglas e nomes, caso contrário o parametro será ignorado na instalação")
         choice(
             name: 'federacao',
-            choices: ['false', 'true'],
+            choices: ['true', 'false'],
             description: 'Caso deseje habilitar a federação nessa instalação, informe true. Após a criação do ambiente você terá que configurar com que outro ambiente será a federação')
         choice(
             name: 'moduloEstatisticaInstalar',
