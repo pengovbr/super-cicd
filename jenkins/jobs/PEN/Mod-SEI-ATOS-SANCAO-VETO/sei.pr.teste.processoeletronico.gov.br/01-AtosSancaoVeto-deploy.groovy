@@ -607,8 +607,8 @@ pipeline {
 
 
                     withCredentials([file(credentialsId: "moduloassinatura.properties", variable: 'FILE')]) {
-                        sh "cp \$FILE moduloassinatura.properties; echo \$FILE "
-                        sh "cat moduloassinatura.properties "
+                        sh "rm -rf moduloassinatura.properties && cp \"\$FILE\" moduloassinatura.properties"
+                        sh "cat moduloassinatura.properties"
                     }
 
                     script {
