@@ -21,6 +21,10 @@ pipeline {
             name: 'versaoSei',
             defaultValue:"main",
             description: "Branch/Tag do git para o SEI")
+        booleanParam(
+            name: 'detectarVersaoSei',
+            defaultValue: false,
+            description: 'Detectar versão do SEI baixando SEI.php da API do GitHub (api.github.com). Necessário para ambientes SEI 4.x. Para SEI 5.x deixe desmarcado — o job usa SEI 5 por padrão.')
         choice(
             name: 'moduloSancaoVetoInstalar',
             choices: ['true', 'false'],
@@ -306,15 +310,19 @@ pipeline {
                 ls -lha
 
                 sudo rm -rf kube
-
-                sudo rm -rf sei
                 """
             }
         }
 
         stage('Baixar SEI.php'){
 
+            when {
+                expression { return params.detectarVersaoSei == true }
+            }
+
             steps {
+
+                sh "sudo rm -rf sei"
 
                 dir('sei'){
 
@@ -355,9 +363,7 @@ pipeline {
                             fi
                             echo "\$hash"
 
-
                         }
-
 
                         rm -rf SEI.php
 
@@ -676,24 +682,31 @@ pipeline {
 
 
 
+                    script {
+                        if (params.detectarVersaoSei) {
+                            sh """
+                            cd infra
+                            set +e
+                            grep -e "const SEI_VERSAO = '5\\..*\\..*';" ../../sei/SEI.php
+                            e=\$?
+                            set -e
+                            if [ "\$e" = "0" ]; then
+                                cat envlocal-example-mysql-sei5.env >> envlocal.env
+                                echo "export DOCKER_IMAGE_BD=processoeletronico/mariadb10.5-sei50:latest" >> envlocal.env
+                            fi
+                            """
+                        } else {
+                            sh """
+                            cd infra
+                            cat envlocal-example-mysql-sei5.env >> envlocal.env
+                            echo "export DOCKER_IMAGE_BD=processoeletronico/mariadb10.5-sei50:latest" >> envlocal.env
+                            """
+                        }
+                    }
+
                     sh """
 
                     cd infra
-
-                    set +e
-                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" ../../sei/SEI.php
-                    e=\$?
-                    set -e
-
-
-
-
-                    if [ "\$e" = "0" ]; then
-
-                        cat envlocal-example-mysql-sei5.env >> envlocal.env
-                        echo "export DOCKER_IMAGE_BD=processoeletronico/mariadb10.5-sei50:latest" >> envlocal.env
-
-                    fi
 
                     echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
 
