@@ -426,7 +426,8 @@ pipeline {
                         cd infra
                         echo "export GITUSER_REPO_MODULOS=marlinhares" >> envlocal.env
                         echo "export GITPASS_REPO_MODULOS=${LHAVE}" >> envlocal.env
-                        echo "export APP_FONTES_GITHUB_TOKEN=${LHAVE}" >> envlocal.env
+                        echo "export APP_FONTES_GIT_PATH=https://${LHAVE}@github.com/pengovbr/sei.git" >> envlocal.env
+                        echo "export APP_FONTES_GIT_PRIVKEY_BASE64=\$(printf '%s' '${LHAVE}' | base64 -w 0)" >> envlocal.env
                         """
                     }
 
