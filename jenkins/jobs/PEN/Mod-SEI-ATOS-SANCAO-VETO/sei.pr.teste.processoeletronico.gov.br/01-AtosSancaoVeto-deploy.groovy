@@ -757,7 +757,7 @@ pipeline {
                         break
                       fi
 
-                      sleep 10
+                      sleep 60
 
 
                     done
@@ -843,7 +843,7 @@ pipeline {
                             sh """
                             cd infra
                             echo "export APP_HOST=${JOB_URL}" >> envlocal.env
-                            make check_isalive-timeout=120 check-sei-isalive
+                            make check_isalive-timeout=1200 check-sei-isalive
                             """
                         }
                     }
