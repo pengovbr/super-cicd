@@ -715,7 +715,7 @@ pipeline {
 
                     make kubernetes_montar_yaml
 
-                    sed -i "s|imagePullPolicy: Always|imagePullPolicy: IfNotPresent|g" orquestrators/rancher-kubernetes/topublish/*.yaml
+                    //sed -i "s|imagePullPolicy: Always|imagePullPolicy: IfNotPresent|g" orquestrators/rancher-kubernetes/topublish/*.yaml
                     make kubernetes_apply
 
                     sleep 20
