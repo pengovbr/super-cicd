@@ -59,7 +59,7 @@ pipeline {
             description: 'Caso deseje habilitar a federação nessa instalação, informe true. Após a criação do ambiente você terá que configurar com que outro ambiente será a federação')
         choice(
             name: 'moduloEstatisticaInstalar',
-            choices: ['true', 'false'],
+            choices: ['false', 'true'],
             description: 'Instalar Módulo Estatisticas')
         string(
             name: 'moduloEstatisticaVersao',
@@ -79,7 +79,7 @@ pipeline {
             description: "Chave para envio dos dados")
         choice(
             name: 'moduloPenInstalar',
-            choices: ['true', 'false'],
+            choices: ['false', 'true'],
             description: 'Instalar Módulo PEN')
         string(
             name: 'moduloPenVersao',
