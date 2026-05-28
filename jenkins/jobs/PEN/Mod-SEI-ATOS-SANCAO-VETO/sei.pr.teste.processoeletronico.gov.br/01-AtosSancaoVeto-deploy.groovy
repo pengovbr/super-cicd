@@ -436,6 +436,7 @@ pipeline {
                     echo "" >> envlocal.env
                     echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
                     echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
+                    echo "export APP_PROTOCOLO=https" >> envlocal.env
                     echo "export APP_HOST=${JOB_URL}" >> envlocal.env
                     echo "export APP_ORGAO=${JOB_ORGAO}" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
@@ -842,7 +843,7 @@ pipeline {
                             sh """
                             cd infra
                             echo "export APP_HOST=${JOB_URL}" >> envlocal.env
-                            make check_isalive-timeout=1200 check-sei-isalive
+                            make check_isalive-timeout=120 check-sei-isalive
                             """
                         }
                     }
