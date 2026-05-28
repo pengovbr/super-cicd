@@ -21,6 +21,22 @@ pipeline {
             name: 'versaoSei',
             defaultValue:"main",
             description: "Branch/Tag do git para o SEI")
+        choice(
+            name: 'moduloSancaoVetoInstalar',
+            choices: ['true', 'false'],
+            description: 'Instalar Módulo Sanção e Veto')
+        string(
+            name: 'moduloSancaoVetoVersao',
+            defaultValue:"main",
+            description: "Versão do Módulo Sanção e Veto")
+        choice(
+            name: 'moduloAtosInstalar',
+            choices: ['true', 'false'],
+            description: 'Instalar Módulo SEI Atos')
+        string(
+            name: 'moduloAtosVersao',
+            defaultValue:"main",
+            description: "Versão do Módulo SEI Atos")        
         string(
             name: 'gitSeiKeyJenkins',
             defaultValue:"github_pat_readonly_pengovbr",
@@ -169,22 +185,7 @@ pipeline {
             name: 'moduloRespostaVersao',
             defaultValue:"master",
             description: "Versão do Módulo Resposta")
-        choice(
-            name: 'moduloSancaoVetoInstalar',
-            choices: ['true', 'false'],
-            description: 'Instalar Módulo Sanção e Veto')
-        string(
-            name: 'moduloSancaoVetoVersao',
-            defaultValue:"main",
-            description: "Versão do Módulo Sanção e Veto")
-        choice(
-            name: 'moduloAtosInstalar',
-            choices: ['true', 'false'],
-            description: 'Instalar Módulo SEI Atos')
-        string(
-            name: 'moduloAtosVersao',
-            defaultValue:"main",
-            description: "Versão do Módulo SEI Atos")
+        
 
     }
 
