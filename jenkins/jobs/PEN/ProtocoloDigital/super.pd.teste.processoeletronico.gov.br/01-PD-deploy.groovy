@@ -17,29 +17,10 @@ pipeline {
             name: 'Leiame',
             defaultValue: false,
             description: 'Atenção. A versão dos módulos ou do SEI pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto sei-docker')
-
           string(
               name: 'versaoSei',
               defaultValue:"main",
               description: "Branch/Tag do git para o SEI")
-          string(
-              name: 'gitSeiAddress',
-              defaultValue:"git@github.com:pengovbr/sei",
-              description: "Endereco git do Fonte do Sei")
-          string(
-              name: 'gitSeiKey',
-              defaultValue:"CredGitSuper",
-              description: "Chave git em formato base64 em jenkins secret para o app docker")
-
-          string(
-              name: 'gitSeiKeyJenkins',
-              defaultValue:"gitcredsuper",
-              description: "Secret Jenkins para o Repo")
-          string(
-              name: 'gitKeyModulo',
-              defaultValue:"github_pat_readonly_pengovbr",
-              description: "Secret Jenkins para a chave github do modulo")
-
           choice(
               name: 'servicoProtocoloDigitalInstalar',
               choices: ['true', 'false'],
@@ -56,8 +37,6 @@ pipeline {
               name: 'servicoProtocoloDigitalOperacoes',
               defaultValue:"3,2,15,0,1",
               description: "Id das operacoes para o PD")
-
-
         choice(
             name: 'moduloRespostaInstalar',
             choices: ['true', 'false'],
@@ -82,28 +61,25 @@ pipeline {
             steps {
 
                 script{
-                    GITURL = "https://github.com/pengovbr/sei-docker.git"
+                    env.GITSEIPAT = "github_pat_readonly_pengovbr"
+                    env.GITMODULOPAT = "github_pat_readonly_pengovbr"
+                    env.GITSEIDOCKERURL = "https://github.com/pengovbr/sei-docker.git"
+                    env.GITSEIURL = "https://github.com/pengovbr/sei.git"
 
+                    env.GITSEIVERSAO = params.versaoSei
+                    env.SERVICOPD_INSTALAR = params.servicoProtocoloDigitalInstalar
+                    env.SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
+                    env.SERVICOPD_NOME = params.servicoProtocoloDigitalNome
+                    env.SERVICOPD_OPERACOES = params.servicoProtocoloDigitalOperacoes
 
-                    GITSEIURL = params.gitSeiAddress
-                    GITSEIVERSAO = params.versaoSei
-                    GITSEIKEY = params.gitSeiKey
-                    GITCRED = params.gitSeiKeyJenkins
-                    GITKEYMODULO = params.gitKeyModulo
-
-                    SERVICOPD_INSTALAR = params.servicoProtocoloDigitalInstalar
-                    SERVICOPD_SIGLA = params.servicoProtocoloDigitalSigla
-                    SERVICOPD_NOME = params.servicoProtocoloDigitalNome
-                    SERVICOPD_OPERACOES = params.servicoProtocoloDigitalOperacoes
-
-                    MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
-                    MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
-                    MODULORESPOSTA_SISTEMA_ID = params.moduloRespostaSistemaId
-                    MODULORESPOSTA_DOCUMENTO_ID = params.moduloRespostaDocumentoId
+                    env.MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
+                    env.MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
+                    env.MODULORESPOSTA_SISTEMA_ID = params.moduloRespostaSistemaId
+                    env.MODULORESPOSTA_DOCUMENTO_ID = params.moduloRespostaDocumentoId
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
-                        warning('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faça login novamente')
+                        error 'Informe os valores de parametro iniciais. Caso eles n tenham aparecido faça login novamente'
                     }
 
                 }
@@ -125,8 +101,7 @@ pipeline {
                     """
 
                     git branch: 'main',
-                        //credentialsId: GITCRED,
-                        url: GITURL
+                        url: GITSEIDOCKERURL
 
                     sh """
                     ls -l
@@ -138,30 +113,30 @@ pipeline {
 
         stage('Checkout-SEI'){
 
-                    steps {
+            steps {
 
-                        dir('sei'){
+                dir('sei'){
 
-                            sh """
-                            rm -rf *
-                            git config --global http.sslVerify false
-                            """
+                    sh """
+                    rm -rf *
+                    git config --global http.sslVerify false
+                    """
 
-                            git branch: 'main',
-                                credentialsId: GITCRED,
-                                url: GITSEIURL
+                    git branch: 'main',
+                        url: GITSEIURL,
+                        credentialsId: GITSEIPAT
 
-                            sh """
-                            ls -l
+                    sh """
+                    ls -l
 
-                            git checkout ${GITSEIVERSAO}
+                    git checkout ${GITSEIVERSAO}
 
 
-                            """
+                    """
 
-                        }
-                    }
                 }
+            }
+        }
 
 
 
@@ -170,18 +145,13 @@ pipeline {
             steps {
                 dir('kube'){
 
-                    withCredentials([ string(credentialsId: GITSEIKEY, variable: 'LHAVE')]) {
+                    withCredentials([usernamePassword(credentialsId: GITSEIPAT, usernameVariable: 'USER', passwordVariable: 'LHAVE')]) {
 
                         sh """
-
                         cd infra
                         echo "" >> envlocal.env
-                        echo "export APP_FONTES_GIT_PRIVKEY_BASE64=${LHAVE}" >> envlocal.env
-
+                        echo "export APP_FONTES_GITHUB_TOKEN=${LHAVE}" >> envlocal.env
                         """
-                    }
-
-                    withCredentials([ string(credentialsId: GITKEYMODULO, variable: 'LHAVE')]) {
 
                         sh """
 
@@ -190,6 +160,7 @@ pipeline {
                         echo "export GITPASS_REPO_MODULOS=${LHAVE}" >> envlocal.env
 
                         """
+
                     }
 
                     sh """
@@ -216,7 +187,7 @@ pipeline {
                     echo "export APP_HOST=super.pd.teste.processoeletronico.gov.br" >> envlocal.env
                     echo "export APP_FONTES_GIT_PATH=git@github.com:pengovbr/sei" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
-                    echo "export KUBERNETES_NAMESPACE=superns-pd" >> envlocal.env
+                    echo "export KUBERNETES_NAMESPACE=sei-pd" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_MEMORY_SOLR=1.5Gi" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_CPU_SOLR=1000m" >> envlocal.env
@@ -247,10 +218,21 @@ pipeline {
                     make kubernetes_delete || true
 
                     make kubernetes_montar_yaml
-                    make kubernetes_apply
+                    #make kubernetes_apply
+                    cd orquestrators/rancher-kubernetes/topublish/; \
+                    kubectl --insecure-skip-tls-verify apply -f configmaps.yaml; \
+                    kubectl --insecure-skip-tls-verify apply -f secrets.yaml; \
+                    sleep 2
+                    kubectl --insecure-skip-tls-verify apply -f pvc.yaml; \
+                    kubectl --insecure-skip-tls-verify apply -f jobs.yaml; \
+                    sleep 2
+                    kubectl --insecure-skip-tls-verify apply -f statefullsets.yaml; \
+                    kubectl --insecure-skip-tls-verify apply -f deploys-svc.yaml; \
+                    sleep 10
+                    kubectl --insecure-skip-tls-verify apply -f ingress.yaml;
 
                     sleep 20
-                    kubectl -n superns-pd scale --replicas=0 deployment/jod || true
+                    kubectl --insecure-skip-tls-verify -n sei-pd scale --replicas=0 deployment/jod || true
                     """
 
 
