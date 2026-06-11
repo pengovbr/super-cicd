@@ -270,6 +270,32 @@ pipeline {
         stage('Deletar e Subir Projeto Kubernetes'){
 
             steps {
+
+                sh """
+                pwd
+                ls -lh
+
+
+                d=sei/
+                if [ -d sei/src ]; then d=sei/src; fi
+                    cd \$d
+                    set +e
+                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
+                    e=\$?
+                    set -e
+                    if [ -d ../src ]; then cd ..; fi
+                    cd ../kube
+
+
+                    if [ "\$e" = "0" ]; then
+
+                        cat infra/envlocal-example-mysql-sei5.env >> infra/envlocal.env
+
+                    fi
+
+
+                """
+
                 dir('kube'){
 
                     withCredentials([usernamePassword(credentialsId: GITSEIPAT, usernameVariable: 'USER', passwordVariable: 'LHAVE')]) {
@@ -299,11 +325,11 @@ pipeline {
                     echo "export APP_ORGAO=${JOB_ORGAO}" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
                     echo "export KUBERNETES_NAMESPACE=${JOB_NS}" >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS_ANEXOS=nfs-client-bucket" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_ANEXOS=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_DB=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_FONTES=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_SOLR=nfs-client" >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS_CONTROLADORINST=nfs-client-bucket" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_CONTROLADORINST=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_MEMORY_SOLR=1.5Gi" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_CPU_SOLR=1000m" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_MEMORY_SOLR=1.5Gi" >> envlocal.env
