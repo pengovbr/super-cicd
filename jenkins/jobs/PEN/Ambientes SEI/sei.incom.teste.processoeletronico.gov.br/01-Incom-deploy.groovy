@@ -137,10 +137,6 @@ pipeline {
             name: 'moduloLoginUnicoInstalar',
             choices: ['false', 'Aguardando Credencial'],
             description: 'Instalar Módulo Login Unico')
-        string(
-            name: 'moduloLoginUnicoVersao',
-            defaultValue:"master",
-            description: "Versao do Módulo Login Unico")
         choice(
             name: 'moduloAssinaturaInstalar',
             choices: ['false', 'true'],
@@ -175,97 +171,75 @@ pipeline {
 
                 script{
 
-                    JOB_URL = "sei.incom.teste.processoeletronico.gov.br"
-                    JOB_ORGAO = "IN"
-                    JOB_NS = "sei-incom"
+                    env.JOB_URL = "sei.incom.teste.processoeletronico.gov.br"
+                    env.JOB_ORGAO = "IN"
+                    env.JOB_NS = "sei-incom"
 
-                    JOB_MODULOPI_URL = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl"
-                    JOB_MODULOPI_USUARIO = "credModuloPIINUsuario"
-                    JOB_MODULOPI_SENHA = "credModuloPIINSenha"
+                    env.JOB_MODULOPI_URL = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl"
+                    env.JOB_MODULOPI_USUARIO = "credModuloPIINUsuario"
+                    env.JOB_MODULOPI_SENHA = "credModuloPIINSenha"
 
-                    JOB_MODULOREST_URLNOTIFICACAO = "https://app-push-gestao-api.dev.nuvem.gov.br/mba-mmmessage/message"
-                    JOB_MODULOREST_IDAPP = "4"
-                    JOB_MODULOREST_CHAVE = "credModWsSuperChave"
-                    JOB_MODULOREST_TOKEN = "504CE1E9-8913-488F-AB3E-EDDABC065B06"
+                    env.JOB_MODULOREST_URLNOTIFICACAO = "https://app-push-gestao-api.dev.nuvem.gov.br/mba-mmmessage/message"
+                    env.JOB_MODULOREST_IDAPP = "4"
+                    env.JOB_MODULOREST_CHAVE = "credModWsChave"
+                    env.JOB_MODULOREST_TOKEN = "504CE1E9-8913-488F-AB3E-EDDABC065B06"
 
-                    JOB_MODULOLOGINUNICO_CLIENTID = "credLoginUnicoClientId"
-                    JOB_MODULOLOGINUNICO_SECRET = "credLoginUnicoSecret"
-                    JOB_MODULOLOGINUNICO_URLPROVIDER = "https://sso.staging.acesso.gov.br/"
-                    JOB_MODULOLOGINUNICO_REDIRECTURL = "https://sei.orgao6.tramita.processoeletronico.gov.br/sei/modulos/loginunico/controlador_loginunico.php"
-                    JOB_MODULOLOGINUNICO_URLLOGOUT = "https://sei.orgao6.tramita.processoeletronico.gov.br/sei/modulos/loginunico/logout.php"
-                    JOB_MODULOLOGINUNICO_SCOPE = "openid+email+phone+profile+govbr_empresa+govbr_confiabilidades"
-                    JOB_MODULOLOGINUNICO_SERVICOS = "https://api.staging.acesso.gov.br/"
-                    JOB_MODULOLOGINUNICO_REVALIDACAO = "https://oauth.staging.acesso.gov.br/v1/"
-                    JOB_MODULOLOGINUNICO_CLIENTIDVALIDACAO = "sei.resposta.nuvem.gov.br/validacaosenha"
-                    JOB_MODULOLOGINUNICO_SECRETVALIDACAO = "credLoginUnicoSecretValidacao"
-                    JOB_MODULOLOGINUNICO_ORGAO = "0"
+                    env.GITSEIPAT = "github_pat_readonly_pengovbr"
+                    env.GITMODULOPAT = "github_pat_readonly_pengovbr"
+                    env.GITSEIDOCKERURL = "https://github.com/pengovbr/sei-docker.git"
+                    env.GITSEIURL = "https://github.com/pengovbr/sei.git"
 
-                    GITURL = "https://github.com/spbgovbr/sei-docker.git"
-                    GITCREDFONTE = params.gitSeiKeyJenkins
-                    GITSEIVERSAO = params.versaoSei
+                    env.GITSEIVERSAO = params.versaoSei
 
-                    MULTIORGAO = params.multiorgao
-                    MULTIORGAOSIGLAS = (MULTIORGAO == 'true' ? params.multiorgaoSiglas : "");
-                    MULTIORGAONOMES = (MULTIORGAO == 'true' ? params.multiorgaoNomes : "");
-                    FEDERACAO = params.federacao
+                    env.MULTIORGAO = params.multiorgao
+                    env.MULTIORGAOSIGLAS = (env.MULTIORGAO == 'true' ? params.multiorgaoSiglas : "");
+                    env.MULTIORGAONOMES = (env.MULTIORGAO == 'true' ? params.multiorgaoNomes : "");
+                    env.FEDERACAO = params.federacao
 
-                    MODULOESTATISTICA_INSTALAR = params.moduloEstatisticaInstalar
-                    MODULOESTATISTICA_VERSAO = params.moduloEstatisticaVersao
-                    MODULOESTATISTICA_URL = params.moduloEstatisticasUrl
-                    MODULOESTATISTICA_SIGLA = params.moduloEstatisticaSigla
-                    MODULOESTATISTICA_CHAVE = params.moduloEstatisticaChave
+                    env.MODULOESTATISTICA_INSTALAR = params.moduloEstatisticaInstalar
+                    env.MODULOESTATISTICA_VERSAO = params.moduloEstatisticaVersao
+                    env.MODULOESTATISTICA_URL = params.moduloEstatisticasUrl
+                    env.MODULOESTATISTICA_SIGLA = params.moduloEstatisticaSigla
+                    env.MODULOESTATISTICA_CHAVE = params.moduloEstatisticaChave
 
-                    MODULOPEN_INSTALAR = params.moduloPenInstalar
-                    MODULOPEN_VERSAO = params.moduloPenVersao
-                    MODULOPEN_AMBIENTE = params.moduloPenAmbiente
-                    MODULOPEN_ENDPOINT = params.moduloPenEndpoint
-                    MODULOPEN_CONFIGURAR = params.moduloPenConfigurar
-                    MODULOPEN_CERT = params.moduloPenCert.split(' certId: ')[1]
-                    MODULOPEN_CERTSENHA = params.moduloPenCertSenha.split(' Senha: ')[1]
-                    MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
-                    MODULOPEN_GEARMAN_PORTA = params.moduloPenGearmanPorta
-                    MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem.split('ID ')[1]
-                    MODULOPEN_TIPOPROCESSO = params.moduloPenTipoProcessoExterno
-                    MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
-                    MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
-                    MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen.split('ID ')[1]
+                    env.MODULOPEN_INSTALAR = params.moduloPenInstalar
+                    env.MODULOPEN_VERSAO = params.moduloPenVersao
+                    env.MODULOPEN_AMBIENTE = params.moduloPenAmbiente
+                    env.MODULOPEN_ENDPOINT = params.moduloPenEndpoint
+                    env.MODULOPEN_CONFIGURAR = params.moduloPenConfigurar
+                    env.MODULOPEN_CERT = params.moduloPenCert.split(' certId: ')[1]
+                    env.MODULOPEN_CERTSENHA = params.moduloPenCertSenha.split(' Senha: ')[1]
+                    env.MODULOPEN_GEARMAN_IP = params.moduloPenGearmanIp
+                    env.MODULOPEN_GEARMAN_PORTA = params.moduloPenGearmanPorta
+                    env.MODULOPEN_REPOSITORIOORIGEM = params.moduloPenRepositorioOrigem.split('ID ')[1]
+                    env.MODULOPEN_TIPOPROCESSO = params.moduloPenTipoProcessoExterno
+                    env.MODULOPEN_UNIDADEGERADORA = params.moduloPenUnidadeGeradora
+                    env.MODULOPEN_UNIDADEASSOCIACAOSEI = params.moduloPenUnidadeAssociacaoSei
+                    env.MODULOPEN_UNIDADEASSOCIACAOPEN = params.moduloPenUnidadeAssociacaoPen.split('ID ')[1]
 
-                    MODULOPI_INSTALAR = params.moduloPIInstalar
-                    MODULOPI_VERSAO = params.moduloPIVersao
-                    MODULOPI_EMAIL = params.moduloPIemail
-                    MODULOPI_URL = JOB_MODULOPI_URL
-                    MODULOPI_USUARIO = JOB_MODULOPI_USUARIO
-                    MODULOPI_SENHA = JOB_MODULOPI_SENHA
+                    env.MODULOPI_INSTALAR = params.moduloPIInstalar
+                    env.MODULOPI_VERSAO = params.moduloPIVersao
+                    env.MODULOPI_EMAIL = params.moduloPIemail
+                    env.MODULOPI_URL = JOB_MODULOPI_URL
+                    env.MODULOPI_USUARIO = JOB_MODULOPI_USUARIO
+                    env.MODULOPI_SENHA = JOB_MODULOPI_SENHA
 
-                    MODULOREST_INSTALAR = params.moduloRestInstalar
-                    MODULOREST_VERSAO = params.moduloRestVersao
-                    MODULOREST_URLNOTIFICACAO = JOB_MODULOREST_URLNOTIFICACAO
-                    MODULOREST_IDAPP = JOB_MODULOREST_IDAPP
-                    MODULOREST_CHAVE = JOB_MODULOREST_CHAVE
-                    MODULOREST_TOKEN = JOB_MODULOREST_TOKEN
+                    env.MODULOREST_INSTALAR = params.moduloRestInstalar
+                    env.MODULOREST_VERSAO = params.moduloRestVersao
+                    env.MODULOREST_URLNOTIFICACAO = JOB_MODULOREST_URLNOTIFICACAO
+                    env.MODULOREST_IDAPP = JOB_MODULOREST_IDAPP
+                    env.MODULOREST_CHAVE = JOB_MODULOREST_CHAVE
+                    env.MODULOREST_TOKEN = JOB_MODULOREST_TOKEN
 
-                    MODULOLOGINUNICO_INSTALAR = params.moduloLoginUnicoInstalar
-                    MODULOLOGINUNICO_VERSAO = params.moduloLoginUnicoVersao
-                    MODULOLOGINUNICO_CLIENTID = JOB_MODULOLOGINUNICO_CLIENTID
-                    MODULOLOGINUNICO_SECRET = JOB_MODULOLOGINUNICO_SECRET
-                    MODULOLOGINUNICO_URLPROVIDER = JOB_MODULOLOGINUNICO_URLPROVIDER
-                    MODULOLOGINUNICO_REDIRECTURL = JOB_MODULOLOGINUNICO_REDIRECTURL
-                    MODULOLOGINUNICO_URLLOGOUT = JOB_MODULOLOGINUNICO_URLLOGOUT
-                    MODULOLOGINUNICO_SCOPE = JOB_MODULOLOGINUNICO_SCOPE
-                    MODULOLOGINUNICO_SERVICOS = JOB_MODULOLOGINUNICO_SERVICOS
-                    MODULOLOGINUNICO_REVALIDACAO = JOB_MODULOLOGINUNICO_REVALIDACAO
-                    MODULOLOGINUNICO_CLIENTIDVALIDACAO = JOB_MODULOLOGINUNICO_CLIENTIDVALIDACAO
-                    MODULOLOGINUNICO_SECRETVALIDACAO = JOB_MODULOLOGINUNICO_SECRETVALIDACAO
-                    MODULOLOGINUNICO_ORGAO = JOB_MODULOLOGINUNICO_ORGAO
+                    env.MODULOASSINATURA_INSTALAR = params.moduloAssinaturaInstalar
+                    env.MODULOASSINATURA_VERSAO = params.moduloAssinaturaVersao
+                    env.MODULOASSINATURA_CREDENCIAL = "modAssinatura-Homolog.env"
 
-                    MODULOASSINATURA_INSTALAR = params.moduloAssinaturaInstalar
-                    MODULOASSINATURA_VERSAO = params.moduloAssinaturaVersao
+                    env.MODULOINCOM_INSTALAR = params.moduloIncomInstalar
+                    env.MODULOINCOM_VERSAO = params.moduloIncomVersao
 
-                    MODULOINCOM_INSTALAR = params.moduloIncomInstalar
-                    MODULOINCOM_VERSAO = params.moduloIncomVersao
-
-                    MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
-                    MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
+                    env.MODULORESPOSTA_INSTALAR = params.moduloRespostaInstalar
+                    env.MODULORESPOSTA_VERSAO = params.moduloRespostaVersao
 
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
@@ -278,9 +252,6 @@ pipeline {
                 echo ${WORKSPACE}
                 ls -lha
 
-                sudo rm -rf kube
-
-                sudo rm -rf sei
                 """
             }
         }
@@ -291,67 +262,23 @@ pipeline {
 
                 dir('sei'){
 
-                    withCredentials([ string(credentialsId: GITCREDFONTE, variable: 'LHAVE')]) {
+                    sh """
+                    rm -rf *
+                    git config --global http.sslVerify false
+                    """
 
-                        sh """
+                    git branch: 'main',
+                        url: GITSEIURL,
+                        credentialsId: GITSEIPAT
 
-                        baixar_seiphp(){
+                    sh """
+                    ls -l
 
-                            if [ ! -f SEI.php ]; then
-
-                                curl -H 'Authorization: token ${LHAVE}' \
-                                     -H 'Accept: application/vnd.github.v3.raw' \
-                                     -o SEI.php \
-                                     -L https://api.github.com/repos/pengovbr/sei/contents/\${1}
-
-                                set +e
-                                grep -e "SEI_VERSAO" SEI.php
-                                e=\$?
-                                set -e
-
-                                if [ ! "\$e" = "0" ]; then
-                                    rm SEI.php
-                                fi
-
-                            fi
-                        }
-
-                        gettaghash(){
-
-                            r=\$(curl -H 'Authorization: token ${LHAVE}' \
-                                 https://api.github.com/repos/pengovbr/sei/git/refs/tags/\${1})
-
-                            hash=\$(echo \$r | grep -oP 'git/tags/.*?"' | sed "s|git/tags/||g" | sed 's|"||g')
-                            if [ "\$hash" = "" ]; then
-                                echo "Versao nao encontrada no git"
-                                exit 1
-                            fi
-                            echo "\$hash"
+                    git checkout ${GITSEIVERSAO}
 
 
-                        }
+                    """
 
-
-                        rm -rf SEI.php
-
-                        baixar_seiphp "src/sei/web/SEI.php?ref=${GITSEIVERSAO}"
-                        baixar_seiphp "sei/web/SEI.php?ref=${GITSEIVERSAO}"
-                        if [ ! -f SEI.php ]; then
-                            hash=\$(gettaghash "${GITSEIVERSAO}")
-                            baixar_seiphp "src/sei/web/SEI.php?ref=\${hash}"
-                            baixar_seiphp "sei/web/SEI.php?ref=\${hash}"
-                        fi
-
-                        if [ ! -f SEI.php ]; then
-                            echo "Versao nao encontrada no repo git"
-                            exit 1
-                        fi
-
-                        ls -lha
-                        cat SEI.php
-
-                        """
-                    }
                 }
             }
         }
@@ -363,19 +290,14 @@ pipeline {
                 dir('kube'){
 
                     sh """
-                    rm -rf infra/envlocal.env
                     git config --global http.sslVerify false
                     """
 
                     git branch: 'main',
-                        //credentialsId: GITCRED,
-                        url: GITURL
+                        url: GITSEIDOCKERURL
 
                     sh """
                     ls -l
-
-
-
                     """
 
                 }
@@ -385,16 +307,100 @@ pipeline {
         stage('Deletar e Subir Projeto Kubernetes'){
 
             steps {
+
+                sh """
+                pwd
+                ls -lh
+
+
+                d=sei/
+                if [ -d sei/src ]; then d=sei/src; fi
+                    cd \$d
+                    set +e
+                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
+                    e=\$?
+                    set -e
+                    if [ -d ../src ]; then cd ..; fi
+                    cd ../kube
+
+
+                    if [ "\$e" = "0" ]; then
+
+                        cat infra/envlocal-example-mysql-sei5.env >> infra/envlocal.env
+
+                    fi
+
+
+                """
+
                 dir('kube'){
 
-                    withCredentials([ string(credentialsId: GITCREDFONTE, variable: 'LHAVE')]) {
+                    withCredentials([usernamePassword(credentialsId: GITSEIPAT, usernameVariable: 'USER', passwordVariable: 'LHAVE')]) {
 
                         sh """
                         cd infra
-                        echo "export GITUSER_REPO_MODULOS=marlinhares" >> envlocal.env
-                        echo "export GITPASS_REPO_MODULOS=${LHAVE}" >> envlocal.env
+                        echo "" >> envlocal.env
                         echo "export APP_FONTES_GITHUB_TOKEN=${LHAVE}" >> envlocal.env
                         """
+
+                        sh """
+
+                        cd infra
+                        echo "" >> envlocal.env
+                        echo "export GITPASS_REPO_MODULOS=${LHAVE}" >> envlocal.env
+
+                        """
+
+                    }
+
+                    withCredentials([file(credentialsId: MODULOASSINATURA_CREDENCIAL, variable: 'ENVASSIN')]) {
+                        sh """
+                        pwd
+                        ls -lha
+                        ls -lha ../
+
+                        """
+                    }
+
+                    withCredentials([file(credentialsId: MODULOASSINATURA_CREDENCIAL, variable: 'ENVASSIN')]) {
+                        sh """
+                        pwd
+                        ls -lha
+                        ls -lha ../
+                        cat ${ENVASSIN} > Assinatura.env
+                        """
+                    }
+
+                    script {
+
+                        def props = readProperties file: 'Assinatura.env'
+
+                        env.MODULO_ASSINATURA_URLPROVIDER = props['MODULO_ASSINATURA_URLPROVIDER']
+                        env.MODULO_ASSINATURA_CLIENTID = props['MODULO_ASSINATURA_CLIENTID']
+                        env.MODULO_ASSINATURA_SECRET = props['MODULO_ASSINATURA_SECRET']
+
+                        env.MODULO_ASSINATURA_VALIDAR_API_URL = props['MODULO_ASSINATURA_VALIDAR_API_URL']
+                        env.MODULO_ASSINATURA_VALIDAR_API_KEY = props['MODULO_ASSINATURA_VALIDAR_API_KEY']
+
+                        env.MODULO_ASSINATURA_SUITE = props['MODULO_ASSINATURA_SUITE']
+
+                        env.MODULO_ASSINATURA_PKCS12_URL = props['MODULO_ASSINATURA_PKCS12_URL']
+                        env.MODULO_ASSINATURA_PKCS12_URL_ASSINAR = props['MODULO_ASSINATURA_PKCS12_URL_ASSINAR']
+
+                        env.MODULO_ASSINATURA_YKUE_URL = props['MODULO_ASSINATURA_YKUE_URL']
+                        env.MODULO_ASSINATURA_YKUE_URL_ASSINAR = props['MODULO_ASSINATURA_YKUE_URL_ASSINAR']
+
+                        env.MODULO_ASSINATURA_INTEGRA_ICP_URL = props['MODULO_ASSINATURA_INTEGRA_ICP_URL']
+                        env.MODULO_ASSINATURA_INTEGRA_ICP_URL_CLEARINGS = props['MODULO_ASSINATURA_INTEGRA_ICP_URL_CLEARINGS']
+                        env.MODULO_ASSINATURA_INTEGRA_ICP_URL_ASSINAR = props['MODULO_ASSINATURA_INTEGRA_ICP_URL_ASSINAR']
+
+                        env.MODULO_ASSINATURA_CLOUDPSC_URL = props['MODULO_ASSINATURA_CLOUDPSC_URL']
+                        env.MODULO_ASSINATURA_CLOUDPSC_URL_START = props['MODULO_ASSINATURA_CLOUDPSC_URL_START']
+                        env.MODULO_ASSINATURA_CLOUDPSC_URL_ASSINAR = props['MODULO_ASSINATURA_CLOUDPSC_URL_ASSINAR']
+
+                        env.MODULO_ASSINATURA_API_KEY_ITYHY = props['MODULO_ASSINATURA_API_KEY_ITYHY']
+
+
                     }
 
                     sh """
@@ -406,7 +412,11 @@ pipeline {
                     echo "export APP_ORGAO=${JOB_ORGAO}" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
                     echo "export KUBERNETES_NAMESPACE=${JOB_NS}" >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client2" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_ANEXOS=nfs-client" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_DB=nfs-client" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_FONTES=nfs-client" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_SOLR=nfs-client" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_CONTROLADORINST=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_MEMORY_SOLR=1.5Gi" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_CPU_SOLR=1000m" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_MEMORY_SOLR=1.5Gi" >> envlocal.env
@@ -539,97 +549,37 @@ pipeline {
                         """
                     }
 
-                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_CLIENTID, variable: 'LHAVE')]) {
-
-                        sh """
-
-                        cd infra
-                        echo "" >> envlocal.env
-                        echo "export MODULO_LOGINUNICO_CLIENTID=${LHAVE}" >> envlocal.env
-
-                        """
-                    }
-
-                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_SECRET, variable: 'LHAVE')]) {
-
-                        sh """
-
-                        cd infra
-                        echo "" >> envlocal.env
-                        echo "export MODULO_LOGINUNICO_SECRET=${LHAVE}" >> envlocal.env
-
-                        """
-                    }
-
-                    withCredentials([ string(credentialsId: MODULOLOGINUNICO_SECRETVALIDACAO, variable: 'LHAVE')]) {
-
-                        sh """
-
-                        cd infra
-                        echo "" >> envlocal.env
-                        echo "export MODULO_LOGINUNICO_SECRETVALIDACAO=${LHAVE}" >> envlocal.env
-
-                        """
-                    }
-
-
-                    withCredentials([file(credentialsId: "moduloassinatura.properties", variable: 'FILE')]) {
-                        sh "cp \$FILE moduloassinatura.properties; echo \$FILE "
-                        sh "cat moduloassinatura.properties "
-                    }
-
-                    script {
-                        def props = readProperties file: 'moduloassinatura.properties'
-
-                        MODULOASSINATURA_URLPROVIDER = props['ASSINATURA_URL_PROVIDER']
-                        MODULOASSINATURA_CLIENTID = props['ASSINATURA_CLIENT_ID']
-                        MODULOASSINATURA_SECRET = props["ASSINATURA_SECRET"]
-                        MODULOASSINATURA_VALIDAR_API_URL = props["VALIDAR_API_URL"]
-                        MODULOASSINATURA_VALIDAR_API_KEY = props["VALIDAR_API_KEY"]
-                        MODULOASSINATURA_TOKEN_URL = props["TOKEN_URL"]
-                        MODULOASSINATURA_TOKEN_SIGN_URL = props["TOKEN_URL_ASSINAR"]
-                        MODULOASSINATURA_INTEGRA_ICP_URL = props["INTEGRA_ICP_URL"]
-                        MODULOASSINATURA_INTEGRA_ICP_URL_CLEARINGS = props["INTEGRA_ICP_URL_CLEARINGS"]
-                        MODULOASSINATURA_INTEGRA_ICP_URL_ASSINAR = props["INTEGRA_ICP_URL_ASSINAR"]
-                        MODULOASSINATURA_CLOUDPSC_URL = props["CLOUD_PSC_URL"]
-                        MODULOASSINATURA_CLOUDPSC_START_URL = props["CLOUD_PSC_URL_START"]
-                        MODULOASSINATURA_CLOUDPSC_SIGN_URL = props["CLOUD_PSC_URL_ASSINAR"]
-                        MODULOASSINATURA_API_KEY_ITYHY = props["API_KEY_ITYHY"]
-
-                    }
-
-
 
                     sh """
                     cd infra
 
-                    echo "export MODULO_LOGINUNICO_INSTALAR=${MODULOLOGINUNICO_INSTALAR}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_VERSAO=${MODULOLOGINUNICO_VERSAO}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_URLPROVIDER=${MODULOLOGINUNICO_URLPROVIDER}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_REDIRECTURL=${MODULOLOGINUNICO_REDIRECTURL}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_URLLOGOUT=${MODULOLOGINUNICO_URLLOGOUT}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_SCOPE=${MODULOLOGINUNICO_SCOPE}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_URLSERVICOS=${MODULOLOGINUNICO_SERVICOS}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_URLREVALIDACAO=${MODULOLOGINUNICO_REVALIDACAO}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_CIENTIDVALIDACAO=${MODULOLOGINUNICO_CLIENTIDVALIDACAO}" >> envlocal.env
-                    echo "export MODULO_LOGINUNICO_ORGAO=${MODULOLOGINUNICO_ORGAO}" >> envlocal.env
-
                     echo "export MODULO_ASSINATURA_INSTALAR=${MODULOASSINATURA_INSTALAR}" >> envlocal.env
                     echo "export MODULO_ASSINATURA_VERSAO=${MODULOASSINATURA_VERSAO}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_URLPROVIDER=${MODULOASSINATURA_URLPROVIDER}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_CLIENTID=${MODULOASSINATURA_CLIENTID}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_SECRET=${MODULOASSINATURA_SECRET}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_VALIDAR_API_URL=${MODULOASSINATURA_VALIDAR_API_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_VALIDAR_API_KEY=${MODULOASSINATURA_VALIDAR_API_KEY}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_TOKEN_URL=${MODULOASSINATURA_TOKEN_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_TOKEN_SIGN_URL=${MODULOASSINATURA_TOKEN_SIGN_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL=${MODULOASSINATURA_INTEGRA_ICP_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL_CLEARINGS=${MODULOASSINATURA_INTEGRA_ICP_URL_CLEARINGS}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL_ASSINAR=${MODULOASSINATURA_INTEGRA_ICP_URL_ASSINAR}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_CLOUDPSC_URL=${MODULOASSINATURA_CLOUDPSC_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_CLOUDPSC_START_URL=${MODULOASSINATURA_CLOUDPSC_START_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_CLOUDPSC_SIGN_URL=${MODULOASSINATURA_CLOUDPSC_SIGN_URL}" >> envlocal.env
-                    echo "export MODULO_ASSINATURA_API_KEY_ITYHY=${MODULOASSINATURA_API_KEY_ITYHY}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURA_URLPROVIDER=${MODULO_ASSINATURA_URLPROVIDER}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_CLIENTID=${MODULO_ASSINATURA_CLIENTID}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_SECRET=${MODULO_ASSINATURA_SECRET}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURA_VALIDAR_API_URL=${MODULO_ASSINATURA_VALIDAR_API_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_VALIDAR_API_KEY=${MODULO_ASSINATURA_VALIDAR_API_KEY}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURA_SUITE=${MODULO_ASSINATURA_SUITE}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURA_PKCS12_URL=${MODULO_ASSINATURA_PKCS12_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_PKCS12_URL_ASSINAR=${MODULO_ASSINATURA_PKCS12_URL_ASSINAR}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURA_YKUE_URL=${MODULO_ASSINATURA_YKUE_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_YKUE_URL_ASSINAR=${MODULO_ASSINATURA_YKUE_URL_ASSINAR}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL=${MODULO_ASSINATURA_INTEGRA_ICP_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL_CLEARINGS=${MODULO_ASSINATURA_INTEGRA_ICP_URL_CLEARINGS}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_INTEGRA_ICP_URL_ASSINAR=${MODULO_ASSINATURA_INTEGRA_ICP_URL_ASSINAR}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURA_CLOUDPSC_URL=${MODULO_ASSINATURA_CLOUDPSC_URL}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_CLOUDPSC_URL_START=${MODULO_ASSINATURA_CLOUDPSC_URL_START}" >> envlocal.env
+                    echo "export MODULO_ASSINATURA_CLOUDPSC_URL_ASSINAR=${MODULO_ASSINATURA_CLOUDPSC_URL_ASSINAR}" >> envlocal.env
+
+                    echo "export MODULO_ASSINATURA_API_KEY_ITYHY=${MODULO_ASSINATURA_API_KEY_ITYHY}" >> envlocal.env
 
 
                     echo "export MODULO_INCOM_INSTALAR=${MODULOINCOM_INSTALAR}" >> envlocal.env
@@ -640,36 +590,14 @@ pipeline {
 
                     """
 
-
-
-
                     sh """
 
                     cd infra
-
-                    set +e
-                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" ../../sei/SEI.php
-                    e=\$?
-                    set -e
-
-
-
-
-                    if [ "\$e" = "0" ]; then
-
-                        cat envlocal-example-mysql-sei5.env >> envlocal.env
-                        echo "export DOCKER_IMAGE_BD=processoeletronico/mariadb10.5-sei50:latest" >> envlocal.env
-
-                    fi
-
-                    echo "export KUBERNETES_PVC_STORAGECLASS=nfs-client" >> envlocal.env
 
                     make kubernetes_montar_yaml
                     make kubernetes_delete || true
 
                     make kubernetes_montar_yaml
-
-                    sed -i "s|imagePullPolicy: Always|imagePullPolicy: IfNotPresent|g" orquestrators/rancher-kubernetes/topublish/*.yaml
                     make kubernetes_apply
 
                     sleep 20

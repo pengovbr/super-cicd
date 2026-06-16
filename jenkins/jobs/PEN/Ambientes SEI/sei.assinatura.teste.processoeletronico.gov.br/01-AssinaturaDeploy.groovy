@@ -236,6 +236,9 @@ pipeline {
                     echo "export KUBERNETES_PVC_STORAGECLASS_FONTES=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_SOLR=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_CONTROLADORINST=nfs-client-bucket" >> envlocal.env
+                    echo "export KUBERNETES_INGRESS_PROXY_CONNECT_TIMEOUT=300" >> envlocal.env
+                    echo "export KUBERNETES_INGRESS_PROXY_READ_TIMEOUT=300" >> envlocal.env
+                    echo "export KUBERNETES_INGRESS_PROXY_SEND_TIMEOUT=300" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_MEMORY_SOLR=1.5Gi" >> envlocal.env
                     echo "export KUBERNETES_LIMITS_CPU_SOLR=1000m" >> envlocal.env
                     echo "export KUBERNETES_REQUEST_MEMORY_SOLR=1.5Gi" >> envlocal.env
