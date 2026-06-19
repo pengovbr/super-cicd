@@ -231,11 +231,11 @@ pipeline {
                     echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
                     echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
                     echo "export KUBERNETES_NAMESPACE=sei-assinatura" >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS_ANEXOS=nfs-client-bucket" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_ANEXOS=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_DB=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_FONTES=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_SOLR=nfs-client" >> envlocal.env
-                    echo "export KUBERNETES_PVC_STORAGECLASS_CONTROLADORINST=nfs-client-bucket" >> envlocal.env
+                    echo "export KUBERNETES_PVC_STORAGECLASS_CONTROLADORINST=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_INGRESS_PROXY_CONNECT_TIMEOUT=300" >> envlocal.env
                     echo "export KUBERNETES_INGRESS_PROXY_READ_TIMEOUT=300" >> envlocal.env
                     echo "export KUBERNETES_INGRESS_PROXY_SEND_TIMEOUT=300" >> envlocal.env
