@@ -37,13 +37,10 @@ pipeline {
             name: 'database',
             choices: "mysql\noracle\nsqlserver",
             description: 'Qual o banco de dados' )
-        string(
-            name: 'branchGit',
-            defaultValue:"main",
-            description: "Branch principal do git onde encontra-se o Sei")
-        booleanParam(name: 'bolLimparConteiners',
-              defaultValue: false,
-              description: 'Marque para remover conteineres e volumes antes de subir o ambiente')
+        booleanParam(
+            name: 'bolLimparConteiners',
+            defaultValue: false,
+            description: 'Marque para remover conteineres e volumes antes de subir o ambiente')
         choice(
             name: 'choiceAviso',
             choices: "Não Ignorar Aviso\nIgnorar Aviso",
@@ -71,7 +68,7 @@ pipeline {
                     env.DATABASE = params.database
                     env.GITURL = "https://github.com/pengovbr/sei.git"
                     env.GITCRED = "github_pat_readonly_pengovbr"
-                    env.GITBRANCH = params.branchGit
+                    env.GITBRANCH = "main"
                     env.FOLDERSEI = "/home/jenkins/foldersei"
                     env.GITURLSEIDOCKER = "https://github.com/spbgovbr/sei-docker"
                     env.GITCREDSEIDOCKER = "github_pat_readonly_pengovbr"
@@ -181,7 +178,7 @@ pipeline {
 
                         sed -i "s|LOCALIZACAO_FONTES_SEI=.*|LOCALIZACAO_FONTES_SEI=${FOLDERSEI}/src|g" envlocal.env
                         sed -i "s|export APP_PROTOCOLO=.*|export APP_PROTOCOLO=http|g" envlocal.env
-                        sed -i "s|export APP_HOST=.*|export APP_HOST=sei.gd.temporario1.processoeletronico.gov.br|g" envlocal.env
+                        sed -i "s|export APP_HOST=.*|export APP_HOST=sei.gd.temporario2.processoeletronico.gov.br|g" envlocal.env
 
                         sed -i "s|MODULO_GESTAODOCUMENTAL_VERSAO=.*|MODULO_GESTAODOCUMENTAL_VERSAO=${VERSAO_GD}|g" envlocal.env
                         echo "export JOD_PRESENTE=false" >> envlocal.env

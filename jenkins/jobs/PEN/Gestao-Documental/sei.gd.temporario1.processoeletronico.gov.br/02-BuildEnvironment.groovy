@@ -37,10 +37,6 @@ pipeline {
             name: 'database',
             choices: "mysql\noracle\nsqlserver",
             description: 'Qual o banco de dados' )
-        string(
-            name: 'branchGit',
-            defaultValue:"main",
-            description: "Branch principal do git onde encontra-se o Sei")
         booleanParam(name: 'bolLimparConteiners',
               defaultValue: false,
               description: 'Marque para remover conteineres e volumes antes de subir o ambiente')
@@ -71,7 +67,7 @@ pipeline {
                     env.DATABASE = params.database
                     env.GITURL = "https://github.com/pengovbr/sei.git"
                     env.GITCRED = "github_pat_readonly_pengovbr"
-                    env.GITBRANCH = params.branchGit
+                    env.GITBRANCH = "main"
                     env.FOLDERSEI = "/home/jenkins/foldersei"
                     env.GITURLSEIDOCKER = "https://github.com/spbgovbr/sei-docker"
                     env.GITCREDSEIDOCKER = "github_pat_readonly_pengovbr"
