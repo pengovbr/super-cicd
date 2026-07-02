@@ -174,7 +174,8 @@ pipeline {
                     sh """
                     cd infra
                     echo "" >> envlocal.env
-                    echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
+                    echo "export APP_MAIL_SERVIDOR=10.15.1.2" >> envlocal.env
+                    echo "export APP_MAIL_PORTA=30025" >> envlocal.env
                     echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
                     echo "export APP_HOST=${JOB_URL}" >> envlocal.env
                     echo "export APP_ORGAO=${JOB_ORGAO}" >> envlocal.env
