@@ -229,7 +229,8 @@ pipeline {
                     echo "export APP_FONTES_GIT_PATH=git@github.com:pengovbr/sei" >> envlocal.env
                     echo "export APP_FONTES_GIT_CHECKOUT=${GITSEIVERSAO}" >> envlocal.env
                     echo "export KUBERNETES_RESOURCES_INFORMAR=false" >> envlocal.env
-                    echo "export APP_MAIL_SERVIDOR=relay.nuvem.gov.br" >> envlocal.env
+                    echo "export APP_MAIL_SERVIDOR=10.15.1.2" >> envlocal.env
+                    echo "export APP_MAIL_PORTA=30025" >> envlocal.env
                     echo "export KUBERNETES_NAMESPACE=sei-assinatura" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_ANEXOS=nfs-client" >> envlocal.env
                     echo "export KUBERNETES_PVC_STORAGECLASS_DB=nfs-client" >> envlocal.env
