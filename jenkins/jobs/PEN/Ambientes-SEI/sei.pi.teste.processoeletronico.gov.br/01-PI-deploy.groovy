@@ -19,20 +19,34 @@ pipeline {
             description: 'Atenção. A versão dos módulos ou do SEI pode ser o hash do commit; tag; branch; Antes de selecionar uma versão para os módulos verifique se o conteiner app-ci está buildado em uma data posterior ao commit que vc escolheu, caso contrário vai dar erro ao subir o ambiente. Em caso de necessidade de buildar o app-ci, caso vc não seja o dono do registry acione os donos para buildar os conteineres usando o projeto sei-docker')
         string(
 	        name: 'versaoSei',
-	        defaultValue:"4.0.12",
+	        defaultValue:"4.1.5",
 	        description: "Versao para o SEI, pode ser uma branch, tag ou commit. Exemplo: master, 4.0.12, v4.0.12, etc")
+                  
+        choice(
+            name: 'manterDados',
+            choices:['não','sim'],
+            description: "Selecione sim para não limpar os dados do banco de dados")
 	    choice(
             name: 'moduloPIInstalar',
             choices: ['true', 'false'],
             description: 'Instalar Módulo Protocolo Integrado')
         string(
             name: 'moduloPIVersao',
-            defaultValue:"master",
-            description: "Versao do Módulo Protocolo Integrado. Vai apontar para o PI de homolog. Nome Orgao: Teste 5.0")
+            defaultValue:"v3.0.3",
+            description: "v3.0.3 -> última versão estável usando WebService, 
+                        v3.1.0 -> nova versão de desenvolvimento usando API REST")
         string(
-            name: 'moduloPIEmail',
-            defaultValue:"example@example.com",
-            description: "Email do Módulo do Protocolo Integrado")
+            name: 'moduloPIUrl',
+            choices: ['Rest Hom: https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
+            description: "Url para Envio das Informações")
+        string(
+            name: 'moduloPIUsuario',
+            choices:['credModuloPIUsuarioRest','credModuloPIUsuario'],
+            description: "Usuário do Protocolo Integrado, nao altere")
+        string(
+            name: 'moduloPISenha',
+            choices:['credModuloPIUSenhaRest','credModuloPISenha'],
+            description: "Senha do Protocolo Integrado, nao altere")
 
     }
 
@@ -61,10 +75,10 @@ pipeline {
                     env.MODULOPI_INSTALAR = params.moduloPIInstalar
                     env.MODULOPI_VERSAO = params.moduloPIVersao
                     env.MODULOPI_EMAIL = params.moduloPIemail
-                    env.MODULOPI_URL = JOB_MODULOPI_URL
-                    env.MODULOPI_USUARIO = JOB_MODULOPI_USUARIO
-                    env.MODULOPI_SENHA = JOB_MODULOPI_SENHA
-
+                    env.MODULOPI_URL = params.moduloPIUrl.split(': ')[1]
+                    env.MODULOPI_USUARIO = params.moduloPIUsuario
+                    env.MODULOPI_SENHA = params.moduloPISenha
+                    
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
                         warning('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faça login novamente')
@@ -217,6 +231,7 @@ pipeline {
 
                         cd infra
                         echo "export MODULO_PI_USUARIO=${LHAVE}" >> envlocal.env
+                        echo "export PROTOCOLO_INTEGRADO_API_REST_LOGIN=${LHAVE}" >> envlocal.env
 
                         """
                     }
@@ -227,6 +242,7 @@ pipeline {
 
                         cd infra
                         echo "export MODULO_PI_SENHA=${LHAVE}" >> envlocal.env
+                        echo "export PROTOCOLO_INTEGRADO_API_REST_SENHA=${LHAVE}" >> envlocal.env
 
                         """
                     }
@@ -236,7 +252,12 @@ pipeline {
                     cd infra
 
                     make kubernetes_montar_yaml
-                    make kubernetes_delete || true
+                    
+                    if [ "${MANTER_DADOS}" = "sim" ]; then
+                        echo "Parametro manterDados=sim: pulando a destruição dos PVCs e dos recursos antigos"
+                    else
+                        make kubernetes_delete || true
+                    fi
 
                     make kubernetes_montar_yaml
                     make kubernetes_apply
