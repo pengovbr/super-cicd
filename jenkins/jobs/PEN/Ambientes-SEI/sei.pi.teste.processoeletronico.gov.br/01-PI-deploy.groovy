@@ -58,10 +58,11 @@ pipeline {
                     env.JOB_URL = "sei.pi.teste.processoeletronico.gov.br"
                     env.JOB_ORGAO = "PI"
                     env.JOB_NS = "sei-pi"
+                    env.MANTER_DADOS = params.manterDados
 
-                    env.JOB_MODULOPI_URL = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl"
-                    env.JOB_MODULOPI_USUARIO = "credModuloPIUsuaro"
-                    env.JOB_MODULOPI_SENHA = "credModuloPISenha"
+                    env.JOB_MODULOPI_URL = params.moduloPIUrl.split(': ')[1]
+                    env.JOB_MODULOPI_USUARIO = params.moduloPIUsuario
+                    env.JOB_MODULOPI_SENHA = params.moduloPISenha
 
                     env.GITSEIPAT = "github_pat_readonly_pengovbr"
                     env.GITMODULOPAT = "github_pat_readonly_pengovbr"
