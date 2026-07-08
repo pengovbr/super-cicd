@@ -20,8 +20,7 @@ pipeline {
         string(
 	        name: 'versaoSei',
 	        defaultValue:"4.1.5",
-	        description: "Versao para o SEI, pode ser uma branch, tag ou commit. Exemplo: master, 4.0.12, v4.0.12, etc")
-                  
+	        description: "Versao para o SEI, pode ser uma branch, tag ou commit. Exemplo: master, 4.0.12, v4.0.12, etc")                  
         choice(
             name: 'manterDados',
             choices:['não','sim'],
@@ -34,15 +33,15 @@ pipeline {
             name: 'moduloPIVersao',
             defaultValue:"v3.0.3",
             description: "v3.0.3 -> última versão estável usando WebService,\nv3.1.0 -> nova versão de desenvolvimento usando API REST")
-        string(
+        choice(
             name: 'moduloPIUrl',
             choices: ['Rest Hom: https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
             description: "Url para Envio das Informações")
-        string(
+        choice(
             name: 'moduloPIUsuario',
             choices:['credModuloPIUsuarioRest','credModuloPIUsuario'],
             description: "Usuário do Protocolo Integrado, nao altere")
-        string(
+        choice(
             name: 'moduloPISenha',
             choices:['credModuloPIUSenhaRest','credModuloPISenha'],
             description: "Senha do Protocolo Integrado, nao altere")
