@@ -33,8 +33,7 @@ pipeline {
         string(
             name: 'moduloPIVersao',
             defaultValue:"v3.0.3",
-            description: "v3.0.3 -> última versão estável usando WebService, 
-                        v3.1.0 -> nova versão de desenvolvimento usando API REST")
+            description: "v3.0.3 -> última versão estável usando WebService,\nv3.1.0 -> nova versão de desenvolvimento usando API REST")
         string(
             name: 'moduloPIUrl',
             choices: ['Rest Hom: https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
@@ -252,7 +251,7 @@ pipeline {
                     cd infra
 
                     make kubernetes_montar_yaml
-                    
+
                     if [ "${MANTER_DADOS}" = "sim" ]; then
                         echo "Parametro manterDados=sim: pulando a destruição dos PVCs e dos recursos antigos"
                     else
