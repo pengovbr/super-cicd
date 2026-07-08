@@ -19,7 +19,7 @@ pipeline {
 	          description: "Selecione sim para não limpar os dados do banco de dados")
           string(
 	          name: 'versaoSei',
-	          defaultValue:"main",
+	          defaultValue:"4.1.5",
 	          description: "Versao para o SEI (4.0.0 a 4.0.11)")
 	      string(
 	          name: 'gitSeiAddress',
@@ -31,8 +31,9 @@ pipeline {
 	          description: "Chave git em formato base64 em jenkins secret")
 	      string(
 	          name: 'moduloPIVersao',
-	          defaultValue:"master",
-	          description: "Versao do Módulo Protocolo Integrado")
+	          defaultValue:"v3.0.3",
+	          description: "v3.0.3 -> última versão estável usando WebService, 
+                            v3.1.0 -> nova versão de desenvolvimento usando API REST")
 	      string(
 	          name: 'moduloPIUrl',
 	          choices: ['Rest Hom: https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
