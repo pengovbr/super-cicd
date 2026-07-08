@@ -39,11 +39,11 @@ pipeline {
             description: "Url para Envio das Informações")
         choice(
             name: 'moduloPIUsuario',
-            choices:['credModuloPIUsuarioRest','credModuloPIUsuario'],
+            choices:['credModuloPIUsuario','credModuloPIUsuarioRest'],
             description: "Usuário do Protocolo Integrado, nao altere")
         choice(
             name: 'moduloPISenha',
-            choices:['credModuloPIUSenhaRest','credModuloPISenha'],
+            choices:['credModuloPISenha','credModuloPIUSenhaRest'],
             description: "Senha do Protocolo Integrado, nao altere")
 
     }
