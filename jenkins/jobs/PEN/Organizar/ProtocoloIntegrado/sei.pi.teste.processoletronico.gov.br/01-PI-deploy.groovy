@@ -13,9 +13,13 @@ pipeline {
 
     parameters {
       
+          choice(
+	          name: 'manterDados',
+	          choices:['não','sim'],
+	          description: "Selecione sim para não limpar os dados do banco de dados")
           string(
 	          name: 'versaoSei',
-	          defaultValue:"4.0.9",
+	          defaultValue:"main",
 	          description: "Versao para o SEI (4.0.0 a 4.0.11)")
 	      string(
 	          name: 'gitSeiAddress',
@@ -31,15 +35,15 @@ pipeline {
 	          description: "Versao do Módulo Protocolo Integrado")
 	      string(
 	          name: 'moduloPIUrl',
-	          defaultValue:"https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl",
+	          choices: ['Rest Hom: https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
 	          description: "Url para Envio das Informações")
 	      string(
 	          name: 'moduloPIUsuario',
-	          defaultValue:"credModuloPIUsuaro",
+	          choices:['credModuloPIUsuarioRest','credModuloPIUsuario'],
 	          description: "Usuário do Protocolo Integrado, nao altere")
           string(
               name: 'moduloPISenha',
-              defaultValue:"credModuloPISenha",
+              choices:['credModuloPIUSenhaRest','credModuloPISenha'],
               description: "Senha do Protocolo Integrado, nao altere")
           
 	      string(
@@ -55,6 +59,7 @@ pipeline {
             steps {
 
                 script{
+                    MANTER_DADOS = params.manterDados
                     GITURL = "https://github.com/spbgovbr/sei-docker.git"
 					GITCRED = ""
 					GITSEIVERSAO = params.versaoSei
@@ -62,7 +67,7 @@ pipeline {
                     
                     MODULOPI_INSTALAR = "true"
                     MODULOPI_VERSAO = params.moduloPIVersao
-                    MODULOPI_URL = params.moduloPIUrl
+                    MODULOPI_URL = params.moduloPIUrl.split(': ')[1]
                     MODULOPI_USUARIO = params.moduloPIUsuario
                     MODULOPI_SENHA = params.moduloPISenha
                     MODULOPI_EMAIL = params.moduloPIemail
@@ -173,7 +178,12 @@ pipeline {
                     cd infra
                     
                     make kubernetes_montar_yaml
-                    make kubernetes_delete || true
+
+                    if [ "${MANTER_DADOS}" = "sim" ]; then
+                        echo "Parametro manterDados=sim: pulando a destruição dos PVCs e dos recursos antigos"
+                    else
+                        make kubernetes_delete || true
+                    fi
         
                     make kubernetes_montar_yaml
                     make kubernetes_apply
