@@ -35,7 +35,7 @@ pipeline {
             description: "v3.0.3 -> última versão estável usando WebService,\nv3.1.0 -> nova versão de desenvolvimento usando API REST")
         choice(
             name: 'moduloPIUrl',
-            choices: ['Rest Hom: https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
+            choices: ['WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'Rest Hom (Nova versão): https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
             description: "Url para Envio das Informações")
         choice(
             name: 'moduloPIUsuario',
