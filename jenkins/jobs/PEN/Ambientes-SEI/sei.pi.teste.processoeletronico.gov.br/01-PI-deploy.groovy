@@ -37,15 +37,7 @@ pipeline {
             name: 'moduloPIUrl',
             choices: ['WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'Rest Hom (Nova versão): https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
             description: "Url para Envio das Informações")
-        choice(
-            name: 'moduloPIUsuario',
-            choices:['credModuloPIUsuario','credModuloPIUsuarioRest'],
-            description: "Usuário do Protocolo Integrado, nao altere")
-        choice(
-            name: 'moduloPISenha',
-            choices:['credModuloPISenha','credModuloPIUSenhaRest'],
-            description: "Senha do Protocolo Integrado, nao altere")
-
+        
     }
 
     stages {
@@ -75,8 +67,21 @@ pipeline {
                     env.MODULOPI_VERSAO = params.moduloPIVersao
                     env.MODULOPI_EMAIL = params.moduloPIemail
                     env.MODULOPI_URL = params.moduloPIUrl.split(': ')[1]
-                    env.MODULOPI_USUARIO = params.moduloPIUsuario
-                    env.MODULOPI_SENHA = params.moduloPISenha
+
+                    if [ "${MODULOPI_URL}" = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl" ]; then
+                        env.MODULOPI_USUARIO = "credModuloPIUsuaro"
+                        env.MODULOPI_SENHA = "credModuloPISenha"
+                        echo "Credenciais do Módulo PI legado selecionadas"
+                    else if [ "${MODULOPI_URL}" = "https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/" ]; then
+                        env.MODULOPI_USUARIO = "credModuloPIUsuarioRest"
+                        env.MODULOPI_SENHA = "credModuloPIUSenhaRest"
+                        echo "Credenciais do Módulo PI REST selecionadas"
+                    else    
+                        env.MODULOPI_USUARIO = "credModuloPIUsuarioHom"
+                        env.MODULOPI_SENHA = "credModuloPIUSenhaHom"
+                        echo "Credenciais do Módulo PI  legado apontando pra Homolog selecionadas"
+                    fi
+                    fi
                     
                     if ( env.BUILD_NUMBER == '1' ){
                         currentBuild.result = 'ABORTED'
