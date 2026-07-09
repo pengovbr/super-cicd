@@ -262,9 +262,9 @@ pipeline {
                         kubectl -n ${JOB_NS} scale --replicas=0 deployment/jod || true
 
                         echo "Removendo diretório do módulo PI dentro do container do app para forçar atualização"
-                        POD_APP=$(kubectl -n ${JOB_NS} get pods -l app=sei-app -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
-                        if [ -n "${POD_APP}" ]; then
-                            kubectl -n ${JOB_NS} exec "${POD_APP}" -- sh -c 'rm -rf /opt/sei/web/modulos/protocolo-integrado; rm -f /sei/controlador-instalacoes/instalado-modulo-pi.ok' || true
+                        POD_APP=\$(kubectl -n ${JOB_NS} get pods -l app=sei-app -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+                        if [ -n "\${POD_APP}" ]; then
+                            kubectl -n ${JOB_NS} exec "\${POD_APP}" -- sh -c 'rm -rf /opt/sei/web/modulos/protocolo-integrado; rm -f /sei/controlador-instalacoes/instalado-modulo-pi.ok' || true
                         fi
                     else
                         make kubernetes_delete || true
