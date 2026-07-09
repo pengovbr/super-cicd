@@ -68,22 +68,21 @@ pipeline {
                     env.MODULOPI_EMAIL = params.moduloPIemail
                     env.MODULOPI_URL = params.moduloPIUrl.split(': ')[1]
 
-                    if [ "${MODULOPI_URL}" = "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl" ]; then
+                    if (env.MODULOPI_URL == "https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl") {
                         env.MODULOPI_USUARIO = "credModuloPIUsuaro"
                         env.MODULOPI_SENHA = "credModuloPISenha"
                         echo "Credenciais do Módulo PI legado selecionadas"
-                    elif [ "${MODULOPI_URL}" = "https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/" ]; then
+                    } else if (env.MODULOPI_URL == "https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/") {
                         env.MODULOPI_USUARIO = "credModuloPIUsuarioRest"
                         env.MODULOPI_SENHA = "credModuloPIUSenhaRest"
                         echo "Credenciais do Módulo PI REST selecionadas"
-                    else    
+                    } else {
                         env.MODULOPI_USUARIO = "credModuloPIUsuarioHom"
                         env.MODULOPI_SENHA = "credModuloPIUSenhaHom"
-                        echo "Credenciais do Módulo PI  legado apontando pra Homolog selecionadas"
-                    fi
-                    fi
-                    
-                    if ( env.BUILD_NUMBER == '1' ){
+                        echo "Credenciais do Módulo PI legado apontando pra Homolog selecionadas"
+                    }
+
+                    if (env.BUILD_NUMBER == '1') {
                         currentBuild.result = 'ABORTED'
                         warning('Informe os valores de parametro iniciais. Caso eles n tenham aparecido faça login novamente')
                     }
