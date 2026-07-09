@@ -271,6 +271,10 @@ pipeline {
                     make kubernetes_montar_yaml
                     make kubernetes_apply
 
+                    echo "Reiniciando os deployments do app e do agendador"
+                    kubectl -n ${JOB_NS} rollout restart deployment/sei-app || true
+                    kubectl -n ${JOB_NS} rollout restart deployment/sei-app-agendador || true
+
                     sleep 20
                     kubectl -n ${JOB_NS} scale --replicas=0 deployment/jod || true
                     """
