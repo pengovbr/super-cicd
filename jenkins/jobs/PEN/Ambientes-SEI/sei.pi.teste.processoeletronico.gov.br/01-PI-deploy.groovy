@@ -264,6 +264,8 @@ pipeline {
                         if [ -n "\${POD_APP}" ]; then
                             kubectl -n ${JOB_NS} exec "\${POD_APP}" -- sh -c 'rm -rf /opt/sei/web/modulos/*protocolo-integrado*; rm -f /sei/controlador-instalacoes/instalado-modulo-pi.ok;rm -Rf /opt/sei/config/mod-protocolo-integrado' || true
                         fi
+                        kubectl --insecure-skip-tls-verify -n ${JOB_NS} apply --force -f orquestrators/rancher-kubernetes/topublish/configmaps.yaml;
+                        kubectl --insecure-skip-tls-verify -n ${JOB_NS} apply --force -f orquestrators/rancher-kubernetes/topublish/jobs.yaml;
                     else
                         make kubernetes_delete || true
                     fi
