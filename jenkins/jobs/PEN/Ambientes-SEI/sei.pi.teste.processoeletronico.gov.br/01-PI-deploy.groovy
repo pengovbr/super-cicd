@@ -262,7 +262,7 @@ pipeline {
                         echo "Removendo diretório do módulo PI dentro do container do app para forçar atualização"
                         POD_APP=\$(kubectl -n ${JOB_NS} get pods -o name | grep -E 'pod/sei-app(-agendador)?-' | head -n 1 | sed 's#^pod/##' 2>/dev/null || true)
                         if [ -n "\${POD_APP}" ]; then
-                            kubectl -n ${JOB_NS} exec "\${POD_APP}" -- sh -c 'rm -rf /opt/sei/web/modulos/*protocolo-integrado*; rm -f /sei/controlador-instalacoes/instalado-modulo-pi.ok;rm -Rf /opt/sei/config/mod-protocolo-integrado' || true
+                            kubectl -n ${JOB_NS} exec "\${POD_APP}" -- sh -c 'rm -rf /opt/sei;rm -rf /opt/sip;rm -rf /opt/infra; rm -f /sei/controlador-instalacoes/instalado-modulo-pi.ok;rm -Rf /opt/sei/config/mod-protocolo-integrado' || true
                         fi
                         kubectl --insecure-skip-tls-verify -n ${JOB_NS} delete --force -f orquestrators/rancher-kubernetes/topublish/jobs.yaml --wait=true --cascade='foreground'; 
                         kubectl --insecure-skip-tls-verify -n ${JOB_NS} delete --force -f orquestrators/rancher-kubernetes/topublish/configmaps.yaml --wait=true --cascade='foreground';
