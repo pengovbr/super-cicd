@@ -74,11 +74,11 @@ pipeline {
                         echo "Credenciais do Módulo PI legado selecionadas"
                     } else if (env.MODULOPI_URL == "https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/") {
                         env.MODULOPI_USUARIO = "credModuloPIUsuarioRest"
-                        env.MODULOPI_SENHA = "credModuloPIUSenhaRest"
+                        env.MODULOPI_SENHA = "credModuloPISenhaRest"
                         echo "Credenciais do Módulo PI REST selecionadas"
                     } else {
                         env.MODULOPI_USUARIO = "credModuloPIUsuarioHom"
-                        env.MODULOPI_SENHA = "credModuloPIUSenhaHom"
+                        env.MODULOPI_SENHA = "credModuloPISenhaHom"
                         echo "Credenciais do Módulo PI legado apontando pra Homolog selecionadas"
                     }
 
