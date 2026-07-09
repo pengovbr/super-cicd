@@ -262,7 +262,7 @@ pipeline {
                         echo "Removendo diretório do módulo PI dentro do container do app para forçar atualização"
                         POD_APP=\$(kubectl -n ${JOB_NS} get pods -o name | grep -E 'pod/sei-app(-agendador)?-' | head -n 1 | sed 's#^pod/##' 2>/dev/null || true)
                         if [ -n "\${POD_APP}" ]; then
-                            kubectl -n ${JOB_NS} exec "\${POD_APP}" -- sh -c 'rm -rf /opt/sei/web/modulos/protocolo-integrado; rm -f /sei/controlador-instalacoes/instalado-modulo-pi.ok' || true
+                            kubectl -n ${JOB_NS} exec "\${POD_APP}" -- sh -c 'rm -rf /opt/sei/web/modulos/*protocolo-integrado*; rm -f /sei/controlador-instalacoes/instalado-modulo-pi.ok' || true
                         fi
                     else
                         make kubernetes_delete || true
