@@ -32,7 +32,7 @@ pipeline {
         string(
             name: 'moduloPIVersao',
             defaultValue:"v3.0.3",
-            description: "v3.0.3 -> última versão estável usando WebService,\nv3.1.0 -> nova versão de desenvolvimento usando API REST")
+            description: "v3.0.3 -> última versão estável usando WebService,\nfeature/v3.1.0 -> nova versão de desenvolvimento usando API REST")
         choice(
             name: 'moduloPIUrl',
             choices: ['WebService Hom: https://protocolointegrado.hom.processoeletronico.gov.br/ProtocoloWS/integradorService?wsdl', 'Rest Hom (Nova versão): https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/', 'WebService legado: https://protocolointegrado.preprod.nuvem.gov.br/ProtocoloWS/integradorService?wsdl' ],
@@ -259,8 +259,6 @@ pipeline {
                     if [ "${MANTER_DADOS}" = "sim" ]; then
                         echo "Parametro manterDados=sim: pulando a destruição dos PVCs e dos recursos antigos"
                         
-                        kubectl -n ${JOB_NS} scale --replicas=0 deployment/jod || true
-
                         echo "Removendo diretório do módulo PI dentro do container do app para forçar atualização"
                         POD_APP=\$(kubectl -n ${JOB_NS} get pods -o name | grep -E 'pod/sei-app(-agendador)?-' | head -n 1 | sed 's#^pod/##' 2>/dev/null || true)
                         if [ -n "\${POD_APP}" ]; then
