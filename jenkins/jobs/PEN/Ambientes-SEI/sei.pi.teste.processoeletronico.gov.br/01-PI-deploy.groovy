@@ -72,7 +72,7 @@ pipeline {
                         env.MODULOPI_USUARIO = "credModuloPIUsuaro"
                         env.MODULOPI_SENHA = "credModuloPISenha"
                         echo "Credenciais do Módulo PI legado selecionadas"
-                    else if [ "${MODULOPI_URL}" = "https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/" ]; then
+                    elif [ "${MODULOPI_URL}" = "https://protocolointegrado.hom.processoeletronico.gov.br/api/integracao/" ]; then
                         env.MODULOPI_USUARIO = "credModuloPIUsuarioRest"
                         env.MODULOPI_SENHA = "credModuloPIUSenhaRest"
                         echo "Credenciais do Módulo PI REST selecionadas"
