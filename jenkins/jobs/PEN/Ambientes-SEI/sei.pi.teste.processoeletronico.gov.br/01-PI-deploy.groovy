@@ -52,6 +52,9 @@ pipeline {
                     env.JOB_NS = "sei-pi"
                     env.MANTER_DADOS = params.manterDados
 
+                    def nomeExecucao = "${params.moduloPIVersao} - ${params.moduloPIUrl.split(': ')[0]} - ${params.manterDados == 'sim' ? 'manterDados' : 'base zerada'}"
+                    currentBuild.displayName = nomeExecucao
+
                     env.JOB_MODULOPI_URL = params.moduloPIUrl.split(': ')[1]
                     env.JOB_MODULOPI_USUARIO = params.moduloPIUsuario
                     env.JOB_MODULOPI_SENHA = params.moduloPISenha
