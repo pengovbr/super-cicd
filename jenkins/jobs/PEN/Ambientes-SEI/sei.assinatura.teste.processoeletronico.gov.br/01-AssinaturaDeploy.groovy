@@ -6,7 +6,11 @@ Job para Publicar o SEI em Cluster Kubernetes
 
 pipeline {
 
-    agent any
+    agent {
+        node{
+            label "SEI-FONTE"
+        }
+    }
 
     parameters {
 
