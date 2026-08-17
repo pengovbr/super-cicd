@@ -308,6 +308,11 @@ pipeline {
 
             steps {
 
+                sh """
+                pwd
+                ls -lh
+
+
                 d=sei/
                 if [ -d sei/src ]; then d=sei/src; fi
                     cd \$d
@@ -325,7 +330,7 @@ pipeline {
 
                     fi
 
-                fi
+
                 """
 
                 dir('kube'){
