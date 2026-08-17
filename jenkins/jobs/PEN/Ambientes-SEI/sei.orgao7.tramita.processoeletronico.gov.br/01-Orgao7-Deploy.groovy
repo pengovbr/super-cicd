@@ -307,31 +307,28 @@ pipeline {
         stage('Deletar e Subir Projeto Kubernetes'){
 
             steps {
-                dir('kube'){
 
-                    sh """
-                    pwd
-                    ls -lh
+                d=sei/
+                if [ -d sei/src ]; then d=sei/src; fi
+                    cd \$d
+                    set +e
+                    grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
+                    e=\$?
+                    set -e
+                    if [ -d ../src ]; then cd ..; fi
+                    cd ../kube
 
 
-                    d=sei/
-                    if [ -d sei/src ]; then d=sei/src; fi
-                        cd \$d
-                        set +e
-                        grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
-                        e=\$?
-                        set -e
-                        if [ -d ../src ]; then cd ..; fi
-                        cd ../kube
+                    if [ "\$e" = "0" ]; then
 
-                        if [ "\$e" = "0" ]; then
+                        cat infra/envlocal-example-mysql-sei5.env >> infra/envlocal.env
 
-                            cat infra/envlocal-example-mysql-sei5.env >> infra/envlocal.env
-
-                        fi
                     fi
-                    """
 
+                fi
+                """
+
+                dir('kube'){
 
                     withCredentials([usernamePassword(credentialsId: GITSEIPAT, usernameVariable: 'USER', passwordVariable: 'LHAVE')]) {
 
