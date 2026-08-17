@@ -36,11 +36,11 @@ pipeline {
             description: "Depois de habilitar Multiorgao acima. Passe aqui os nomes respectivos às siglas separadas por /. Informar a mesma qtde de siglas e nomes, caso contrário o parametro será ignorado na instalação")
         choice(
             name: 'federacao',
-            choices: ['true','false'],
+            choices: ['false','true'],
             description: 'Caso deseje habilitar a federação nessa instalação, informe true. Após a criação do ambiente você terá que configurar com que outro ambiente será a federação')
         choice(
             name: 'moduloEstatisticaInstalar',
-            choices: ['true', 'false'],
+            choices: ['false', 'true'],
             description: 'Instalar Módulo Estatisticas')
         string(
             name: 'moduloEstatisticaVersao',
@@ -116,7 +116,7 @@ pipeline {
             description: "Unidade Associação do PEN")
         choice(
             name: 'moduloPIInstalar',
-            choices: ['true', 'false'],
+            choices: ['false', 'true'],
             description: 'Instalar Módulo Protocolo Integrado')
         string(
             name: 'moduloPIVersao',
@@ -308,6 +308,30 @@ pipeline {
 
             steps {
                 dir('kube'){
+
+                    sh """
+                    pwd
+                    ls -lh
+
+
+                    d=sei/
+                    if [ -d sei/src ]; then d=sei/src; fi
+                        cd \$d
+                        set +e
+                        grep -e "const SEI_VERSAO = '5\\..*\\..*';" sei/web/SEI.php
+                        e=\$?
+                        set -e
+                        if [ -d ../src ]; then cd ..; fi
+                        cd ../kube
+
+                        if [ "\$e" = "0" ]; then
+
+                            cat infra/envlocal-example-mysql-sei5.env >> infra/envlocal.env
+
+                        fi
+                    fi
+                    """
+
 
                     withCredentials([usernamePassword(credentialsId: GITSEIPAT, usernameVariable: 'USER', passwordVariable: 'LHAVE')]) {
 
