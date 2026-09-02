@@ -275,7 +275,10 @@ pipeline {
 
                     make kubernetes_montar_yaml
                     make kubernetes_apply
-
+					
+					echo "remove loopback host do agendador"
+                    kubectl -n ${JOB_NS} exec deploy/sei-app-agendador -- sh -c 'grep -v "sei.pi" /etc/hosts > /tmp/h && cp /tmp/h /etc/hosts' || true
+					
                     echo "Reiniciando os deployments do app e do agendador"
                     kubectl -n ${JOB_NS} rollout restart deployment/sei-app || true
                     kubectl -n ${JOB_NS} rollout restart deployment/sei-app-agendador || true
